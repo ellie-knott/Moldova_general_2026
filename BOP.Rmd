@@ -1,0 +1,53 @@
+---
+title: "BOP surveys"
+author: "Ellie Knott"
+date: "2026-09-18"
+output: html_document
+---
+
+```{r}
+require(tidyverse)
+require(dplyr)
+require(lubridate)
+```
+
+```{r}
+# loading data
+bop_sep_2025 <- read_sav("Project Data/BOP/DB_BOP_IPP_09_2025_1.SAV", user_na = TRUE)
+bop_oct_2024 <- read_sav("Project Data/BOP/BOP_2024.10.SAV")
+bop_aug_2023 <- read_sav("Project Data/BOP/MD_BOP_August_2023.SAV") # not working
+bop_nov_2022 <- read_sav("Project Data/BOP/MD_BOP_IPP_Noiembrie_2022.SAV") # not working
+bop_feb_2021 <- read_sav("Project Data/BOP/2021.02.sav")
+bop_oct_2020 <- read_sav("Project Data/BOP/2020.10.sav")
+bop_jun_2020 <- read_sav("Project Data/BOP/2020.06.sav")
+bop_dec_2019 <- read_sav("Project Data/BOP/2019.12.sav")
+bop_nov_2018 <- read_sav("Project Data/BOP/2018.11.sav")
+bop_may_2018 <- read_sav("Project Data/BOP/2018.05.sav")
+bop_nov_2017 <- read_sav("Project Data/BOP/2017.11.sav")
+```
+
+
+```{r}
+attr(bop_sep_2025$A1, "labels")
+attr(bop_sep_2025$A1, "label")
+
+labelled(bop_sep_2025$A1, labels = c("Good", "Bad", "DK", "NR", "NA"), label = c("Direction"))
+```
+
+```{r}
+bop_sep_2025$date <- dmy("01-09-2025")
+bop_oct_2024$date <- dmy("01-10-2024")
+
+bop_feb_2021$date <- dmy("01-02-2021") 
+bop_oct_2020$date <- dmy("01-10-2020")
+bop_jun_2020$date <- dmy("01-06-2020")
+bop_dec_2019$date <- dmy("01-12-2019")
+bop_nov_2018$date <- dmy("01-11-2019")
+bop_may_2018$date <- dmy("01-05-2019")
+bop_nov_2017$date <- dmy("01-11-2017")
+```
+
+```{r}
+
+
+```
