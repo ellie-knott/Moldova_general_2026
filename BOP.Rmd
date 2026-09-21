@@ -35,23 +35,20 @@ waves <- c(bop_nov_2017, bop_may_2018, bop_nov_2018, bop_dec_2019, bop_jun_2020,
 
 # Aligning, cleaning, merging
 
-Education, Socioeconomic, media?
-
 ```{r}
-attr(bop_sep_2025$studii, "labels")
-attr(bop_oct_2024$S_4, "labels")
-attr(bop_aug_2023$studii, "labels")
-attr(bop_nov_2022$studii, "labels")
-attr(bop_feb_2021$studii, "labels")
-attr(bop_oct_2020$educatie, "labels")
-attr(bop_jun_2020$studii, "labels")
-attr(bop_jun_2020$S3, "labels")
-attr(bop_dec_2019$S4, "labels")
-attr(bop_dec_2019$S4, "labels")
-attr(bop_nov_2018$studii, "labels")
-attr(bop_may_2018$EDUCATIE, "labels")
-attr(bop_nov_2017$studiile, "labels")
-attr(bop_nov_2022$mediu, "label")
+attr(bop_sep_2025$H6, "labels")
+attr(bop_oct_2024$E_6, "labels")
+attr(bop_aug_2023$Niv.socio, "labels")
+attr(bop_nov_2022$varimax, "labels")
+attr(bop_feb_2021$varimax, "labels")
+attr(bop_oct_2020$varimax, "labels")
+attr(bop_jun_2020$socioecon, "labels")
+attr(bop_jun_2020$socioecon, "labels")
+attr(bop_dec_2019$st, "labels")
+attr(bop_nov_2018$C5_9, "labels")
+attr(bop_may_2018$C5_9, "labels")
+attr(bop_nov_2017$D8, "labels")
+attr(bop_nov_2017$D13, "label")
 ```
 
 ```{r}
@@ -67,6 +64,19 @@ bop_dec_2019$date <- dmy("01-12-2019")
 bop_nov_2018$date <- dmy("01-11-2019")
 bop_may_2018$date <- dmy("01-05-2019")
 bop_nov_2017$date <- dmy("01-11-2017")
+```
+```{r}
+bop_sep_2025$Weights <- as.integer(bop_sep_2025$W)
+bop_oct_2024$Weights <- as.integer(bop_oct_2024$W)
+bop_aug_2023$Weights <- as.integer(bop_aug_2023$W1)
+bop_nov_2022$Weights <- as.integer(bop_nov_2022$weight_agesex)
+bop_feb_2021$Weights <- as.integer(bop_feb_2021$Weights)
+bop_oct_2020$Weights <- as.integer(bop_oct_2020$WEGHT)
+bop_jun_2020$Weights <- as.integer(bop_jun_2020$weight_age_sex2)
+bop_dec_2019$Weights <- as.integer(bop_dec_2019$w)
+bop_nov_2018$Weights <- as.integer(bop_nov_2018$weight_age_sex2)
+bop_may_2018$Weights <- as.integer(bop_may_2018$weight)
+bop_nov_2017$Weights <- as.integer(bop_nov_2017$weight_age_sex2)
 ```
 
 ## Demographics
@@ -152,22 +162,6 @@ bop_nov_2017$Language_Questionnaire <- factor(bop_nov_2017$S18, labels = questio
 ```
 
 ```{r}
-ecology_labels <- c("urban", "rural")
-
-bop_sep_2025$Ecology <- factor(bop_sep_2025$mediu, labels = questionnaire_labels)
-bop_oct_2024$Ecology <- NA
-bop_aug_2023$Ecology <- factor(bop_aug_2023$mediu, labels = questionnaire_labels)
-bop_nov_2022$Ecology <- factor(bop_nov_2022$mediu, labels = questionnaire_labels)
-bop_feb_2021$Ecology <- factor(bop_feb_2021$Mediu, labels = questionnaire_labels)
-bop_oct_2020$Ecology <- factor(bop_oct_2020$mediu, labels = questionnaire_labels)
-bop_jun_2020$Ecology <- factor(bop_jun_2020$mediu, labels = questionnaire_labels)
-bop_dec_2019$Ecology <- factor(bop_dec_2019$mediu, labels = questionnaire_labels)
-bop_nov_2018$Ecology <- factor(bop_nov_2018$mediu, labels = questionnaire_labels)
-bop_may_2018$Ecology <- factor(bop_may_2018$S18, labels = questionnaire_labels)
-bop_nov_2017$Ecology <- factor(bop_nov_2017$mediul, labels = questionnaire_labels)
-```
-
-```{r}
 # rural / urban ecology
 ecology_labels <- c("urban", "rural")
 
@@ -190,15 +184,15 @@ education_labels <- c("low", "medium", "high")
 
 bop_sep_2025$Education <- factor(bop_sep_2025$studii, labels = education_labels)
 bop_oct_2024$Education <- factor(bop_oct_2024$S_4, labels = c("low", "low", "medium", "medium", "medium", "high", "high", "high", "high", "high"))
-bop_aug_2023$Education <- factor(bop_aug_2023$mediu, labels = education_labels)
-bop_nov_2022$Education <- factor(bop_nov_2022$mediu, labels = education_labels)
-bop_feb_2021$Education <- factor(bop_feb_2021$Mediu, labels = education_labels)
-bop_oct_2020$Education <- factor(bop_oct_2020$mediu, labels = education_labels)
-bop_jun_2020$Education <- factor(bop_jun_2020$mediu, labels = education_labels)
-bop_dec_2019$Education <- factor(bop_dec_2019$mediu, labels = education_labels)
-bop_nov_2018$Education <- factor(bop_nov_2018$mediu, labels = education_labels)
-bop_may_2018$Education <- factor(bop_may_2018$S18, labels = education_labels)
-bop_nov_2017$Education <- factor(bop_nov_2017$mediul, labels = education_labels)
+bop_aug_2023$Education <- factor(bop_aug_2023$studii, labels = education_labels)
+bop_nov_2022$Education <- factor(bop_nov_2022$studii, labels = education_labels)
+bop_feb_2021$Education <- factor(bop_feb_2021$studii, labels = education_labels)
+bop_oct_2020$Education <- factor(bop_oct_2020$educatie, labels = education_labels)
+bop_jun_2020$Education <- factor(bop_jun_2020$studii, labels = education_labels)
+bop_dec_2019$Education <- factor(bop_dec_2019$S4, labels = c("low", "low", "medium", "medium", "medium", "high", "high", "high", "high", "DK", "NR"))
+bop_nov_2018$Education <- factor(bop_nov_2018$studii, labels = education_labels)
+bop_may_2018$Education <- factor(bop_may_2018$EDUCATIE, labels = education_labels)
+bop_nov_2017$Education <- factor(bop_nov_2017$studiile, labels = education_labels)
 ```
 
 ```{r}
@@ -219,7 +213,7 @@ bop_may_2018$Region <- factor(bop_may_2018$S20, labels = regions1)
 bop_nov_2017$Region <- factor(bop_nov_2017$S21, labels = regions2)
 ```
 
-```{R}
+```{r}
 # macro regions
 macro_region <- c("North", "Centre", "Chisinau", "South", "Gagauzia")
 bop_oct_2024$Macro_Region <- NA
@@ -333,6 +327,22 @@ bop_nov_2017$Macro_Region <- fct_collapse(bop_nov_2017$Region,
                              "Gagauzia" = "Gagauzia")
 ```
 
+```{r}
+#socioeconomic
+socioeconomic_labels <- c("low", "medium", "high")
+
+bop_sep_2025$Socioeconomic <- factor(bop_sep_2025$Varimax, labels = socioeconomic_labels)
+bop_oct_2024$Socioeconomic <- NA
+bop_aug_2023$Socioeconomic <- factor(bop_aug_2023$Niv.socio, labels = socioeconomic_labels)
+bop_nov_2022$Socioeconomic <- factor(bop_nov_2022$varimax, labels = socioeconomic_labels)
+bop_feb_2021$Socioeconomic <- factor(bop_feb_2021$varimax, labels = socioeconomic_labels)
+bop_oct_2020$Socioeconomic <- factor(bop_oct_2020$varimax, labels = socioeconomic_labels)
+bop_jun_2020$Socioeconomic <- factor(bop_jun_2020$socioecon, labels = socioeconomic_labels)
+bop_dec_2019$Socioeconomic <- factor(bop_dec_2019$st, labels = socioeconomic_labels)
+bop_nov_2018$Socioeconomic <- factor(bop_nov_2018$Varimax, labels = socioeconomic_labels)
+bop_may_2018$Socioeconomic <- factor(bop_may_2018$N_S_E, labels = socioeconomic_labels)
+bop_nov_2017$Socioeconomic <- factor(bop_nov_2017$varimax, labels = socioeconomic_labels)
+```
 
 ## Moldova's Direction
 ```{r}
@@ -349,4 +359,270 @@ bop_nov_2022$direction <- factor(bop_nov_2022$A1, levels = c(1, 2, 3, 4, 5), lab
 bop_aug_2023$direction <- factor(bop_aug_2023$A1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
 bop_oct_2024$direction <- factor(bop_oct_2024$A_1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
 bop_sep_2025$direction <- factor(bop_sep_2025$A1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
+```
+
+## Media
+```{r}
+# first important media
+bop_sep_2025$Important_Media <- factor(bop_sep_2025$B10_1, labels =  c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "Social media", "DK", "DK", "NR"))
+bop_oct_2024$Important_Media <- factor(bop_oct_2024$C_13_O1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "internet", "social media", "social media", "Other", "Other", "None", "DK", "DK", "NR"))
+bop_aug_2023$Important_Media <- factor(bop_aug_2023$C3_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_nov_2022$Important_Media <- factor(bop_nov_2022$С3_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_feb_2021$Important_Media <- factor(bop_feb_2021$B10_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_oct_2020$Important_Media <- factor(bop_oct_2020$B11_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "NR"))
+bop_jun_2020$Important_Media <- factor(bop_jun_2020$B4_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Internet", "DK", "DK", "NR"))
+bop_dec_2019$Important_Media <- factor(bop_dec_2019$B10, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Internet", "None", "DK", "DK", "NR"))
+bop_nov_2018$Important_Media <- factor(bop_nov_2018$B10_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Internet", "DK", "DK", "NR"))
+bop_may_2018$Important_Media <- factor(bop_may_2018$B10_01, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_nov_2017$Important_Media <- factor(bop_nov_2017$B10_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Internet", "DK", "DK", "NR"))
+
+```
+
+
+```{r}
+# second important media
+bop_sep_2025$Second_Media <- factor(bop_sep_2025$B10_2, labels =  c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "local authorities", "internet", "social media"))
+bop_oct_2024$Second_Media <- factor(bop_oct_2024$C_13_O2, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "internet", "social media", "social media", "Other", "Other", "None", "DK", "DK", "NR"))
+bop_aug_2023$Second_Media <- factor(bop_aug_2023$C3_2, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_nov_2022$Second_Media <- factor(bop_nov_2022$С3_2, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet"))
+bop_feb_2021$Second_Media <- factor(bop_feb_2021$B10_2, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_oct_2020$Second_Media <- factor(bop_oct_2020$B11_2, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_jun_2020$Second_Media <- factor(bop_jun_2020$B4_2, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_dec_2019$Second_Media <- factor(bop_dec_2019$B10a, levels = 1:14, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "DK", "NR"))
+bop_nov_2018$Second_Media <- factor(bop_nov_2018$B10_2, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet"))
+bop_may_2018$Second_Media <- factor(bop_may_2018$B10_02, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_nov_2017$Second_Media <- factor(bop_nov_2017$B10_2, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet"))
+```
+
+
+```{r}
+# most trusted media 
+bop_sep_2025$Trust_Media <- factor(bop_sep_2025$B11, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "local authorities", "internet", "social media", "DK", "DK", "NR", "NA"))
+bop_oct_2024$Trust_Media <- factor(bop_oct_2024$C_14, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "internet", "social media", "social media", "Other", "Other", "None", "DK", "DK", "NR")
+bop_aug_2023$Trust_Media <- factor(bop_aug_2023$С4, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "NR"))
+bop_nov_2022$Trust_Media <- factor(bop_nov_2022$С4, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "NR"))
+bop_feb_2021$Trust_Media <- factor(bop_feb_2021$B11, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "NR"))
+bop_oct_2020$Trust_Media <- factor(bop_oct_2020$B12, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "NR"))
+bop_jun_2020$Trust_Media <- factor(bop_jun_2020$B5, levels = 1:14, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "DK", "NR"))
+bop_dec_2019$Trust_Media <- factor(bop_dec_2019$B11, levels = 1:14, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "DK", "NR"))
+bop_nov_2018$Trust_Media <- factor(bop_nov_2018$B11, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Internet", "None", "DK", "DK", "NR"))
+bop_may_2018$Trust_Media <- factor(bop_may_2018$B11, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "DK", "NR"))
+bop_nov_2017$Trust_Media <- factor(bop_nov_2017$B11, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "DK", "NR"))
+```
+
+## Domestic Politics
+
+```{r}
+# Sandu
+bop_sep_2025$Sandu <- factor(bop_sep_2025$D9_3, levels = 1:4)
+bop_oct_2024$Sandu <- factor(bop_oct_2024$D_16_1, levels = 1:4)
+bop_aug_2023$Sandu <- factor(bop_aug_2023$D10_2, levels = 1:4)
+bop_nov_2022$Sandu <- factor(bop_nov_2022$D11_3, levels = 1:4)
+bop_feb_2021$Sandu <- factor(bop_feb_2021$D5_2, levels = 1:4)
+bop_oct_2020$Sandu <- factor(bop_oct_2020$C5_6, levels = 1:4)
+bop_jun_2020$Sandu <- factor(bop_jun_2020$C4_1, levels = 1:4)
+bop_dec_2019$Sandu <- factor(bop_dec_2019$C11_3, levels = 1:4)
+bop_nov_2018$Sandu <- factor(bop_nov_2018$C5_9, levels = 1:4)
+bop_may_2018$Sandu <- factor(bop_may_2018$C5_07, levels = 1:4)
+bop_nov_2017$Sandu <- factor(bop_nov_2017$C5_7, levels = 1:4)
+```
+
+```{r}
+# Dodon
+bop_sep_2025$Dodon <- factor(bop_sep_2025$D9_2, levels = 1:4)
+bop_oct_2024$Dodon <- factor(bop_oct_2024$D_16_4, levels = 1:4)
+bop_aug_2023$Dodon <- factor(bop_aug_2023$D10_3, levels = 1:4)
+bop_nov_2022$Dodon <- factor(bop_nov_2022$D11_4, levels = 1:4)
+bop_feb_2021$Dodon <- factor(bop_feb_2021$D5_1, levels = 1:4)
+bop_oct_2020$Dodon <- factor(bop_oct_2020$C5_4, levels = 1:4)
+bop_jun_2020$Dodon <- factor(bop_jun_2020$C4_2, levels = 1:4)
+bop_dec_2019$Dodon <- factor(bop_dec_2019$C11_10, levels = 1:4)
+bop_nov_2018$Dodon <- factor(bop_nov_2018$C5_6, levels = 1:4)
+bop_may_2018$Dodon <- factor(bop_may_2018$C5_05, levels = 1:4)
+bop_nov_2017$Dodon <- factor(bop_nov_2017$C5_5, levels = 1:4)
+```
+
+```{r}
+# Voronin
+bop_sep_2025$Voronin <- factor(bop_sep_2025$D9_10, levels = 1:4)
+bop_oct_2024$Voronin <- NA
+bop_aug_2023$Voronin <- factor(bop_aug_2023$D10_1, levels = 1:4)
+bop_nov_2022$Voronin <- factor(bop_nov_2022$D11_1, levels = 1:4)
+bop_feb_2021$Voronin <- factor(bop_feb_2021$D5_6, levels = 1:4)
+bop_oct_2020$Voronin <- factor(bop_oct_2020$C5_11, levels = 1:4)
+bop_jun_2020$Voronin <- factor(bop_jun_2020$C4_10, levels = 1:4)
+bop_dec_2019$Voronin <- factor(bop_dec_2019$C11_8, levels = 1:4)
+bop_nov_2018$Voronin <- factor(bop_nov_2018$C5_15, levels = 1:4)
+bop_may_2018$Voronin <- factor(bop_may_2018$C5_13, levels = 1:4)
+bop_nov_2017$Voronin <- factor(bop_nov_2017$C5_13, levels = 1:4)
+```
+
+```{r}
+# Sor
+bop_sep_2025$Sor <- factor(bop_sep_2025$D9_4, levels = 1:4)
+bop_oct_2024$Sor <- NA
+bop_aug_2023$Sor <- factor(bop_aug_2023$D10_5, levels = 1:4)
+bop_nov_2022$Sor <- factor(bop_nov_2022$D11_6, levels = 1:4)
+bop_feb_2021$Sor <- factor(bop_feb_2021$D5_7, levels = 1:4)
+bop_oct_2020$Sor <- factor(bop_oct_2020$C5_5, levels = 1:4)
+bop_jun_2020$Sor <- factor(bop_jun_2020$C4_9, levels = 1:4)
+bop_dec_2019$Sor <- factor(bop_dec_2019$C11_5, levels = 1:4)
+bop_nov_2018$Sor <- factor(bop_nov_2018$C5_7, levels = 1:4)
+bop_may_2018$Sor <- NA
+bop_nov_2017$Sor <- NA
+```
+
+```{r}
+# PAS
+bop_sep_2025$PAS <- factor(bop_sep_2025$D10_1, levels = 1:4)
+bop_oct_2024$PAS <- factor(bop_oct_2024$D_5_1, levels = 1:4)
+bop_aug_2023$PAS <- factor(bop_aug_2023$D5_2, levels = 1:4)
+bop_nov_2022$PAS <- factor(bop_nov_2022$D9_2, levels = 1:4)
+bop_feb_2021$PAS <- factor(bop_feb_2021$D6_1, levels = 1:4)
+bop_oct_2020$PAS <- factor(bop_oct_2020$C3_1, levels = 1:4)
+bop_jun_2020$PAS <- factor(bop_jun_2020$C5_1, levels = 1:4)
+bop_dec_2019$PAS <- factor(bop_dec_2019$C9_3, levels = 1:4)
+bop_nov_2018$PAS <- factor(bop_nov_2018$C3_1, levels = 1:4)
+bop_may_2018$PAS <- factor(bop_may_2018$C3_01, levels = 1:4)
+bop_nov_2017$PAS <- factor(bop_nov_2017$C3_1, levels = 1:4)
+```
+
+```{r}
+# PSRM
+bop_sep_2025$PSRM <- NA
+bop_oct_2024$PSRM <- factor(bop_oct_2024$D_5_4, levels = 1:4)
+bop_aug_2023$PSRM <- factor(bop_aug_2023$D5_1, levels = 1:4)
+bop_nov_2022$PSRM <- factor(bop_nov_2022$D9_2, levels = 1:4)
+bop_feb_2021$PSRM <- factor(bop_feb_2021$D6_5, levels = 1:4)
+bop_oct_2020$PSRM <- factor(bop_oct_2020$C3_4, levels = 1:4)
+bop_jun_2020$PSRM <- factor(bop_jun_2020$C5_4, levels = 1:4)
+bop_dec_2019$PSRM <- factor(bop_dec_2019$C9_1, levels = 1:4)
+bop_nov_2018$PSRM <- factor(bop_nov_2018$C3_10, levels = 1:4)
+bop_may_2018$PSRM <- factor(bop_may_2018$C3_10, levels = 1:4)
+bop_nov_2017$PSRM <- factor(bop_nov_2017$C3_10, levels = 1:4)
+```
+
+## International Politics
+```{r}
+referendum_labels <- c("For", "Against", "Wouldn't participate", "DK", "NR")
+
+bop_sep_2025$Unification <- factor(bop_sep_2025$H10, labels = referendum_labels)
+bop_oct_2024$Unification <- factor(bop_oct_2024$E_6, labels = referendum_labels)
+bop_aug_2023$Unification <- factor(bop_aug_2023$E8, labels = referendum_labels)
+bop_nov_2022$Unification <- factor(bop_nov_2022$E12, labels = referendum_labels)
+bop_feb_2021$Unification <- NA
+bop_oct_2020$Unification <- factor(bop_oct_2020$D5, labels = referendum_labels)
+bop_jun_2020$Unification <- NA
+bop_dec_2019$Unification <- NA
+bop_nov_2018$Unification <- NA
+bop_may_2018$Unification <- factor(bop_may_2018$D8, labels = referendum_labels)
+bop_nov_2017$Unification <- factor(bop_nov_2017$D8, labels = referendum_labels)
+```
+
+```{r}
+bop_sep_2025$NATO <- factor(bop_sep_2025$H10, labels = referendum_labels)
+bop_oct_2024$NATO <- NA
+bop_aug_2023$NATO <- factor(bop_aug_2023$E7, labels = referendum_labels)
+bop_nov_2022$NATO <- factor(bop_nov_2022$E10, labels = referendum_labels)
+bop_feb_2021$NATO <- NA
+bop_oct_2020$NATO <- NA
+bop_jun_2020$NATO <- NA
+bop_dec_2019$NATO <- NA
+bop_nov_2018$NATO <- NA
+bop_may_2018$NATO <- factor(bop_may_2018$D13, labels = referendum_labels)
+bop_nov_2017$NATO <- factor(bop_nov_2017$D13, labels = referendum_labels)
+```
+
+```{r}
+# EU
+
+bop_sep_2025$EU <- factor(bop_sep_2025$H4, labels = referendum_labels)
+bop_oct_2024$EU <- factor(bop_oct_2024$E_3, labels = referendum_labels)
+bop_aug_2023$EU <- factor(bop_aug_2023$E2, labels = referendum_labels)
+bop_nov_2022$EU <- factor(bop_nov_2022$E5, labels = referendum_labels)
+bop_feb_2021$EU <- factor(bop_feb_2021$H7, labels = referendum_labels)
+bop_oct_2020$EU <- factor(bop_oct_2020$D2, labels = referendum_labels)
+bop_jun_2020$EU <- factor(bop_jun_2020$E2, labels = referendum_labels)
+bop_dec_2019$EU <- factor(bop_dec_2019$D2, labels = referendum_labels)
+bop_nov_2018$EU <- factor(bop_nov_2018$D2, labels = referendum_labels)
+bop_may_2018$EU <- factor(bop_may_2018$D2, labels = referendum_labels)
+bop_nov_2017$EU <- factor(bop_nov_2017$D2, labels = referendum_labels)
+```
+
+```{r}
+# Eurasia
+
+bop_sep_2025$Eurasia <- factor(bop_sep_2025$H5, labels = referendum_labels)
+bop_oct_2024$Eurasia <- factor(bop_oct_2024$E_5, labels = referendum_labels)
+bop_aug_2023$Eurasia <- factor(bop_aug_2023$E4, labels = referendum_labels)
+bop_nov_2022$Eurasia <- factor(bop_nov_2022$E7, labels = referendum_labels)
+bop_feb_2021$Eurasia <- factor(bop_feb_2021$H9, labels = referendum_labels)
+bop_oct_2020$Eurasia <- factor(bop_oct_2020$D3, labels = referendum_labels)
+bop_jun_2020$Eurasia <- factor(bop_jun_2020$E3, labels = referendum_labels)
+bop_dec_2019$Eurasia <- NA
+bop_nov_2018$Eurasia <- factor(bop_nov_2018$D4, labels = referendum_labels)
+bop_may_2018$Eurasia <- factor(bop_may_2018$D4, labels = referendum_labels)
+bop_nov_2017$Eurasia <- factor(bop_nov_2017$D4, labels = referendum_labels)
+```
+
+
+
+```{r}
+# EU vs Eurasia
+EU_Eurasia_labels <- c("EU", "Eurasia", "Wouldn't participate", "DK", "NR")
+
+bop_sep_2025$EU_vs_Eurasia <- factor(bop_sep_2025$H5, labels = EU_Eurasia_labels)
+bop_oct_2024$EU_vs_Eurasia <- NA
+bop_aug_2023$EU_vs_Eurasia <- factor(bop_aug_2023$E6, labels = EU_Eurasia_labels)
+bop_nov_2022$EU_vs_Eurasia <- factor(bop_nov_2022$E9, labels = EU_Eurasia_labels)
+bop_feb_2021$EU_vs_Eurasia <- factor(bop_feb_2021$H11, labels = EU_Eurasia_labels)
+bop_oct_2020$EU_vs_Eurasia <- factor(bop_oct_2020$D4, labels = EU_Eurasia_labels)
+bop_jun_2020$EU_vs_Eurasia <- factor(bop_jun_2020$E4, labels = EU_Eurasia_labels)
+bop_dec_2019$EU_vs_Eurasia <- NA
+bop_nov_2018$EU_vs_Eurasia <- factor(bop_nov_2018$D6, labels = EU_Eurasia_labels)
+bop_may_2018$EU_vs_Eurasia <- factor(bop_may_2018$D6, labels = EU_Eurasia_labels)
+bop_nov_2017$EU_vs_Eurasia <- factor(bop_nov_2017$D6, labels = EU_Eurasia_labels)
+```
+
+# Merging
+```{r}
+vars_to_keep <- c("date", "Age", "Age.f", "Gender", "Ethnicity", "Language_Questionnaire", "Ecology", "Education", "Socioeconomic", "Region", "Macro_Region", "direction", "Important_Media", "Second_Media", "Trust_Media", "Sandu", "Dodon", "Voronin", "Sor", "PAS", "PSRM", "Unification", "NATO", "EU", "Eurasia", "EU_vs_Eurasia", "Weights")
+
+bop_panel <- bind_rows(
+  bop_sep_2025 %>% select(any_of(vars_to_keep)),
+  bop_oct_2024 %>% select(any_of(vars_to_keep)),
+  bop_aug_2023 %>% select(any_of(vars_to_keep)),
+  bop_nov_2022 %>% select(any_of(vars_to_keep)),
+  bop_feb_2021 %>% select(any_of(vars_to_keep)),
+  bop_oct_2020 %>% select(any_of(vars_to_keep)),
+  bop_jun_2020 %>% select(any_of(vars_to_keep)),
+  bop_dec_2019 %>% select(any_of(vars_to_keep)),
+  bop_nov_2018 %>% select(any_of(vars_to_keep)),
+  bop_may_2018 %>% select(any_of(vars_to_keep)),
+  bop_nov_2017 %>% select(any_of(vars_to_keep))
+)
+
+```
+
+# Analysis
+
+## domestic politics
+```{r}
+bop_panel$year <- year(bop_panel$date)
+bop_panel$year.f <- as.factor(bop_panel$year)
+
+bop_panel$Sandu <- as.numeric(bop_panel$Sandu)
+bop_panel$Dodon <- as.numeric(bop_panel$Dodon)
+bop_panel$Sor <- as.numeric(bop_panel$Sor)
+
+domestic_bop <- bop_panel %>%
+  group_by(year) %>%
+  summarise(
+    Sandu_mean = mean(Sandu, na.rm = TRUE),
+    Sandu_sd = sd(Sandu, na.rm = TRUE),
+    Dodon_mean = mean(Dodon, na.rm = TRUE),
+    Dodon_sd = sd(Dodon, na.rm = TRUE),
+    Sor_mean = mean(Sor, na.rm = TRUE),
+    Sor_sd = sd(Sor, na.rm = TRUE)
+  )
 ```
