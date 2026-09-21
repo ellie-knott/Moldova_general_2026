@@ -10,6 +10,7 @@ require(tidyverse)
 require(haven)
 require(dplyr)
 require(lubridate)
+require(forcats)
 ```
 
 ```{r}
@@ -27,38 +28,34 @@ bop_may_2018 <- read_sav("Project Data/BOP/2018.05.sav")
 bop_nov_2017 <- read_sav("Project Data/BOP/2017.11.sav")
 ```
 
-
 ```{r}
-attr(bop_aug_2023$A1, "labels")
-attr(bop_aug_2023$A1, "label")
+waves <- c(bop_nov_2017, bop_may_2018, bop_nov_2018, bop_dec_2019, bop_jun_2020, bop_oct_2020, bop_feb_2021,
+              bop_nov_2022, bop_aug_2023, bop_oct_2024, bop_sep_2025)
 ```
 
+# Aligning, cleaning, merging
+
+Education, Socioeconomic, media?
 
 ```{r}
-direction_labels <- c("Good", "Bad", "DK", "NR", NA)
-
-
-bop_aug_2023$direction <- factor(
-  bop_aug_2023$A1,
-  levels = c(1, 2, 3, 4, 5),
-  labels = direction_labels,
-)
-
-bop_oct_2024$direction <- factor(
-  bop_oct_2024$A_1,
-  levels = c(1, 2, 3, 4, 5),
-  labels = direction_labels,
-)
-
-bop_sep_2025$direction <- factor(
-  bop_sep_2025$A1,
-  levels = c(1, 2, 3, 4, 5),
-  labels = direction_labels,
-)
-
+attr(bop_sep_2025$studii, "labels")
+attr(bop_oct_2024$S_4, "labels")
+attr(bop_aug_2023$studii, "labels")
+attr(bop_nov_2022$studii, "labels")
+attr(bop_feb_2021$studii, "labels")
+attr(bop_oct_2020$educatie, "labels")
+attr(bop_jun_2020$studii, "labels")
+attr(bop_jun_2020$S3, "labels")
+attr(bop_dec_2019$S4, "labels")
+attr(bop_dec_2019$S4, "labels")
+attr(bop_nov_2018$studii, "labels")
+attr(bop_may_2018$EDUCATIE, "labels")
+attr(bop_nov_2017$studiile, "labels")
+attr(bop_nov_2022$mediu, "label")
 ```
 
 ```{r}
+# adding date
 bop_sep_2025$date <- dmy("01-09-2025")
 bop_oct_2024$date <- dmy("01-10-2024")
 bop_aug_2023$date <- dmy("01-08-2023")
@@ -70,4 +67,286 @@ bop_dec_2019$date <- dmy("01-12-2019")
 bop_nov_2018$date <- dmy("01-11-2019")
 bop_may_2018$date <- dmy("01-05-2019")
 bop_nov_2017$date <- dmy("01-11-2017")
+```
+
+## Demographics
+
+```{r}
+# Gender
+gender_labels <- c("Man", "Woman")
+
+bop_sep_2025$Gender <- factor(bop_sep_2025$Genul, labels = gender_labels)
+bop_oct_2024$Gender <- factor(bop_oct_2024$S_8, labels = gender_labels)
+bop_aug_2023$Gender <- factor(bop_aug_2023$Genul, labels = gender_labels)
+bop_nov_2022$Gender <- factor(bop_nov_2022$Genul, labels = gender_labels)
+bop_feb_2021$Gender <- factor(bop_feb_2021$Genul, labels = gender_labels)
+bop_oct_2020$Gender <- factor(bop_oct_2020$Genul, labels = gender_labels)
+bop_jun_2020$Gender <- factor(bop_jun_2020$genukl, labels = gender_labels)
+bop_dec_2019$Gender <- factor(bop_dec_2019$S1, labels = gender_labels)
+bop_nov_2018$Gender <- factor(bop_nov_2018$Genul, labels = gender_labels)
+bop_may_2018$Gender <- factor(bop_may_2018$S1, labels = gender_labels)
+bop_nov_2017$Gender <- factor(bop_nov_2017$S1, labels = gender_labels)
+```
+
+```{r}
+# Age
+
+bop_sep_2025$Age <- bop_sep_2025$G2
+bop_oct_2024$Age <- bop_oct_2024$S_2
+bop_aug_2023$Age <- bop_aug_2023$S2
+bop_nov_2022$Age <- bop_nov_2022$S2
+bop_feb_2021$Age <- bop_feb_2021$S2
+bop_oct_2020$Age <- bop_oct_2020$S2
+bop_jun_2020$Age <- bop_jun_2020$S2
+bop_dec_2019$Age <- bop_dec_2019$S2
+bop_nov_2018$Age <- bop_nov_2018$S2
+bop_may_2018$Age <- bop_may_2018$S2
+bop_nov_2017$Age <- bop_nov_2017$S2
+
+# As factor
+age_levels <- c("18-29", "30-44", "45-59", "60-74", "75+")
+
+bop_sep_2025$Age.f <- cut(bop_sep_2025$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+bop_oct_2024$Age.f <- cut(bop_oct_2024$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+bop_aug_2023$Age.f <- cut(bop_aug_2023$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+bop_nov_2022$Age.f <- cut(bop_nov_2022$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+bop_feb_2021$Age.f <- cut(bop_feb_2021$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+bop_oct_2020$Age.f <- cut(bop_oct_2020$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+bop_jun_2020$Age.f <- cut(bop_jun_2020$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+bop_dec_2019$Age.f <- cut(bop_dec_2019$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+bop_nov_2018$Age.f <- cut(bop_nov_2018$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+bop_may_2018$Age.f <- cut(bop_may_2018$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+bop_nov_2017$Age.f <- cut(bop_nov_2017$Age, breaks = c(17, 29, 44, 59, 74, Inf), labels = age_levels)
+```
+
+```{r}
+# Ethnicity
+bop_sep_2025$Ethnicity <- factor(bop_sep_2025$S5, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Other", "Bulgarian", "Roma", "Other", "NR"))
+bop_oct_2024$Ethnicity <- factor(bop_oct_2024$S_3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Roma", "Other", "Other", "Other", "NR"))
+bop_aug_2023$Ethnicity <- factor(bop_aug_2023$S5, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_nov_2022$Ethnicity <- factor(bop_nov_2022$S7, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_feb_2021$Ethnicity <- factor(bop_feb_2021$S6, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_oct_2020$Ethnicity <- factor(bop_oct_2020$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_jun_2020$Ethnicity <- factor(bop_jun_2020$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_dec_2019$Ethnicity <- factor(bop_dec_2019$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_nov_2018$Ethnicity <- factor(bop_nov_2018$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_may_2018$Ethnicity <- factor(bop_may_2018$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_nov_2017$Ethnicity <- factor(bop_nov_2017$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+```
+
+```{r}
+# Language of questionnaire
+questionnaire_labels <- c("Romanian", "Russian")
+
+bop_sep_2025$Language_Questionnaire <- factor(bop_sep_2025$Lang, labels = questionnaire_labels)
+bop_oct_2024$Language_Questionnaire <- factor(bop_oct_2024$S_12, labels = questionnaire_labels)
+bop_aug_2023$Language_Questionnaire <- factor(bop_aug_2023$Lang, labels = questionnaire_labels)
+bop_nov_2022$Language_Questionnaire <- factor(bop_nov_2022$Lang, labels = questionnaire_labels)
+bop_feb_2021$Language_Questionnaire <- factor(bop_feb_2021$Lang, labels = questionnaire_labels)
+bop_oct_2020$Language_Questionnaire <- factor(bop_oct_2020$S12, labels = questionnaire_labels)
+bop_jun_2020$Language_Questionnaire <- factor(bop_jun_2020$S11, labels = questionnaire_labels)
+bop_dec_2019$Language_Questionnaire <- factor(bop_dec_2019$S18, labels = questionnaire_labels)
+bop_nov_2018$Language_Questionnaire <- factor(bop_nov_2018$S18, labels = questionnaire_labels)
+bop_may_2018$Language_Questionnaire <- factor(bop_may_2018$Limba, labels = questionnaire_labels)
+bop_nov_2017$Language_Questionnaire <- factor(bop_nov_2017$S18, labels = questionnaire_labels)
+```
+
+```{r}
+ecology_labels <- c("urban", "rural")
+
+bop_sep_2025$Ecology <- factor(bop_sep_2025$mediu, labels = questionnaire_labels)
+bop_oct_2024$Ecology <- NA
+bop_aug_2023$Ecology <- factor(bop_aug_2023$mediu, labels = questionnaire_labels)
+bop_nov_2022$Ecology <- factor(bop_nov_2022$mediu, labels = questionnaire_labels)
+bop_feb_2021$Ecology <- factor(bop_feb_2021$Mediu, labels = questionnaire_labels)
+bop_oct_2020$Ecology <- factor(bop_oct_2020$mediu, labels = questionnaire_labels)
+bop_jun_2020$Ecology <- factor(bop_jun_2020$mediu, labels = questionnaire_labels)
+bop_dec_2019$Ecology <- factor(bop_dec_2019$mediu, labels = questionnaire_labels)
+bop_nov_2018$Ecology <- factor(bop_nov_2018$mediu, labels = questionnaire_labels)
+bop_may_2018$Ecology <- factor(bop_may_2018$S18, labels = questionnaire_labels)
+bop_nov_2017$Ecology <- factor(bop_nov_2017$mediul, labels = questionnaire_labels)
+```
+
+```{r}
+# rural / urban ecology
+ecology_labels <- c("urban", "rural")
+
+bop_sep_2025$Ecology <- factor(bop_sep_2025$mediu, labels = questionnaire_labels)
+bop_oct_2024$Ecology <- NA
+bop_aug_2023$Ecology <- factor(bop_aug_2023$mediu, labels = questionnaire_labels)
+bop_nov_2022$Ecology <- factor(bop_nov_2022$mediu, labels = questionnaire_labels)
+bop_feb_2021$Ecology <- factor(bop_feb_2021$Mediu, labels = questionnaire_labels)
+bop_oct_2020$Ecology <- factor(bop_oct_2020$mediu, labels = questionnaire_labels)
+bop_jun_2020$Ecology <- factor(bop_jun_2020$mediu, labels = questionnaire_labels)
+bop_dec_2019$Ecology <- factor(bop_dec_2019$mediu, labels = questionnaire_labels)
+bop_nov_2018$Ecology <- factor(bop_nov_2018$mediu, labels = questionnaire_labels)
+bop_may_2018$Ecology <- factor(bop_may_2018$S18, labels = questionnaire_labels)
+bop_nov_2017$Ecology <- factor(bop_nov_2017$mediul, labels = questionnaire_labels)
+```
+
+```{r}
+# Education
+education_labels <- c("low", "medium", "high")
+
+bop_sep_2025$Education <- factor(bop_sep_2025$studii, labels = education_labels)
+bop_oct_2024$Education <- factor(bop_oct_2024$S_4, labels = c("low", "low", "medium", "medium", "medium", "high", "high", "high", "high", "high"))
+bop_aug_2023$Education <- factor(bop_aug_2023$mediu, labels = education_labels)
+bop_nov_2022$Education <- factor(bop_nov_2022$mediu, labels = education_labels)
+bop_feb_2021$Education <- factor(bop_feb_2021$Mediu, labels = education_labels)
+bop_oct_2020$Education <- factor(bop_oct_2020$mediu, labels = education_labels)
+bop_jun_2020$Education <- factor(bop_jun_2020$mediu, labels = education_labels)
+bop_dec_2019$Education <- factor(bop_dec_2019$mediu, labels = education_labels)
+bop_nov_2018$Education <- factor(bop_nov_2018$mediu, labels = education_labels)
+bop_may_2018$Education <- factor(bop_may_2018$S18, labels = education_labels)
+bop_nov_2017$Education <- factor(bop_nov_2017$mediul, labels = education_labels)
+```
+
+```{r}
+# Region
+regions1 <- c("Anenii Noi", "Balti", "Basarabeasca", "Briceni", "Cahul", "Calarasi", "Cantemir", "Causeni", "Chisinau", "Cimislia", "Criuleni", "Donduseni", "Drochia", "Dubasari", "Edinet", "Falesti", "Floresti", "Glodeni", "Hincesti", "Ialoveni", "Leova", "Nisporeni", "Ocnita", "Orhei", "Rezina", "Riscani", "Singerei", "Soldanesti", "Soroca", "Stefan Voda", "Straseni", "Taraclia", "Telenesti", "Ungheni", "Gagauzia")
+regions2 <- c("Chisinau", "Anenii Noi", "Balti", "Basarabeasca", "Briceni", "Cahul", "Calarasi", "Cantemir", "Causeni", "Cimislia", "Criuleni", "Donduseni", "Drochia", "Dubasari", "Edinet", "Falesti", "Floresti", "Glodeni", "Hincesti", "Ialoveni", "Leova", "Nisporeni", "Ocnita", "Orhei", "Rezina", "Riscani", "Singerei", "Soldanesti", "Soroca", "Stefan Voda", "Straseni", "Taraclia", "Telenesti", "Ungheni", "Gagauzia")
+
+bop_sep_2025$Region <- factor(bop_sep_2025$mun, labels = regions2)
+bop_oct_2024$Region <- NA
+bop_aug_2023$Region <- factor(bop_aug_2023$mun, labels = regions2)
+bop_nov_2022$Region <- factor(bop_nov_2022$mun, labels = regions2)
+bop_feb_2021$Region <- factor(bop_feb_2021$mun, labels = regions2)
+bop_oct_2020$Region <- factor(bop_oct_2020$S15, labels = regions2)
+bop_jun_2020$Region <- factor(bop_jun_2020$S10, labels = regions2)
+bop_dec_2019$Region <- NA
+bop_nov_2018$Region <- factor(bop_nov_2018$S21, labels = regions2)
+bop_may_2018$Region <- factor(bop_may_2018$S20, labels = regions1)
+bop_nov_2017$Region <- factor(bop_nov_2017$S21, labels = regions2)
+```
+
+```{R}
+# macro regions
+macro_region <- c("North", "Centre", "Chisinau", "South", "Gagauzia")
+bop_oct_2024$Macro_Region <- NA
+bop_dec_2019$Macro_Region <- factor(bop_dec_2019$reg, labels = macro_region)
+bop_sep_2025$Macro_Region <- fct_collapse(bop_sep_2025$Region,
+                             "North"    = c("Balti", "Briceni", "Donduseni", "Drochia", "Edinet",
+                                            "Falesti", "Floresti", "Glodeni", "Ocnita", "Riscani",
+                                            "Singerei", "Soldanesti", "Soroca"),
+                             "Centre"   = c("Anenii Noi", "Calarasi", "Criuleni", "Dubasari",
+                                            "Hincesti", "Ialoveni", "Nisporeni", "Orhei", "Rezina",
+                                            "Straseni", "Telenesti", "Ungheni"),
+                             "South"    = c("Basarabeasca", "Cahul", "Cantemir", "Causeni",
+                                            "Cimislia", "Leova", "Stefan Voda", "Taraclia"),
+                             "Chisinau" = "Chisinau",
+                             "Gagauzia" = "Gagauzia")
+
+bop_aug_2023$Macro_Region <- fct_collapse(bop_aug_2023$Region,
+                             "North"    = c("Balti", "Briceni", "Donduseni", "Drochia", "Edinet",
+                                            "Falesti", "Floresti", "Glodeni", "Ocnita", "Riscani",
+                                            "Singerei", "Soldanesti", "Soroca"),
+                             "Centre"   = c("Anenii Noi", "Calarasi", "Criuleni", "Dubasari",
+                                            "Hincesti", "Ialoveni", "Nisporeni", "Orhei", "Rezina",
+                                            "Straseni", "Telenesti", "Ungheni"),
+                             "South"    = c("Basarabeasca", "Cahul", "Cantemir", "Causeni",
+                                            "Cimislia", "Leova", "Stefan Voda", "Taraclia"),
+                             "Chisinau" = "Chisinau",
+                             "Gagauzia" = "Gagauzia")
+
+bop_nov_2022$Macro_Region <- fct_collapse(bop_nov_2022$Region,
+                             "North"    = c("Balti", "Briceni", "Donduseni", "Drochia", "Edinet",
+                                            "Falesti", "Floresti", "Glodeni", "Ocnita", "Riscani",
+                                            "Singerei", "Soldanesti", "Soroca"),
+                             "Centre"   = c("Anenii Noi", "Calarasi", "Criuleni", "Dubasari",
+                                            "Hincesti", "Ialoveni", "Nisporeni", "Orhei", "Rezina",
+                                            "Straseni", "Telenesti", "Ungheni"),
+                             "South"    = c("Basarabeasca", "Cahul", "Cantemir", "Causeni",
+                                            "Cimislia", "Leova", "Stefan Voda", "Taraclia"),
+                             "Chisinau" = "Chisinau",
+                             "Gagauzia" = "Gagauzia")
+
+bop_feb_2021$Macro_Region <- fct_collapse(bop_feb_2021$Region,
+                             "North"    = c("Balti", "Briceni", "Donduseni", "Drochia", "Edinet",
+                                            "Falesti", "Floresti", "Glodeni", "Ocnita", "Riscani",
+                                            "Singerei", "Soldanesti", "Soroca"),
+                             "Centre"   = c("Anenii Noi", "Calarasi", "Criuleni", "Dubasari",
+                                            "Hincesti", "Ialoveni", "Nisporeni", "Orhei", "Rezina",
+                                            "Straseni", "Telenesti", "Ungheni"),
+                             "South"    = c("Basarabeasca", "Cahul", "Cantemir", "Causeni",
+                                            "Cimislia", "Leova", "Stefan Voda", "Taraclia"),
+                             "Chisinau" = "Chisinau",
+                             "Gagauzia" = "Gagauzia")
+
+bop_oct_2020$Macro_Region <- fct_collapse(bop_oct_2020$Region,
+                             "North"    = c("Balti", "Briceni", "Donduseni", "Drochia", "Edinet",
+                                            "Falesti", "Floresti", "Glodeni", "Ocnita", "Riscani",
+                                            "Singerei", "Soldanesti", "Soroca"),
+                             "Centre"   = c("Anenii Noi", "Calarasi", "Criuleni", "Dubasari",
+                                            "Hincesti", "Ialoveni", "Nisporeni", "Orhei", "Rezina",
+                                            "Straseni", "Telenesti", "Ungheni"),
+                             "South"    = c("Basarabeasca", "Cahul", "Cantemir", "Causeni",
+                                            "Cimislia", "Leova", "Stefan Voda", "Taraclia"),
+                             "Chisinau" = "Chisinau",
+                             "Gagauzia" = "Gagauzia")
+
+bop_jun_2020$Macro_Region <- fct_collapse(bop_jun_2020$Region,
+                             "North"    = c("Balti", "Briceni", "Donduseni", "Drochia", "Edinet",
+                                            "Falesti", "Floresti", "Glodeni", "Ocnita", "Riscani",
+                                            "Singerei", "Soldanesti", "Soroca"),
+                             "Centre"   = c("Anenii Noi", "Calarasi", "Criuleni", "Dubasari",
+                                            "Hincesti", "Ialoveni", "Nisporeni", "Orhei", "Rezina",
+                                            "Straseni", "Telenesti", "Ungheni"),
+                             "South"    = c("Basarabeasca", "Cahul", "Cantemir", "Causeni",
+                                            "Cimislia", "Leova", "Stefan Voda", "Taraclia"),
+                             "Chisinau" = "Chisinau",
+                             "Gagauzia" = "Gagauzia")
+
+bop_nov_2018$Macro_Region <- fct_collapse(bop_nov_2018$Region,
+                             "North"    = c("Balti", "Briceni", "Donduseni", "Drochia", "Edinet",
+                                            "Falesti", "Floresti", "Glodeni", "Ocnita", "Riscani",
+                                            "Singerei", "Soldanesti", "Soroca"),
+                             "Centre"   = c("Anenii Noi", "Calarasi", "Criuleni", "Dubasari",
+                                            "Hincesti", "Ialoveni", "Nisporeni", "Orhei", "Rezina",
+                                            "Straseni", "Telenesti", "Ungheni"),
+                             "South"    = c("Basarabeasca", "Cahul", "Cantemir", "Causeni",
+                                            "Cimislia", "Leova", "Stefan Voda", "Taraclia"),
+                             "Chisinau" = "Chisinau",
+                             "Gagauzia" = "Gagauzia")
+
+bop_may_2018$Macro_Region <- fct_collapse(bop_may_2018$Region,
+                             "North"    = c("Balti", "Briceni", "Donduseni", "Drochia", "Edinet",
+                                            "Falesti", "Floresti", "Glodeni", "Ocnita", "Riscani",
+                                            "Singerei", "Soldanesti", "Soroca"),
+                             "Centre"   = c("Anenii Noi", "Calarasi", "Criuleni", "Dubasari",
+                                            "Hincesti", "Ialoveni", "Nisporeni", "Orhei", "Rezina",
+                                            "Straseni", "Telenesti", "Ungheni"),
+                             "South"    = c("Basarabeasca", "Cahul", "Cantemir", "Causeni",
+                                            "Cimislia", "Leova", "Stefan Voda", "Taraclia"),
+                             "Chisinau" = "Chisinau",
+                             "Gagauzia" = "Gagauzia")
+
+bop_nov_2017$Macro_Region <- fct_collapse(bop_nov_2017$Region,
+                             "North"    = c("Balti", "Briceni", "Donduseni", "Drochia", "Edinet",
+                                            "Falesti", "Floresti", "Glodeni", "Ocnita", "Riscani",
+                                            "Singerei", "Soldanesti", "Soroca"),
+                             "Centre"   = c("Anenii Noi", "Calarasi", "Criuleni", "Dubasari",
+                                            "Hincesti", "Ialoveni", "Nisporeni", "Orhei", "Rezina",
+                                            "Straseni", "Telenesti", "Ungheni"),
+                             "South"    = c("Basarabeasca", "Cahul", "Cantemir", "Causeni",
+                                            "Cimislia", "Leova", "Stefan Voda", "Taraclia"),
+                             "Chisinau" = "Chisinau",
+                             "Gagauzia" = "Gagauzia")
+```
+
+
+## Moldova's Direction
+```{r}
+direction_labels <- c("Good", "Bad", "DK", "NR", NA)
+
+bop_nov_2017$direction <- factor(bop_nov_2017$A1, levels = c(1, 2, 98, 99, 5), labels = direction_labels)
+bop_may_2018$direction <- factor(bop_may_2018$A1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
+bop_nov_2018$direction <- factor(bop_nov_2018$A1, levels = c(1, 2, 98, 99, 5), labels = direction_labels)
+bop_dec_2019$direction <- factor(bop_dec_2019$A1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
+bop_jun_2020$direction <- factor(bop_jun_2020$A1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
+bop_oct_2020$direction <- factor(bop_oct_2020$A1, levels = c(1, 2, 98, 99, 5), labels = direction_labels)
+bop_feb_2021$direction <- factor(bop_feb_2021$A1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
+bop_nov_2022$direction <- factor(bop_nov_2022$A1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
+bop_aug_2023$direction <- factor(bop_aug_2023$A1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
+bop_oct_2024$direction <- factor(bop_oct_2024$A_1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
+bop_sep_2025$direction <- factor(bop_sep_2025$A1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
 ```
