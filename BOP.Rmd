@@ -11,6 +11,7 @@ require(haven)
 require(dplyr)
 require(lubridate)
 require(forcats)
+require(modelsummary)
 ```
 
 ```{r}
@@ -61,22 +62,23 @@ bop_feb_2021$date <- dmy("01-02-2021")
 bop_oct_2020$date <- dmy("01-10-2020")
 bop_jun_2020$date <- dmy("01-06-2020")
 bop_dec_2019$date <- dmy("01-12-2019")
-bop_nov_2018$date <- dmy("01-11-2019")
-bop_may_2018$date <- dmy("01-05-2019")
+bop_nov_2018$date <- dmy("01-11-2018")
+bop_may_2018$date <- dmy("01-05-2018")
 bop_nov_2017$date <- dmy("01-11-2017")
 ```
+
 ```{r}
-bop_sep_2025$Weights <- as.integer(bop_sep_2025$W)
-bop_oct_2024$Weights <- as.integer(bop_oct_2024$W)
-bop_aug_2023$Weights <- as.integer(bop_aug_2023$W1)
-bop_nov_2022$Weights <- as.integer(bop_nov_2022$weight_agesex)
-bop_feb_2021$Weights <- as.integer(bop_feb_2021$Weights)
-bop_oct_2020$Weights <- as.integer(bop_oct_2020$WEGHT)
-bop_jun_2020$Weights <- as.integer(bop_jun_2020$weight_age_sex2)
-bop_dec_2019$Weights <- as.integer(bop_dec_2019$w)
-bop_nov_2018$Weights <- as.integer(bop_nov_2018$weight_age_sex2)
-bop_may_2018$Weights <- as.integer(bop_may_2018$weight)
-bop_nov_2017$Weights <- as.integer(bop_nov_2017$weight_age_sex2)
+bop_sep_2025$Weights <- bop_sep_2025$W
+bop_oct_2024$Weights <- bop_oct_2024$W
+bop_aug_2023$Weights <- bop_aug_2023$W1
+bop_nov_2022$Weights <- bop_nov_2022$weight_agesex
+bop_feb_2021$Weights <- bop_feb_2021$Weights
+bop_oct_2020$Weights <- bop_oct_2020$WEGHT
+bop_jun_2020$Weights <- bop_jun_2020$weight_age_sex2
+bop_dec_2019$Weights <- bop_dec_2019$w
+bop_nov_2018$Weights <- bop_nov_2018$weight_age_sex2
+bop_may_2018$Weights <- bop_may_2018$weight
+bop_nov_2017$Weights <- bop_nov_2017$weight_age_sex2
 ```
 
 ## Demographics
@@ -165,17 +167,17 @@ bop_nov_2017$Language_Questionnaire <- factor(bop_nov_2017$S18, labels = questio
 # rural / urban ecology
 ecology_labels <- c("urban", "rural")
 
-bop_sep_2025$Ecology <- factor(bop_sep_2025$mediu, labels = questionnaire_labels)
+bop_sep_2025$Ecology <- factor(bop_sep_2025$mediu, labels = ecology_labels)
 bop_oct_2024$Ecology <- NA
-bop_aug_2023$Ecology <- factor(bop_aug_2023$mediu, labels = questionnaire_labels)
-bop_nov_2022$Ecology <- factor(bop_nov_2022$mediu, labels = questionnaire_labels)
-bop_feb_2021$Ecology <- factor(bop_feb_2021$Mediu, labels = questionnaire_labels)
-bop_oct_2020$Ecology <- factor(bop_oct_2020$mediu, labels = questionnaire_labels)
-bop_jun_2020$Ecology <- factor(bop_jun_2020$mediu, labels = questionnaire_labels)
-bop_dec_2019$Ecology <- factor(bop_dec_2019$mediu, labels = questionnaire_labels)
-bop_nov_2018$Ecology <- factor(bop_nov_2018$mediu, labels = questionnaire_labels)
-bop_may_2018$Ecology <- factor(bop_may_2018$S18, labels = questionnaire_labels)
-bop_nov_2017$Ecology <- factor(bop_nov_2017$mediul, labels = questionnaire_labels)
+bop_aug_2023$Ecology <- factor(bop_aug_2023$mediu, labels = ecology_labels)
+bop_nov_2022$Ecology <- factor(bop_nov_2022$mediu, labels = ecology_labels)
+bop_feb_2021$Ecology <- factor(bop_feb_2021$Mediu, labels = ecology_labels)
+bop_oct_2020$Ecology <- factor(bop_oct_2020$mediu, labels = ecology_labels)
+bop_jun_2020$Ecology <- factor(bop_jun_2020$mediu, labels = ecology_labels)
+bop_dec_2019$Ecology <- factor(bop_dec_2019$mediu, labels = ecology_labels)
+bop_nov_2018$Ecology <- factor(bop_nov_2018$mediu, labels = ecology_labels)
+bop_may_2018$Ecology <- factor(bop_may_2018$S18, labels = ecology_labels)
+bop_nov_2017$Ecology <- factor(bop_nov_2017$mediul, labels = ecology_labels)
 ```
 
 ```{r}
@@ -586,7 +588,22 @@ bop_nov_2017$EU_vs_Eurasia <- factor(bop_nov_2017$D6, labels = EU_Eurasia_labels
 
 # Merging
 ```{r}
-vars_to_keep <- c("date", "Age", "Age.f", "Gender", "Ethnicity", "Language_Questionnaire", "Ecology", "Education", "Socioeconomic", "Region", "Macro_Region", "direction", "Important_Media", "Second_Media", "Trust_Media", "Sandu", "Dodon", "Voronin", "Sor", "PAS", "PSRM", "Unification", "NATO", "EU", "Eurasia", "EU_vs_Eurasia", "Weights")
+bop_sep_2025$wave <- "mu"
+bop_oct_2024$wave <- "lamba"
+bop_aug_2023$wave <- "kappa"
+bop_nov_2022$wave <- "iota"
+bop_feb_2021$wave <- "theta"
+bop_oct_2020$wave <- "eta"
+bop_jun_2020$wave <- "zeta"
+bop_dec_2019$wave <- "epsilon"
+bop_nov_2018$wave <- "delta"
+bop_may_2018$wave <- "beta"
+bop_nov_2017$wave <- "alpha"
+
+```
+
+```{r}
+vars_to_keep <- c("wave", "date", "Age", "Age.f", "Gender", "Ethnicity", "Language_Questionnaire", "Ecology", "Education", "Socioeconomic", "Region", "Macro_Region", "direction", "Important_Media", "Second_Media", "Trust_Media", "Sandu", "Dodon", "Voronin", "Sor", "PAS", "PSRM", "Unification", "NATO", "EU", "Eurasia", "EU_vs_Eurasia", "Weights")
 
 bop_panel <- bind_rows(
   bop_sep_2025 %>% select(any_of(vars_to_keep)),
@@ -610,19 +627,159 @@ bop_panel <- bind_rows(
 ```{r}
 bop_panel$year <- year(bop_panel$date)
 bop_panel$year.f <- as.factor(bop_panel$year)
+bop_panel$wave <- as.factor(bop_panel$wave)
 
 bop_panel$Sandu <- as.numeric(bop_panel$Sandu)
 bop_panel$Dodon <- as.numeric(bop_panel$Dodon)
 bop_panel$Sor <- as.numeric(bop_panel$Sor)
+bop_panel$PAS <- as.numeric(bop_panel$PAS)
+bop_panel$PSRM <- as.numeric(bop_panel$PSRM)
+```
 
+```{r}
 domestic_bop <- bop_panel %>%
-  group_by(year) %>%
+  group_by(wave, date) %>%
   summarise(
     Sandu_mean = mean(Sandu, na.rm = TRUE),
     Sandu_sd = sd(Sandu, na.rm = TRUE),
+    Sandu_n = sum(!is.na(Sandu)),
+    Sandu_se = Sandu_sd / sqrt(Sandu_n),
+    Sandu_lower = Sandu_mean - 1.96 * Sandu_se,
+    Sandu_upper = Sandu_mean + 1.96 * Sandu_se,
     Dodon_mean = mean(Dodon, na.rm = TRUE),
     Dodon_sd = sd(Dodon, na.rm = TRUE),
+    Dodon_n = sum(!is.na(Dodon)),
+    Dodon_se = Dodon_sd / sqrt(Dodon_n),
+    Dodon_lower = Dodon_mean - 1.96 * Dodon_se,
+    Dodon_upper = Dodon_mean + 1.96 * Dodon_se,
     Sor_mean = mean(Sor, na.rm = TRUE),
-    Sor_sd = sd(Sor, na.rm = TRUE)
+    Sor_sd = sd(Sor, na.rm = TRUE),
+    Sor_n = sum(!is.na(Sor)),
+    Sor_se = Sor_sd / sqrt(Sor_n),
+    Sor_lower = Sor_mean - 1.96 * Sor_se,
+    Sor_upper = Sor_mean + 1.96 * Sor_se  
   )
+```
+
+```{r}
+domestic_bop_long <- domestic_bop %>%
+  pivot_longer(
+    cols = c(Sandu_mean, Dodon_mean, Sor_mean, Sandu_lower, Sandu_upper, Dodon_lower, Dodon_upper, Sor_lower, Sor_upper),
+    names_to = c("politician", ".value"),
+    names_pattern = "(Sandu|Dodon|Sor)_(.*)"
+  )
+```
+
+```{r}
+ggplot(domestic_bop_long, aes(x = date, y = mean, color = politician, group = politician)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = politician), alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+### Age
+```{r}
+domestic_bop_age <- bop_panel %>%
+  group_by(wave, date, Age.f) %>%
+  summarise(
+    Sandu_mean = mean(Sandu, na.rm = TRUE),
+    Sandu_sd = sd(Sandu, na.rm = TRUE),
+    Sandu_n = sum(!is.na(Sandu)),
+    Sandu_se = Sandu_sd / sqrt(Sandu_n),
+    Sandu_lower = Sandu_mean - 1.96 * Sandu_se,
+    Sandu_upper = Sandu_mean + 1.96 * Sandu_se,
+    Dodon_mean = mean(Dodon, na.rm = TRUE),
+    Dodon_sd = sd(Dodon, na.rm = TRUE),
+    Dodon_n = sum(!is.na(Dodon)),
+    Dodon_se = Dodon_sd / sqrt(Dodon_n),
+    Dodon_lower = Dodon_mean - 1.96 * Dodon_se,
+    Dodon_upper = Dodon_mean + 1.96 * Dodon_se,
+    Sor_mean = mean(Sor, na.rm = TRUE),
+    Sor_sd = sd(Sor, na.rm = TRUE),
+    Sor_n = sum(!is.na(Sor)),
+    Sor_se = Sor_sd / sqrt(Sor_n),
+    Sor_lower = Sor_mean - 1.96 * Sor_se,
+    Sor_upper = Sor_mean + 1.96 * Sor_se  
+  )
+```
+
+```{r}
+domestic_bop_age_long <- domestic_bop %>%
+  pivot_longer(
+    cols = c(Sandu_mean, Dodon_mean, Sor_mean, Sandu_lower, Sandu_upper, Dodon_lower, Dodon_upper, Sor_lower, Sor_upper),
+    names_to = c("politician", ".value"),
+    names_pattern = "(Sandu|Dodon|Sor)_(.*)"
+  )
+```
+
+```{r}
+ggplot(domestic_bop_age_long, aes(x = date, y = mean, color = politician, group = politician)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = politician), alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  facet_wrap(~Age.f) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Regression analysis
+```{r}
+
+Sandu_models <- list(
+  "Age" = lm(Sandu ~ Age, data = bop_panel),
+  "Gender" = lm(Sandu ~ Gender, data = bop_panel),
+  "Ethnicity" = lm(Sandu ~ Ethnicity, data = bop_panel),
+  "Language" = lm(Sandu ~ Language_Questionnaire, data = bop_panel),
+  "Ecology" = lm(Sandu ~ Ecology, data = bop_panel),
+  "Education" = lm(Sandu ~ Education, data = bop_panel),
+  "Socioeconomic" = lm(Sandu ~ Socioeconomic, data = bop_panel),
+  "Macro Region" = lm(Sandu ~ Macro_Region, data = bop_panel),
+  "Wave" = lm(Sandu ~ wave, data = bop_panel),
+  "All" = lm(Sandu ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + wave, data = bop_panel)
+)
+
+modelsummary(Sandu_models, stars = TRUE)
+```
+
+```{r}
+Sor_models <- list(
+  "Age" = lm(Sor ~ Age, data = bop_panel),
+  "Gender" = lm(Sor ~ Gender, data = bop_panel),
+  "Ethnicity" = lm(Sor ~ Ethnicity, data = bop_panel),
+  "Language" = lm(Sor ~ Language_Questionnaire, data = bop_panel),
+  "Ecology" = lm(Sor ~ Ecology, data = bop_panel),
+  "Education" = lm(Sor ~ Education, data = bop_panel),
+  "Socioeconomic" = lm(Sor ~ Socioeconomic, data = bop_panel),
+  "Macro Region" = lm(Sor ~ Macro_Region, data = bop_panel),
+  "Wave" = lm(Sor ~ wave, data = bop_panel),
+  "All" = lm(Sor ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + wave, data = bop_panel)
+)
+
+modelsummary(Sor_models, stars = TRUE)
+```
+
+```{r}
+Dodon_models <- list(
+  "Age" = lm(Dodon ~ Age, data = bop_panel),
+  "Gender" = lm(Dodon ~ Gender, data = bop_panel),
+  "Ethnicity" = lm(Dodon ~ Ethnicity, data = bop_panel),
+  "Language" = lm(Dodon ~ Language_Questionnaire, data = bop_panel),
+  "Ecology" = lm(Dodon ~ Ecology, data = bop_panel),
+  "Education" = lm(Dodon ~ Education, data = bop_panel),
+  "Socioeconomic" = lm(Dodon ~ Socioeconomic, data = bop_panel),
+  "Macro Region" = lm(Dodon ~ Macro_Region, data = bop_panel),
+  "Wave" = lm(Dodon ~ wave, data = bop_panel),
+  "All" = lm(Dodon ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + wave, data = bop_panel)
+)
+
+modelsummary(Dodon_models, stars = TRUE)
+```
+
+## international politics
+```{r}
+bop_panel$Unification_For <- ifelse(bop_panel$Unification == "For", 1, 0)
+
 ```
