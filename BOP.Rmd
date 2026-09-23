@@ -781,5 +781,7 @@ modelsummary(Dodon_models, stars = TRUE)
 ## international politics
 ```{r}
 bop_panel$Unification_For <- ifelse(bop_panel$Unification == "For", 1, 0)
-
+bop_panel$Nato_For <- ifelse(bop_panel$NATO == "For", 1, 0)
+bop_panel$EU_For <- ifelse(bop_panel$EU == "For", 1, 0)
+bop_panel$Eurasia_For <- ifelse(bop_panel$Eurasia == "For", 1, 0)
 ```
