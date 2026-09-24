@@ -34,21 +34,34 @@ waves <- c(bop_nov_2017, bop_may_2018, bop_nov_2018, bop_dec_2019, bop_jun_2020,
               bop_nov_2022, bop_aug_2023, bop_oct_2024, bop_sep_2025)
 ```
 
+
 # Aligning, cleaning, merging
+```{r}
+fix_cyrillic_names <- function(x) {
+  cyr <- c("А","В","Е","К","М","Н","О","Р","С","Т","Х","а","е","о","р","с","х","у")
+  lat <- c("A","B","E","K","M","H","O","P","C","T","X","a","e","o","p","c","x","y")
+  for (i in seq_along(cyr)) {
+    x <- gsub(cyr[i], lat[i], x, fixed = TRUE)
+  }
+  x
+}
+
+names(bop_panel) <- fix_cyrillic_names(names(bop_aug_2023))
+```
+
 
 ```{r}
-attr(bop_sep_2025$H6, "labels")
-attr(bop_oct_2024$E_6, "labels")
-attr(bop_aug_2023$Niv.socio, "labels")
-attr(bop_nov_2022$varimax, "labels")
+attr(bop_sep_2025$D6_3, "labels")
+attr(bop_oct_2024$E_3, "labels")
+attr(bop_aug_2023$D17_2, "labels")
+attr(bop_nov_2022$D17_1, "labels")
 attr(bop_feb_2021$varimax, "labels")
-attr(bop_oct_2020$varimax, "labels")
+attr(bop_oct_2020$B6_1, "labels")
 attr(bop_jun_2020$socioecon, "labels")
-attr(bop_jun_2020$socioecon, "labels")
-attr(bop_dec_2019$st, "labels")
+attr(bop_dec_2019$B6_1, "labels")
 attr(bop_nov_2018$C5_9, "labels")
-attr(bop_may_2018$C5_9, "labels")
-attr(bop_nov_2017$D8, "labels")
+attr(bop_may_2018$B6_01, "labels")
+attr(bop_nov_2017$B6_1, "labels")
 attr(bop_nov_2017$D13, "label")
 ```
 
@@ -133,17 +146,19 @@ bop_nov_2017$Age.f <- cut(bop_nov_2017$Age, breaks = c(17, 29, 44, 59, 74, Inf),
 
 ```{r}
 # Ethnicity
-bop_sep_2025$Ethnicity <- factor(bop_sep_2025$S5, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Other", "Bulgarian", "Roma", "Other", "NR"))
-bop_oct_2024$Ethnicity <- factor(bop_oct_2024$S_3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Roma", "Other", "Other", "Other", "NR"))
-bop_aug_2023$Ethnicity <- factor(bop_aug_2023$S5, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_sep_2025$Ethnicity <- factor(bop_sep_2025$S5, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Other", "Bulgarian", "Other", "Other", "NR"))
+bop_oct_2024$Ethnicity <- factor(bop_oct_2024$S_3, levels = c(1:11, 99), labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "Other", "Other", "Other", "Other", "NR"))
+bop_aug_2023$Ethnicity <- factor(bop_aug_2023$S5, levels = 1:8, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
 bop_nov_2022$Ethnicity <- factor(bop_nov_2022$S7, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
 bop_feb_2021$Ethnicity <- factor(bop_feb_2021$S6, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
 bop_oct_2020$Ethnicity <- factor(bop_oct_2020$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
 bop_jun_2020$Ethnicity <- factor(bop_jun_2020$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
 bop_dec_2019$Ethnicity <- factor(bop_dec_2019$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
 bop_nov_2018$Ethnicity <- factor(bop_nov_2018$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
-bop_may_2018$Ethnicity <- factor(bop_may_2018$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
-bop_nov_2017$Ethnicity <- factor(bop_nov_2017$S3, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_may_2018$Ethnicity <- factor(bop_may_2018$S3, levels = 1:8, labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+bop_nov_2017$Ethnicity <- factor(bop_nov_2017$S3, levels = c(1:7,99), labels = c("Moldovan", "Romanian", "Russian", "Ukrainian", "Gagauz", "Bulgarian", "Other", "NR"))
+
+## unfortunately, inconsistent coding means we have to get rid of those identifying as Roma
 ```
 
 ```{r}
@@ -363,12 +378,49 @@ bop_oct_2024$direction <- factor(bop_oct_2024$A_1, levels = c(1, 2, 3, 4, 5), la
 bop_sep_2025$direction <- factor(bop_sep_2025$A1, levels = c(1, 2, 3, 4, 5), labels = direction_labels)
 ```
 
+## Problems
+```{r}
+# First 
+bop_sep_2025$First_Problem <- factor(bop_sep_2025$D6_1, levels = 1:16, labels =  c("Internal order", "Peace and understanding among people", "Infrastructure", "Economy", "Standard of living", "Education, science, culture", "Social services", "Social cohesion", "Spiritual development", "Territorial integrity (Transnistria)", "Cooperation with IOs", "Corruption", "Other", "DK", "NR", "NR"))
+bop_oct_2024$First_Problem <- factor(bop_oct_2024$A_7_1, levels = c(1:11, 98, 99), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_aug_2023$First_Problem <- factor(bop_aug_2023$D17_1, levels = c(1:13), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_nov_2022$First_Problem <- factor(bop_nov_2022$D17_1, levels = c(1:13), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_oct_2020$First_Problem <- factor(bop_oct_2020$B6_1, levels = c(1:11, 99), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
+bop_dec_2019$First_Problem <- factor(bop_dec_2019$B6_1, levels = c(1:13), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_may_2018$First_Problem <- factor(bop_may_2018$B6_01, levels = c(1:12), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
+bop_nov_2017$First_Problem <- factor(bop_nov_2017$B6_1, levels = c(1:11, 100), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
+```
+
+```{r}
+# Second
+bop_sep_2025$Second_Problem <- factor(bop_sep_2025$D6_2, levels = 1:16, labels =  c("Internal order", "Peace and understanding among people", "Infrastructure", "Economy", "Standard of living", "Education, science, culture", "Social services", "Social cohesion", "Spiritual development", "Territorial integrity (Transnistria)", "Cooperation with IOs", "Corruption", "Other", "DK", "NR", "NR"))
+bop_oct_2024$Second_Problem <- factor(bop_oct_2024$A_7_2, levels = c(1:11, 98, 99), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_aug_2023$Second_Problem <- factor(bop_aug_2023$D17_2, levels = c(1:13), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_nov_2022$Second_Problem <- factor(bop_nov_2022$D17_2, levels = c(1:13), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_oct_2020$Second_Problem <- factor(bop_oct_2020$B6_2, levels = c(1:11, 99), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
+bop_dec_2019$Second_Problem <- factor(bop_dec_2019$B6_2, levels = c(1:13), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_may_2018$Second_Problem <- factor(bop_may_2018$B6_02, levels = c(1:12), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
+bop_nov_2017$Second_Problem <- factor(bop_nov_2017$B6_2, levels = c(1:11, 100), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
+```
+
+```{r}
+# Third
+bop_sep_2025$Third_Problem <- factor(bop_sep_2025$D6_3, levels = 1:16, labels =  c("Internal order", "Peace and understanding among people", "Infrastructure", "Economy", "Standard of living", "Education, science, culture", "Social services", "Social cohesion", "Spiritual development", "Territorial integrity (Transnistria)", "Cooperation with IOs", "Corruption", "Other", "DK", "NR", "NR"))
+bop_oct_2024$Third_Problem <- factor(bop_oct_2024$A_7_3, levels = c(1:11, 98, 99), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_aug_2023$Third_Problem <- factor(bop_aug_2023$D17_3, levels = c(1:13), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_nov_2022$Third_Problem <- factor(bop_nov_2022$D17_3, levels = c(1:13), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_oct_2020$Third_Problem <- factor(bop_oct_2020$B6_3, levels = c(1:11, 99), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
+bop_dec_2019$Third_Problem <- factor(bop_dec_2019$B6_3, levels = c(1:13), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
+bop_may_2018$Third_Problem <- factor(bop_may_2018$B6_03, levels = c(1:12), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
+bop_nov_2017$Third_Problem <- factor(bop_nov_2017$B6_3, levels = c(1:11, 100), labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
+```
+
 ## Media
 ```{r}
 # first important media
 bop_sep_2025$Important_Media <- factor(bop_sep_2025$B10_1, labels =  c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "Social media", "DK", "DK", "NR"))
-bop_oct_2024$Important_Media <- factor(bop_oct_2024$C_13_O1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "internet", "social media", "social media", "Other", "Other", "None", "DK", "DK", "NR"))
-bop_aug_2023$Important_Media <- factor(bop_aug_2023$C3_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_oct_2024$Important_Media <- factor(bop_oct_2024$C_13_O1, levels = c(1:10, 96:99), labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Internet", "Social media", "Social media", "Other", "Other", "None", "DK", "DK", "NR"))
+bop_aug_2023$Important_Media <- factor(bop_aug_2023$С3_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
 bop_nov_2022$Important_Media <- factor(bop_nov_2022$С3_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
 bop_feb_2021$Important_Media <- factor(bop_feb_2021$B10_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
 bop_oct_2020$Important_Media <- factor(bop_oct_2020$B11_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "NR"))
@@ -383,8 +435,8 @@ bop_nov_2017$Important_Media <- factor(bop_nov_2017$B10_1, labels = c("TV", "New
 
 ```{r}
 # second important media
-bop_sep_2025$Second_Media <- factor(bop_sep_2025$B10_2, labels =  c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "local authorities", "internet", "social media"))
-bop_oct_2024$Second_Media <- factor(bop_oct_2024$C_13_O2, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "internet", "social media", "social media", "Other", "Other", "None", "DK", "DK", "NR"))
+bop_sep_2025$Second_Media <- factor(bop_sep_2025$B10_2, labels =  c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "Social media"))
+bop_oct_2024$Second_Media <- factor(bop_oct_2024$C_13_O2, levels = c(1:10, 96:99), labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Internet", "Social media", "Social media", "Other", "Other", "None", "DK", "DK", "NR"))
 bop_aug_2023$Second_Media <- factor(bop_aug_2023$C3_2, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
 bop_nov_2022$Second_Media <- factor(bop_nov_2022$С3_2, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet"))
 bop_feb_2021$Second_Media <- factor(bop_feb_2021$B10_2, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
@@ -399,9 +451,9 @@ bop_nov_2017$Second_Media <- factor(bop_nov_2017$B10_2, labels = c("TV", "Newspa
 
 ```{r}
 # most trusted media 
-bop_sep_2025$Trust_Media <- factor(bop_sep_2025$B11, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "local authorities", "internet", "social media", "DK", "DK", "NR", "NA"))
-bop_oct_2024$Trust_Media <- factor(bop_oct_2024$C_14, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "internet", "social media", "social media", "Other", "Other", "None", "DK", "DK", "NR")
-bop_aug_2023$Trust_Media <- factor(bop_aug_2023$С4, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "NR"))
+bop_sep_2025$Trust_Media <- factor(bop_sep_2025$B11, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "Social media", "DK", "DK", "NR", "NA"))
+bop_oct_2024$Trust_Media <- factor(bop_oct_2024$C_14, levels = c(1:10, 96:99), labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Internet", "Social media", "Social media", "Other", "Other", "None", "DK", "DK", "NR"))
+bop_aug_2023$Trust_Media <- factor(bop_aug_2023$С4, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "NR"))
 bop_nov_2022$Trust_Media <- factor(bop_nov_2022$С4, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "NR"))
 bop_feb_2021$Trust_Media <- factor(bop_feb_2021$B11, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "NR"))
 bop_oct_2020$Trust_Media <- factor(bop_oct_2020$B12, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "NR"))
@@ -537,7 +589,6 @@ bop_nov_2017$NATO <- factor(bop_nov_2017$D13, labels = referendum_labels)
 
 ```{r}
 # EU
-
 bop_sep_2025$EU <- factor(bop_sep_2025$H4, labels = referendum_labels)
 bop_oct_2024$EU <- factor(bop_oct_2024$E_3, labels = referendum_labels)
 bop_aug_2023$EU <- factor(bop_aug_2023$E2, labels = referendum_labels)
@@ -588,6 +639,7 @@ bop_nov_2017$EU_vs_Eurasia <- factor(bop_nov_2017$D6, labels = EU_Eurasia_labels
 
 # Merging
 ```{r}
+# giving each way a name
 bop_sep_2025$wave <- "mu"
 bop_oct_2024$wave <- "lamba"
 bop_aug_2023$wave <- "kappa"
@@ -599,11 +651,26 @@ bop_dec_2019$wave <- "epsilon"
 bop_nov_2018$wave <- "delta"
 bop_may_2018$wave <- "beta"
 bop_nov_2017$wave <- "alpha"
-
 ```
 
 ```{r}
-vars_to_keep <- c("wave", "date", "Age", "Age.f", "Gender", "Ethnicity", "Language_Questionnaire", "Ecology", "Education", "Socioeconomic", "Region", "Macro_Region", "direction", "Important_Media", "Second_Media", "Trust_Media", "Sandu", "Dodon", "Voronin", "Sor", "PAS", "PSRM", "Unification", "NATO", "EU", "Eurasia", "EU_vs_Eurasia", "Weights")
+bop_sep_2025$id <- bop_sep_2025$INTNR
+bop_oct_2024$id <- bop_oct_2024$SbjNum
+bop_aug_2023$id <- bop_aug_2023$INTNR
+bop_nov_2022$id <- bop_nov_2022$INTNR
+bop_feb_2021$id <- bop_feb_2021$INTNR
+bop_oct_2020$id <- bop_oct_2020$INTNR
+bop_jun_2020$id <- bop_jun_2020$INTNR
+bop_dec_2019$id <- bop_dec_2019$ID
+bop_nov_2018$id <- bop_nov_2018$INTNR
+bop_nov_2017$id <- bop_nov_2017$INTNR
+
+bop_may_2018 <- bop_may_2018 %>%
+    mutate(id = row_number())
+```
+
+```{r}
+vars_to_keep <- c("id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity", "Language_Questionnaire", "Ecology", "Education", "Socioeconomic", "Region", "Macro_Region", "direction", "First_Problem", "Second_Problem", "Third_Problem", "Important_Media", "Second_Media", "Trust_Media", "Sandu", "Dodon", "Voronin", "Sor", "PAS", "PSRM", "Unification", "NATO", "EU", "Eurasia", "EU_vs_Eurasia", "Weights")
 
 bop_panel <- bind_rows(
   bop_sep_2025 %>% select(any_of(vars_to_keep)),
@@ -621,9 +688,379 @@ bop_panel <- bind_rows(
 
 ```
 
+```{r}
+dk_nr_cols <- bop_panel %>%
+  select(where(is.factor)) %>%
+  map_lgl(~ any(c("DK", "NR") %in% levels(.x))) %>%
+  which() %>%
+  names()
+
+bop_panel <- bop_panel %>%
+  mutate(across(all_of(dk_nr_cols), ~ fct_collapse(.x, "DK/NR" = c("DK", "NR"))))
+
+bop_panel %>%
+  select(where(is.factor)) %>%
+  map(~ any(c("DK", "NR") %in% levels(.x))) %>%
+  keep(~ .x == TRUE) %>%
+  names()
+```
+
 # Analysis
 
-## domestic politics
+## Direction
+```{r}
+direction_df <- bop_panel %>%
+  group_by(wave, date) %>%
+  summarise(
+    pct_bad = mean(direction == "Bad", na.rm = TRUE),
+    pct_good = mean(direction == "Good", na.rm = TRUE),
+  )
+```
+
+```{r}
+ggplot(direction_df, aes(x = date, y = pct_bad)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage (Bad)")
+```
+
+### Macro-Region
+```{r}
+direction_region_df <- bop_panel %>%
+  group_by(wave, date, Macro_Region) %>%
+  summarise(
+    pct_bad = mean(direction == "Bad", na.rm = TRUE),
+    pct_good = mean(direction == "Good", na.rm = TRUE),
+  )
+
+direction_region_df <- remove_missing(direction_region_df)
+```
+
+```{r}
+ggplot(direction_region_df, aes(x = date, y = pct_bad)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Macro_Region) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage (Bad)")
+```
+
+### Ethnicity
+```{r}
+direction_ethnicity_df <- bop_panel %>%
+  group_by(wave, date, Ethnicity) %>%
+  summarise(
+    pct_bad = mean(direction == "Bad", na.rm = TRUE),
+    pct_good = mean(direction == "Good", na.rm = TRUE),
+  )
+
+direction_ethnicity_df <- remove_missing(direction_ethnicity_df)
+
+ direction_ethnicity_df <- direction_ethnicity_df %>%
+   filter(Ethnicity != "DK/NR") 
+```
+
+```{r}
+ggplot(direction_ethnicity_df, aes(x = date, y = pct_bad)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Ethnicity) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Proportion (Bad)")
+```
+
+### Language
+```{r}
+direction_language_df <- bop_panel %>%
+  group_by(wave, date, Language_Questionnaire) %>%
+  summarise(
+    pct_bad = mean(direction == "Bad", na.rm = TRUE),
+    pct_good = mean(direction == "Good", na.rm = TRUE),
+  )
+
+direction_language_df <- remove_missing(direction_language_df)
+
+ direction_language_df <- direction_language_df %>%
+   filter(Language_Questionnaire != "DK/NR") 
+```
+
+```{R}
+ggplot(direction_language_df, aes(x = date, y = pct_bad)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~Language_Questionnaire) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage (Bad)")
+```
+
+## Problems
+```{r}
+# mentioning problems across the 1st/2nd/3rd pref
+problems_long <- bop_panel %>%
+  select(wave, date, id, First_Problem, Second_Problem, Third_Problem) %>%
+  pivot_longer(
+    cols=c(First_Problem, Second_Problem, Third_Problem),
+    names_to = "rank",
+    values_to = "problem"
+  )
+```
+
+```{r}
+top_problems <- problems_long %>%
+  filter(!is.na(problem)) %>%
+  group_by(wave, date, problem) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(prop = n/sum(n))
+```
+
+```{r}
+top_problems %>%
+  filter(problem == "Economy" | problem == "Corruption" | problem == "Standard of living" | problem == "Internal order" | problem == "Corruption" | problem == "Independent Judiciary" | problem == "Peace and understanding among people") %>%
+  ggplot(aes(x = date, y = prop)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~problem) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage")
+```
+
+```{r}
+# most cited first problem
+first_problem <- bop_panel %>%
+  group_by(wave, date, First_Problem) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n))
+
+first_problem <- remove_missing(first_problem)
+```
+
+```{r}
+first_problem %>%
+  filter(First_Problem == "Economy" | First_Problem == "Corruption" | First_Problem == "Standard of living" | First_Problem == "Internal order" | First_Problem == "Corruption" | First_Problem == "Independent Judiciary" | First_Problem == "Peace and understanding among people") %>%
+  ggplot(aes(x = date, y = percentage)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~First_Problem) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage")
+```
+
+## Media
+
+```{r}
+bop_panel$Trust_Media <- fct_collapse(bop_panel$Trust_Media ,
+                             "DK/NR"    = c("DK/NR", "None"),
+                             "Internet" = c("Internet", "Social media"))
+bop_panel$Important_Media <- fct_collapse(bop_panel$Important_Media ,
+                             "DK/NR"    = c("DK/NR", "None"),
+                             "Internet" = c("Internet", "Social media"))
+bop_panel$Second_Media <- fct_collapse(bop_panel$Second_Media ,
+                             "DK/NR"    = c("DK/NR", "None"),
+                             "Internet" = c("Internet", "Social media"))
+```
+
+### Most trusted
+```{r}
+trusted_media <- bop_panel %>%
+  group_by(wave, date, Trust_Media) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n))
+
+trusted_media <- remove_missing(trusted_media)
+```
+
+```{r}
+trusted_media %>%
+  filter(Trust_Media == "Internet" | Trust_Media == "TV" | Trust_Media == "Radio" | Trust_Media == "Newspapers" | Trust_Media == "Family" | Trust_Media == "Friends and neighbours") %>%
+  ggplot(aes(x = date, y = percentage)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~Trust_Media) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage")
+```
+
+#### Language
+```{r}
+# most trusted form of media by language of survey
+
+trusted_media_lang <- bop_panel %>%
+  group_by(wave, date, Trust_Media, Language_Questionnaire) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n))
+
+trusted_media_lang <- remove_missing(trusted_media_lang)
+```
+
+```{R}
+trusted_media_lang %>%
+  filter(Trust_Media == "Internet" | Trust_Media == "TV" | Trust_Media == "Radio" | Trust_Media == "Newspapers" | Trust_Media == "Family" | Trust_Media == "Friends and neighbours" | Trust_Media == "DK/NR") %>%
+  ggplot(aes(x = date, y = percentage, color = Language_Questionnaire)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~Trust_Media) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage")
+```
+
+#### Age
+```{r}
+# most trusted form of media by language of survey
+
+trusted_media_age <- bop_panel %>%
+  group_by(wave, date, Trust_Media, Age.f) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n))
+
+trusted_media_age <- remove_missing(trusted_media_age)
+```
+
+```{R}
+trusted_media_age %>%
+  filter(Trust_Media == "Internet" | Trust_Media == "TV" | Trust_Media == "Radio" | Trust_Media == "Newspapers" | Trust_Media == "Family" | Trust_Media == "Friends and neighbours") %>%
+  ggplot(aes(x = date, y = percentage, color = Age.f)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~Trust_Media) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage")
+```
+
+### Most important media
+```{r}
+# important media mentioned across the 1st/2nd pref
+media_pref_long <- bop_panel %>%
+  select(wave, date, id, Important_Media, Second_Media) %>%
+  pivot_longer(
+    cols=c(Important_Media, Second_Media),
+    names_to = "rank",
+    values_to = "media"
+  )
+
+top_media_pref <- media_pref_long %>%
+  filter(!is.na(media)) %>%
+  group_by(wave, date, media) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(prop = n/sum(n))
+```
+
+```{r}
+top_media_pref %>%
+  filter(media == "Internet" | media == "TV" | media == "Radio" | media == "Newspapers" | media == "Family" | media == "Friends and neighbours") %>%
+  ggplot(aes(x = date, y = prop)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~media) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage")
+```
+#### Language
+```{r}
+media_pref_long_lang <- bop_panel %>%
+  select(wave, date, id, Language_Questionnaire, Important_Media, Second_Media) %>%
+  pivot_longer(
+    cols=c(Important_Media, Second_Media),
+    names_to = "rank",
+    values_to = "media"
+  )
+
+top_media_pref_lang <- media_pref_long_lang %>%
+  filter(!is.na(media)) %>%
+  group_by(wave, date, Language_Questionnaire, media) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(prop = n/sum(n))
+
+top_media_pref_lang <- remove_missing(top_media_pref_lang)
+```
+
+```{r}
+top_media_pref_lang %>%
+  filter(media == "Internet" | media == "TV" | media == "Radio" | media == "Newspapers" | media == "Family" | media == "Friends and neighbours") %>%
+  ggplot(aes(x = date, y = prop, color = Language_Questionnaire)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~media) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage")
+
+```
+
+#### Education
+```{r}
+media_pref_long_edu <- bop_panel %>%
+  select(wave, date, id, Education, Important_Media, Second_Media) %>%
+  pivot_longer(
+    cols=c(Important_Media, Second_Media),
+    names_to = "rank",
+    values_to = "media"
+  )
+
+top_media_pref_edu <- media_pref_long_edu %>%
+  filter(!is.na(media)) %>%
+  group_by(wave, date, Education, media) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(prop = n/sum(n))
+
+top_media_pref_edu <- remove_missing(top_media_pref_edu)
+```
+
+```{r}
+top_media_pref_edu %>%
+  filter(media == "Internet" | media == "TV" | media == "Radio" | media == "Newspapers" | media == "Family" | media == "Friends and neighbours") %>%
+  ggplot(aes(x = date, y = prop, color = Education)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~media) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage")
+```
+
+## Domestic politics
 ```{r}
 bop_panel$year <- year(bop_panel$date)
 bop_panel$year.f <- as.factor(bop_panel$year)
@@ -679,6 +1116,7 @@ ggplot(domestic_bop_long, aes(x = date, y = mean, color = politician, group = po
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
 ### Age
 ```{r}
 domestic_bop_age <- bop_panel %>%
@@ -706,7 +1144,7 @@ domestic_bop_age <- bop_panel %>%
 ```
 
 ```{r}
-domestic_bop_age_long <- domestic_bop %>%
+domestic_bop_age_long <- domestic_bop_age %>%
   pivot_longer(
     cols = c(Sandu_mean, Dodon_mean, Sor_mean, Sandu_lower, Sandu_upper, Dodon_lower, Dodon_upper, Sor_lower, Sor_upper),
     names_to = c("politician", ".value"),
@@ -725,6 +1163,54 @@ ggplot(domestic_bop_age_long, aes(x = date, y = mean, color = politician, group 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+### Language
+```{r}
+domestic_bop_language <- bop_panel %>%
+  group_by(wave, date, Language_Questionnaire) %>%
+  summarise(
+    Sandu_mean = mean(Sandu, na.rm = TRUE),
+    Sandu_sd = sd(Sandu, na.rm = TRUE),
+    Sandu_n = sum(!is.na(Sandu)),
+    Sandu_se = Sandu_sd / sqrt(Sandu_n),
+    Sandu_lower = Sandu_mean - 1.96 * Sandu_se,
+    Sandu_upper = Sandu_mean + 1.96 * Sandu_se,
+    Dodon_mean = mean(Dodon, na.rm = TRUE),
+    Dodon_sd = sd(Dodon, na.rm = TRUE),
+    Dodon_n = sum(!is.na(Dodon)),
+    Dodon_se = Dodon_sd / sqrt(Dodon_n),
+    Dodon_lower = Dodon_mean - 1.96 * Dodon_se,
+    Dodon_upper = Dodon_mean + 1.96 * Dodon_se,
+    Sor_mean = mean(Sor, na.rm = TRUE),
+    Sor_sd = sd(Sor, na.rm = TRUE),
+    Sor_n = sum(!is.na(Sor)),
+    Sor_se = Sor_sd / sqrt(Sor_n),
+    Sor_lower = Sor_mean - 1.96 * Sor_se,
+    Sor_upper = Sor_mean + 1.96 * Sor_se  
+  )
+
+domestic_bop_language <- remove_missing(domestic_bop_language)
+```
+
+```{r}
+domestic_bop_language_long <- domestic_bop_language %>%
+  pivot_longer(
+    cols = c(Sandu_mean, Dodon_mean, Sor_mean, Sandu_lower, Sandu_upper, Dodon_lower, Dodon_upper, Sor_lower, Sor_upper),
+    names_to = c("politician", ".value"),
+    names_pattern = "(Sandu|Dodon|Sor)_(.*)"
+  )
+```
+
+```{r}
+ggplot(domestic_bop_language_long, aes(x = date, y = mean, color = politician, group = politician)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = politician), alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  facet_wrap(~Language_Questionnaire) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
 ## Regression analysis
 ```{r}
 
@@ -737,8 +1223,11 @@ Sandu_models <- list(
   "Education" = lm(Sandu ~ Education, data = bop_panel),
   "Socioeconomic" = lm(Sandu ~ Socioeconomic, data = bop_panel),
   "Macro Region" = lm(Sandu ~ Macro_Region, data = bop_panel),
-  "Wave" = lm(Sandu ~ wave, data = bop_panel),
-  "All" = lm(Sandu ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + wave, data = bop_panel)
+  "Most Trusted Media" = lm(Sandu ~ Trust_Media, data = bop_panel),
+  "Direction" = lm(Sandu ~ direction, data = bop_panel),
+  "Year" = lm(Sandu ~ year, data = bop_panel),
+  "Unification" = lm(Sandu ~ Unification_For, data = bop_panel),
+  "All" = lm(Sandu ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + Trust_Media + Unification_For + direction + year, data = bop_panel)
 )
 
 modelsummary(Sandu_models, stars = TRUE)
@@ -778,10 +1267,161 @@ Dodon_models <- list(
 modelsummary(Dodon_models, stars = TRUE)
 ```
 
-## international politics
+# International politics
 ```{r}
 bop_panel$Unification_For <- ifelse(bop_panel$Unification == "For", 1, 0)
 bop_panel$Nato_For <- ifelse(bop_panel$NATO == "For", 1, 0)
 bop_panel$EU_For <- ifelse(bop_panel$EU == "For", 1, 0)
 bop_panel$Eurasia_For <- ifelse(bop_panel$Eurasia == "For", 1, 0)
+bop_panel$EU_VS <- ifelse(bop_panel$EU_vs_Eurasia == "EU", 1, 0)
+bop_panel$Eurasia_VS <- ifelse(bop_panel$EU_vs_Eurasia == "Eurasia", 1, 0)
+```
+
+## Unification
+```{r}
+unification_support <- bop_panel %>%
+  group_by(wave, date, Unification_For) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n))
+
+unification_support <- remove_missing(unification_support)
+```
+
+```{r}
+unification_support %>%
+  filter(Unification_For == 1) %>%
+  ggplot(aes(x = date, y = percentage)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+Unification_models <- list(
+  "Age" = glm(Unification_For ~ Age, data = bop_panel, family = "binomial"),
+  "Gender" = glm(Unification_For ~ Gender, data = bop_panel, family = "binomial"),
+  "Ethnicity" = glm(Unification_For ~ Ethnicity, data = bop_panel, family = "binomial"),
+  "Language" = glm(Unification_For ~ Language_Questionnaire, data = bop_panel, family = "binomial"),
+  "Ecology" = glm(Unification_For ~ Ecology, data = bop_panel, family = "binomial"),
+  "Education" = glm(Unification_For ~ Education, data = bop_panel, family = "binomial"),
+  "Socioeconomic" = glm(Unification_For ~ Socioeconomic, data = bop_panel, family = "binomial"),
+  "Macro Region" = glm(Unification_For ~ Macro_Region, data = bop_panel, family = "binomial"),
+  "Year" = glm(Unification_For ~ year, data = bop_panel, family = "binomial"),
+  "Nato" = glm(Unification_For ~ Nato_For, data = bop_panel, family = "binomial"),
+  "EU" = glm(Unification_For ~ EU_For, data = bop_panel, family = "binomial"),
+  "All" = glm(Unification_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + Nato_For + EU_For + year, data = bop_panel, family = "binomial")
+)
+
+modelsummary(Unification_models, stars = TRUE)
+```
+
+## EU support
+```{r}
+# multilateral vs unilateral support
+EU_support <- bop_panel %>%
+  group_by(wave, date, EU_For) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter(EU_For == 1)
+
+EU_support$Variable <- "EU support (not binary)"
+
+EU_support$EU_For <- NULL
+
+EU_support2 <- bop_panel %>%
+  group_by(wave, date, EU_VS) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter(EU_VS == 1)
+
+EU_support2$EU_VS <- NULL
+
+EU_support2$Variable <- "EU support (binary)"
+
+EU_support <- rbind(EU_support, EU_support2)
+EU_support$IO <- "EU"
+```
+
+```{r}
+ggplot(EU_support, aes(x = date, y = percentage, color = Variable)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## NATO support
+```{r}
+NATO_support <- bop_panel %>%
+  group_by(wave, date, Nato_For) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter(Nato_For == 1)
+```
+
+```{r}
+ggplot(NATO_support, aes(x = date, y = percentage)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+## Eurasia support
+```{r}
+Eurasia_support <- bop_panel %>%
+  group_by(wave, date, Eurasia_For) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter(Eurasia_For == 1)
+
+Eurasia_support$Variable <- "Eurasia support (not binary)"
+
+Eurasia_support$Eurasia_For <- NULL
+
+Eurasia_support2 <- bop_panel %>%
+  group_by(wave, date, Eurasia_VS) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter(Eurasia_VS == 1)
+
+Eurasia_support2$Eurasia_VS <- NULL
+
+Eurasia_support2$Variable <- "Eurasia support (binary)"
+
+Eurasia_support <- rbind(Eurasia_support, Eurasia_support2)
+
+Eurasia_support$IO <- "Eurasia"
+```
+
+```{r}
+ggplot(Eurasia_support, aes(x = date, y = percentage, color = Variable)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+IO_support <- rbind(EU_support, Eurasia_support)
+
+ggplot(IO_support, aes(x = date, y = percentage, color = Variable)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~IO) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
