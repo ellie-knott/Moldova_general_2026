@@ -12,6 +12,8 @@ require(dplyr)
 require(lubridate)
 require(forcats)
 require(modelsummary)
+require(FactoMineR)
+require(factoextra)
 ```
 
 ```{r}
@@ -36,19 +38,6 @@ waves <- c(bop_nov_2017, bop_may_2018, bop_nov_2018, bop_dec_2019, bop_jun_2020,
 
 
 # Aligning, cleaning, merging
-```{r}
-fix_cyrillic_names <- function(x) {
-  cyr <- c("А","В","Е","К","М","Н","О","Р","С","Т","Х","а","е","о","р","с","х","у")
-  lat <- c("A","B","E","K","M","H","O","P","C","T","X","a","e","o","p","c","x","y")
-  for (i in seq_along(cyr)) {
-    x <- gsub(cyr[i], lat[i], x, fixed = TRUE)
-  }
-  x
-}
-
-names(bop_panel) <- fix_cyrillic_names(names(bop_aug_2023))
-```
-
 
 ```{r}
 attr(bop_sep_2025$D6_3, "labels")
@@ -422,7 +411,7 @@ bop_sep_2025$Important_Media <- factor(bop_sep_2025$B10_1, labels =  c("TV", "Ne
 bop_oct_2024$Important_Media <- factor(bop_oct_2024$C_13_O1, levels = c(1:10, 96:99), labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Internet", "Social media", "Social media", "Other", "Other", "None", "DK", "DK", "NR"))
 bop_aug_2023$Important_Media <- factor(bop_aug_2023$С3_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
 bop_nov_2022$Important_Media <- factor(bop_nov_2022$С3_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
-bop_feb_2021$Important_Media <- factor(bop_feb_2021$B10_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_feb_2021$Important_Media <- factor(bop_feb_2021$B10_1, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
 bop_oct_2020$Important_Media <- factor(bop_oct_2020$B11_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "NR"))
 bop_jun_2020$Important_Media <- factor(bop_jun_2020$B4_1, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Internet", "DK", "DK", "NR"))
 bop_dec_2019$Important_Media <- factor(bop_dec_2019$B10, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Internet", "None", "DK", "DK", "NR"))
@@ -437,7 +426,7 @@ bop_nov_2017$Important_Media <- factor(bop_nov_2017$B10_1, labels = c("TV", "New
 # second important media
 bop_sep_2025$Second_Media <- factor(bop_sep_2025$B10_2, labels =  c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "Social media"))
 bop_oct_2024$Second_Media <- factor(bop_oct_2024$C_13_O2, levels = c(1:10, 96:99), labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Internet", "Social media", "Social media", "Other", "Other", "None", "DK", "DK", "NR"))
-bop_aug_2023$Second_Media <- factor(bop_aug_2023$C3_2, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
+bop_aug_2023$Second_Media <- factor(bop_aug_2023$С3_2, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
 bop_nov_2022$Second_Media <- factor(bop_nov_2022$С3_2, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet"))
 bop_feb_2021$Second_Media <- factor(bop_feb_2021$B10_2, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
 bop_oct_2020$Second_Media <- factor(bop_oct_2020$B11_2, levels = 1:13, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
@@ -462,6 +451,53 @@ bop_dec_2019$Trust_Media <- factor(bop_dec_2019$B11, levels = 1:14, labels = c("
 bop_nov_2018$Trust_Media <- factor(bop_nov_2018$B11, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Internet", "None", "DK", "DK", "NR"))
 bop_may_2018$Trust_Media <- factor(bop_may_2018$B11, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "DK", "NR"))
 bop_nov_2017$Trust_Media <- factor(bop_nov_2017$B11, labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "DK", "NR"))
+```
+
+## Worries
+```{r}
+# First worry
+bop_sep_2025$First_Worry <- factor(bop_sep_2025$B1_1, levels = 1:20, labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Low salary/pension", "Housing", "Education", "Lack of social services", "Other", "DK", "NR", "NR"))
+bop_oct_2024$First_Worry <- factor(bop_oct_2024$A_2_1, levels = c(1:14, 98, 99), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Children's future", "War in the region", "Dictatorship", "Illness", "Financial crisis", "Climate change", "Energy crisis", "Emigration", "Other", "DK", "NR"))
+bop_aug_2023$First_Worry <- factor(bop_aug_2023$B1_1, levels = c(1:17), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
+bop_nov_2022$First_Worry <- factor(bop_nov_2022$B1_1, levels = c(1:17), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
+bop_feb_2021$First_Worry <- factor(bop_feb_2021$B1_1, levels = c(1:16), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Other", "DK", "NR"))
+bop_oct_2020$First_Worry <- factor(bop_oct_2020$B1_1, levels = c(1:15, 99), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "DK/NR"))
+bop_jun_2020$First_Worry <- NA
+bop_dec_2019$First_Worry <- NA
+bop_nov_2018$First_Worry <- factor(bop_nov_2018$B1_1, levels = c(1:16, 100), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "Low salary/pension", "DK/NR"))
+bop_may_2018$First_Worry <- factor(bop_may_2018$B1_01, levels = c(1:16), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "DK/NR"))
+bop_nov_2017$First_Worry <- factor(bop_nov_2017$B1_1, levels = c(1:15, 100), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "DK/NR"))
+```
+
+```{r}
+# Second worry
+bop_sep_2025$Second_Worry <- factor(bop_sep_2025$B1_2, levels = 1:20, labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Low salary/pension", "Housing", "Education", "Lack of social services", "Other", "DK", "NR", "NR"))
+bop_oct_2024$Second_Worry <- factor(bop_oct_2024$A_2_2, levels = c(1:14, 98, 99), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Children's future", "War in the region", "Dictatorship", "Illness", "Financial crisis", "Climate change", "Energy crisis", "Emigration", "Other", "DK", "NR"))
+bop_aug_2023$Second_Worry <- factor(bop_aug_2023$B1_2, levels = c(1:17), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
+bop_nov_2022$Second_Worry <- factor(bop_nov_2022$B1_2, levels = c(1:17), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
+bop_feb_2021$Second_Worry <- factor(bop_feb_2021$B1_2, levels = c(1:16), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Other", "DK", "NR"))
+bop_oct_2020$Second_Worry <- factor(bop_oct_2020$B1_2, levels = c(1:15, 99), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "DK/NR"))
+bop_jun_2020$Second_Worry <- NA
+bop_dec_2019$Second_Worry <- NA
+bop_nov_2018$Second_Worry <- factor(bop_nov_2018$B1_2, levels = c(1:16, 100), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "Low salary/pension", "DK/NR"))
+bop_may_2018$Second_Worry <- factor(bop_may_2018$B1_02, levels = c(1:16), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "DK/NR"))
+bop_nov_2017$Second_Worry <- factor(bop_nov_2017$B1_2, levels = c(1:15, 100), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "DK/NR"))
+```
+
+```{r}
+# Third worry
+bop_sep_2025$Third_Worry <- factor(bop_sep_2025$B1_3, levels = 1:20, labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Low salary/pension", "Housing", "Education", "Lack of social services", "Other", "DK", "NR", "NR"))
+bop_oct_2024$Third_Worry <- factor(bop_oct_2024$A_2_3, levels = c(1:14, 98, 99), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Children's future", "War in the region", "Dictatorship", "Illness", "Financial crisis", "Climate change", "Energy crisis", "Emigration", "Other", "DK", "NR"))
+bop_aug_2023$Third_Worry <- factor(bop_aug_2023$B1_3, levels = c(1:17), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
+bop_nov_2022$Third_Worry <- factor(bop_nov_2022$B1_3, levels = c(1:17), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
+bop_feb_2021$Third_Worry <- factor(bop_feb_2021$B1_3, levels = c(1:16), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Other", "DK", "NR"))
+bop_oct_2020$Third_Worry <- factor(bop_oct_2020$B1_3, levels = c(1:15, 99), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "DK/NR"))
+bop_jun_2020$Third_Worry <- NA
+bop_dec_2019$Third_Worry <- NA
+bop_nov_2018$Third_Worry <- factor(bop_nov_2018$B1_3, levels = c(1:16, 100), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "Low salary/pension", "DK/NR"))
+bop_may_2018$Third_Worry <- factor(bop_may_2018$B1_03, levels = c(1:16), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "DK/NR"))
+bop_nov_2017$Third_Worry <- factor(bop_nov_2017$B1_3, levels = c(1:15, 100), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Financial crisis", "Other", "DK/NR"))
+
 ```
 
 ## Domestic Politics
@@ -637,6 +673,37 @@ bop_may_2018$EU_vs_Eurasia <- factor(bop_may_2018$D6, labels = EU_Eurasia_labels
 bop_nov_2017$EU_vs_Eurasia <- factor(bop_nov_2017$D6, labels = EU_Eurasia_labels)
 ```
 
+```{r}
+# Putin
+bop_sep_2025$Putin <- NA
+bop_oct_2024$Putin <- factor(bop_oct_2024$E_7_1, levels = 1:4)
+bop_aug_2023$Putin <- factor(bop_aug_2023$E9_2, levels = 1:4)
+bop_nov_2022$Putin <- factor(bop_nov_2022$E14_2, levels = 1:4)
+bop_feb_2021$Putin <- factor(bop_feb_2021$H12_2, levels = 1:4)
+bop_oct_2020$Putin <- factor(bop_oct_2020$D6_1, levels = 1:4)
+bop_jun_2020$Putin <- NA
+bop_dec_2019$Putin <- factor(bop_dec_2019$D7_1, levels = 1:4)
+bop_nov_2018$Putin <- factor(bop_nov_2018$D14_1, levels = 1:4)
+bop_may_2018$Putin <- factor(bop_may_2018$D16_01, levels = 1:4)
+bop_nov_2017$Putin <- factor(bop_nov_2017$D14_1, levels = 1:4)
+
+```
+
+```{r}
+# Zelenskyy
+bop_sep_2025$Zelenskyy <- NA
+bop_oct_2024$Zelenskyy <- factor(bop_oct_2024$E_7_6, levels = 1:4)
+bop_aug_2023$Zelenskyy <- factor(bop_aug_2023$E9_4, levels = 1:4)
+bop_nov_2022$Zelenskyy <- factor(bop_nov_2022$E14_4, levels = 1:4)
+bop_feb_2021$Zelenskyy <- factor(bop_feb_2021$H12_4, levels = 1:4)
+bop_oct_2020$Zelenskyy <- factor(bop_oct_2020$D6_6, levels = 1:4)
+bop_jun_2020$Zelenskyy <- NA
+bop_dec_2019$Zelenskyy <- factor(bop_dec_2019$D7_6, levels = 1:4)
+bop_nov_2018$Zelenskyy <- NA
+bop_may_2018$Zelenskyy <- NA
+bop_nov_2017$Zelenskyy <- NA
+```
+
 # Merging
 ```{r}
 # giving each way a name
@@ -670,7 +737,7 @@ bop_may_2018 <- bop_may_2018 %>%
 ```
 
 ```{r}
-vars_to_keep <- c("id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity", "Language_Questionnaire", "Ecology", "Education", "Socioeconomic", "Region", "Macro_Region", "direction", "First_Problem", "Second_Problem", "Third_Problem", "Important_Media", "Second_Media", "Trust_Media", "Sandu", "Dodon", "Voronin", "Sor", "PAS", "PSRM", "Unification", "NATO", "EU", "Eurasia", "EU_vs_Eurasia", "Weights")
+vars_to_keep <- c("id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity", "Language_Questionnaire", "Ecology", "Education", "Socioeconomic", "Region", "Macro_Region", "direction", "First_Problem", "Second_Problem", "Third_Problem", "First_Worry", "Second_Worry", "Third_Worry", "Important_Media", "Second_Media", "Trust_Media", "Sandu", "Dodon", "Voronin", "Sor", "PAS", "PSRM", "Putin", "Zelenskyy", "Unification", "NATO", "EU", "Eurasia", "EU_vs_Eurasia", "Weights")
 
 bop_panel <- bind_rows(
   bop_sep_2025 %>% select(any_of(vars_to_keep)),
@@ -706,6 +773,15 @@ bop_panel %>%
 ```
 
 # Analysis
+
+```{r}
+bop_panel$Unification_For <- ifelse(bop_panel$Unification == "For", 1, 0)
+bop_panel$Nato_For <- ifelse(bop_panel$NATO == "For", 1, 0)
+bop_panel$EU_For <- ifelse(bop_panel$EU == "For", 1, 0)
+bop_panel$Eurasia_For <- ifelse(bop_panel$Eurasia == "For", 1, 0)
+bop_panel$EU_VS <- ifelse(bop_panel$EU_vs_Eurasia == "EU", 1, 0)
+bop_panel$Eurasia_VS <- ifelse(bop_panel$EU_vs_Eurasia == "Eurasia", 1, 0)
+```
 
 ## Direction
 ```{r}
@@ -865,6 +941,80 @@ first_problem %>%
   labs(x = "Date",
        y = "Percentage")
 ```
+
+## Worries
+```{r}
+# merging categories that are not consistent across waves
+bop_panel$First_Worry <- fct_collapse(bop_panel$First_Worry ,
+                             "Other"    = c("Other", "Housing", "Education", "Lack of social services", "Climate change", "Emigration", "Low salary/pension"),
+                             "Energy/Financial crisis" = c("Energy crisis", "Financial crisis"))
+bop_panel$Second_Worry <- fct_collapse(bop_panel$Second_Worry ,
+                             "Other"    = c("Other", "Housing", "Education", "Lack of social services", "Climate change", "Emigration", "Low salary/pension"),
+                             "Energy/Financial crisis" = c("Energy crisis", "Financial crisis"))
+bop_panel$Third_Worry <- fct_collapse(bop_panel$Third_Worry ,
+                             "Other"    = c("Other", "Housing", "Education", "Lack of social services", "Climate change", "Emigration", "Low salary/pension"),
+                             "Energy/Financial crisis" = c("Energy crisis", "Financial crisis"))
+```
+
+```{r}
+# mentioning problems across the 1st/2nd/3rd pref
+worries_long <- bop_panel %>%
+  select(wave, date, id, First_Worry, Second_Worry, Third_Worry) %>%
+  pivot_longer(
+    cols=c(First_Worry, Second_Worry, Third_Worry),
+    names_to = "rank",
+    values_to = "worries"
+  )
+```
+
+```{r}
+top_worries <- worries_long %>%
+  filter(!is.na(worries)) %>%
+  group_by(wave, date, worries) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(prop = n/sum(n))
+```
+
+```{r}
+top_worries %>%
+  filter(worries == "Poverty" | worries == "Prices" | worries == "Unemployment" | worries == "Corruption" | worries == "Children's future" | worries == "Interethnic relations" | worries == "War in the region" | worries == "Energy/Financial crisis") %>%
+  ggplot(aes(x = date, y = prop)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~worries) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage")
+```
+
+```{r}
+# most cited first problem
+first_worry <- bop_panel %>%
+  group_by(wave, date, First_Worry) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(percentage = n/sum(n))
+
+first_worry <- remove_missing(first_worry)
+```
+
+```{r}
+first_worry %>%
+  filter(First_Worry == "Poverty" | First_Worry == "Prices" | First_Worry == "Unemployment" | First_Worry == "Corruption" | First_Worry == "Children's future" | First_Worry == "Interethnic relations" | First_Worry == "War in the region" | First_Worry == "Energy/Financial crisis") %>%
+  ggplot(aes(x = date, y = percentage)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~First_Worry) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percentage")
+```
+
 
 ## Media
 
@@ -1071,6 +1221,9 @@ bop_panel$Dodon <- as.numeric(bop_panel$Dodon)
 bop_panel$Sor <- as.numeric(bop_panel$Sor)
 bop_panel$PAS <- as.numeric(bop_panel$PAS)
 bop_panel$PSRM <- as.numeric(bop_panel$PSRM)
+bop_panel$Putin <- as.numeric(bop_panel$Putin)
+bop_panel$Zelenskyy <- as.numeric(bop_panel$Zelenskyy)
+
 ```
 
 ```{r}
@@ -1225,6 +1378,7 @@ Sandu_models <- list(
   "Macro Region" = lm(Sandu ~ Macro_Region, data = bop_panel),
   "Most Trusted Media" = lm(Sandu ~ Trust_Media, data = bop_panel),
   "Direction" = lm(Sandu ~ direction, data = bop_panel),
+  "Top Worry" = lm(Sandu ~ First_Worry, data = bop_panel),
   "Year" = lm(Sandu ~ year, data = bop_panel),
   "Unification" = lm(Sandu ~ Unification_For, data = bop_panel),
   "All" = lm(Sandu ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + Trust_Media + Unification_For + direction + year, data = bop_panel)
@@ -1244,7 +1398,8 @@ Sor_models <- list(
   "Socioeconomic" = lm(Sor ~ Socioeconomic, data = bop_panel),
   "Macro Region" = lm(Sor ~ Macro_Region, data = bop_panel),
   "Wave" = lm(Sor ~ wave, data = bop_panel),
-  "All" = lm(Sor ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + wave, data = bop_panel)
+  "Top Worry" = lm(Sor ~ First_Worry, data = bop_panel),
+  "All" = lm(Sor ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + First_Worry + wave, data = bop_panel)
 )
 
 modelsummary(Sor_models, stars = TRUE)
@@ -1268,14 +1423,6 @@ modelsummary(Dodon_models, stars = TRUE)
 ```
 
 # International politics
-```{r}
-bop_panel$Unification_For <- ifelse(bop_panel$Unification == "For", 1, 0)
-bop_panel$Nato_For <- ifelse(bop_panel$NATO == "For", 1, 0)
-bop_panel$EU_For <- ifelse(bop_panel$EU == "For", 1, 0)
-bop_panel$Eurasia_For <- ifelse(bop_panel$Eurasia == "For", 1, 0)
-bop_panel$EU_VS <- ifelse(bop_panel$EU_vs_Eurasia == "EU", 1, 0)
-bop_panel$Eurasia_VS <- ifelse(bop_panel$EU_vs_Eurasia == "Eurasia", 1, 0)
-```
 
 ## Unification
 ```{r}
@@ -1425,3 +1572,26 @@ ggplot(IO_support, aes(x = date, y = percentage, color = Variable)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+## Putin & Zelenskyy
+```{r}
+international_bop <- bop_panel %>%
+  group_by(wave, date) %>%
+  summarise(
+    Putin_mean = mean(Putin, na.rm = TRUE),
+    Putin_sd = sd(Putin, na.rm = TRUE),
+    Putin_n = sum(!is.na(Putin)),
+    Putin_se = Putin_sd / sqrt(Putin_n),
+    Putin_lower = Putin_mean - 1.96 * Putin_se,
+    Putin_upper = Putin_mean + 1.96 * Putin_se,
+    Zelenskyy_mean = mean(Zelenskyy, na.rm = TRUE),
+    Zelenskyy_sd = sd(Zelenskyy, na.rm = TRUE),
+    Zelenskyy_n = sum(!is.na(Zelenskyy)),
+    Zelenskyy_se = Zelenskyy_sd / sqrt(Zelenskyy_n),
+    Zelenskyy_lower = Zelenskyy_mean - 1.96 * Zelenskyy_se,
+    Zelenskyy_upper = Zelenskyy_mean + 1.96 * Zelenskyy_se
+  )
+```
+
+
+# PCA / factor analysis ?
