@@ -1174,3 +1174,7 @@ modelplot(international_leaders, coef_map = coef_plot) +
 ```
 
 # PCA / factor analysis ?
+
+```{r}
+saveRDS(bop_panel, "~/R projects/MD general/bop_panel.rds")
+```
