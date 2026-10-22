@@ -1,8 +1,8 @@
 ---
 title: "BOP analysis"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 date: "2026-10-20"
 ---
 
@@ -17,7 +17,7 @@ require(lubridate)
 ```
 
 ```{r}
-bop_panel <- readRDS("~/R projects/MD general/bop_panel.rds")
+bop_panel <- readRDS("~/R Projects/Moldova General/BOP/bop_panel.rds")
 ```
 
 ```{r}
@@ -56,49 +56,55 @@ coef_model <- c(
   "EthnicityGagauz"               = "Gagauz",
   "EthnicityBulgarian"            = "Bulgarian",
   "Language_QuestionnaireRussian" = "Russian questionnaire",
+  "Macro_RegionCentre"            = "Centre",
+  "Macro_RegionNorth"             = "North",
+  "Macro_RegionSouth"             = "South",
+  "Macro_RegionGagauzia"          = "Gagauzia",
   "Ecologyrural"                  = "Rural",
   "Educationlow"               = "Education: low",
   "Educationhigh"                 = "Education: high",
   "Socioeconomiclow"           = "Socioeconomic: low",
   "Socioeconomichigh"             = "Socioeconomic: high",
-  "Macro_RegionCentre"            = "Centre",
-  "Macro_RegionNorth"             = "North",
-  "Macro_RegionSouth"             = "South",
-  "Macro_RegionGagauzia"          = "Gagauzia",
-  "good"            = "Good (Direction)",
-  "bad"            = "Bad (Direction)",
-  "war"             = "Worry: War",
-  "corruption"      = "Worry: Corruption",
-  "interethnic"     = "Worry: Interethnic relations",
-  "poverty"         = "Worry: Poverty",
-  "Unification_For" = "Unification: in favour",
-  "Putin" = "Support: Putin",
   "top_TV"  = "Top media: TV",
   "top_internet" = "Top media: Internet",
+  "good"            = "Good (Direction)",
+  "bad"            = "Bad (Direction)",
+  "poverty"         = "Worry: Poverty",
+  "corruption"      = "Worry: Corruption",
+  "interethnic"     = "Worry: Interethnic relations",
+  "war"             = "Worry: War",
+  "Unification_For" = "Unification: in favour",
+  "Putin" = "Support: Putin",
+  "EU_For" = "EU membership: in favour",
+  "Eurasia_For" = "Eurasia membership: in favour",
+  "Nato_For" = "NATO membership: in favour",
   "year"                          = "Year"
 )
 
 coef_plot <- c(
-  "year"                          = "Year",
-  "top_internet"                  = "Top media: Internet",
-  "top_TV"                        = "Top media: TV",
+"year"                          = "Year",
+  "Nato_For" = "NATO membership: in favour",
+  "Eurasia_For"                   = "Eurasia membership: in favour",
+  "EU_For"                        = "EU membership: in favour",
   "Putin"                         = "Support: Putin",
   "Unification_For"               = "Unification: in favour",
-  "poverty"                       = "Worry: Poverty",
+  "war"                           = "Worry: War",
   "interethnic"                   = "Worry: Interethnic relations",
   "corruption"                    = "Worry: Corruption",
-  "war"                           = "Worry: War",
+  "poverty"                       = "Worry: Poverty",
   "bad"                           = "Bad (Direction)",
   "good"                          = "Good (Direction)",
-  "Macro_RegionGagauzia"          = "Gagauzia",
-  "Macro_RegionSouth"             = "South",
-  "Macro_RegionNorth"             = "North",
-  "Macro_RegionCentre"            = "Centre",
+  "top_internet"                  = "Top media: Internet",
+  "top_TV"                        = "Top media: TV",
   "Socioeconomichigh"             = "Socioeconomic: high",
   "Socioeconomiclow"              = "Socioeconomic: low",
   "Educationhigh"                 = "Education: high",
   "Educationlow"                  = "Education: low",
   "Ecologyrural"                  = "Rural",
+  "Macro_RegionGagauzia"          = "Gagauzia",
+  "Macro_RegionSouth"             = "South",
+  "Macro_RegionNorth"             = "North",
+  "Macro_RegionCentre"            = "Centre",
   "Language_QuestionnaireRussian" = "Russian questionnaire",
   "EthnicityBulgarian"            = "Bulgarian",
   "EthnicityGagauz"               = "Gagauz",
@@ -107,6 +113,45 @@ coef_plot <- c(
   "EthnicityRomanian"             = "Romanian",
   "GenderWoman"                   = "Woman",
   "Age"                           = "Age (per year)"
+)
+
+coef_plot_demographics <- c(
+  "Socioeconomichigh"             = "Socioeconomic: high",
+  "Socioeconomiclow"              = "Socioeconomic: low",
+  "Educationhigh"                 = "Education: high",
+  "Educationlow"                  = "Education: low",
+  "Language_QuestionnaireRussian" = "Russian questionnaire",
+  "EthnicityBulgarian"            = "Bulgarian",
+  "EthnicityGagauz"               = "Gagauz",
+  "EthnicityUkrainian"            = "Ukrainian",
+  "EthnicityRussian"              = "Russian",
+  "EthnicityRomanian"             = "Romanian",
+  "GenderWoman"                   = "Woman",
+  "Age"                           = "Age (per year)"
+)
+
+coef_plot_locations <- c(
+  "Ecologyrural"                  = "Rural",
+  "Macro_RegionGagauzia"          = "Gagauzia",
+  "Macro_RegionSouth"             = "South",
+  "Macro_RegionNorth"             = "North",
+  "Macro_RegionCentre"            = "Centre"
+)
+
+coef_plot_attitudes <- c(
+  "Nato_For" = "NATO membership: in favour",
+  "Eurasia_For"                   = "Eurasia membership: in favour",
+  "EU_For"                        = "EU membership: in favour",
+  "Putin"                         = "Support: Putin",
+  "Unification_For"               = "Unification: in favour",
+  "war"                           = "Worry: War",
+  "interethnic"                   = "Worry: Interethnic relations",
+  "corruption"                    = "Worry: Corruption",
+  "poverty"                       = "Worry: Poverty",
+  "bad"                           = "Bad (Direction)",
+  "good"                          = "Good (Direction)",
+  "top_internet"                  = "Top media: Internet",
+  "top_TV"                        = "Top media: TV"
 )
 ```
 
@@ -831,79 +876,120 @@ ggplot(domestic_bop_language_long, aes(x = date, y = mean,
 ```
 
 ## Models
-```{r}
 
+### Sandu
+```{r}
 Sandu_models <- list(
   "Age" = glm(Sandu ~ Age, data = bop_panel),
   "Gender" = glm(Sandu ~ Gender, data = bop_panel),
   "Ethnicity" = glm(Sandu ~ Ethnicity, data = bop_panel),
   "Language" = glm(Sandu ~ Language_Questionnaire, data = bop_panel),
+  "Macro Region" = glm(Sandu ~ Macro_Region, data = bop_panel),
   "Ecology" = glm(Sandu ~ Ecology, data = bop_panel),
   "Education" = glm(Sandu ~ Education, data = bop_panel),
   "Socioeconomic" = glm(Sandu ~ Socioeconomic, data = bop_panel),
-  "Macro Region" = glm(Sandu ~ Macro_Region, data = bop_panel),
+  "Media (1)" = glm(Sandu ~ top_TV, data = bop_panel),
+  "Media (2)" = glm(Sandu ~ top_internet, data = bop_panel),
   "Good direction" = glm(Sandu ~ good, data = bop_panel),
-  "War" = glm(Sandu ~ war, data = bop_panel),
-  "Corruption" = glm(Sandu ~ corruption, data = bop_panel),
-  "Interethnic" = glm(Sandu ~ interethnic, data = bop_panel),
-  "Poverty" = glm(Sandu ~ poverty, data = bop_panel),
+  "Worries (1)" = glm(Sandu ~ poverty, data = bop_panel),
+  "Worries (2)" = glm(Sandu ~ corruption, data = bop_panel),
+  "Worries (3)" = glm(Sandu ~ interethnic, data = bop_panel),
+  "Worries (4)" = glm(Sandu ~ war, data = bop_panel),
+  "International politics (1)" = glm(Sandu ~ Unification_For, data = bop_panel),
+  "International politics (2)" = glm(Sandu ~ Putin, data = bop_panel),
+  "International politics (3)" = glm(Sandu ~ EU_For, data = bop_panel),
+  "International politics (4)" = glm(Sandu ~ Eurasia_For, data = bop_panel),
   "Year" = glm(Sandu ~ year, data = bop_panel),
-  "Unification" = glm(Sandu ~ Unification_For, data = bop_panel),
-  "All" = glm(Sandu ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + Unification_For + good + poverty + corruption + interethnic + war + year, data = bop_panel)
+  "All" = glm(Sandu ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + + good + + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel)
 )
 
 modelsummary(Sandu_models, stars = TRUE, coef_map = coef_model)
 ```
 
+### Sor
 ```{r}
 Sor_models <- list(
   "Age" = glm(Sor ~ Age, data = bop_panel),
   "Gender" = glm(Sor ~ Gender, data = bop_panel),
   "Ethnicity" = glm(Sor ~ Ethnicity, data = bop_panel),
   "Language" = glm(Sor ~ Language_Questionnaire, data = bop_panel),
+  "Macro Region" = glm(Sor ~ Macro_Region, data = bop_panel),
   "Ecology" = glm(Sor ~ Ecology, data = bop_panel),
   "Education" = glm(Sor ~ Education, data = bop_panel),
   "Socioeconomic" = glm(Sor ~ Socioeconomic, data = bop_panel),
-  "Macro Region" = glm(Sor ~ Macro_Region, data = bop_panel),
-  "Good direction" = glm(Sor ~ good, data = bop_panel),
   "Media (1)" = glm(Sor ~ top_TV, data = bop_panel),
   "Media (2)" = glm(Sor ~ top_internet, data = bop_panel),
-  "Worries (1)" = glm(Sor ~ war, data = bop_panel),
+  "Good direction" = glm(Sor ~ good, data = bop_panel),
+  "Worries (1)" = glm(Sor ~ poverty, data = bop_panel),
   "Worries (2)" = glm(Sor ~ corruption, data = bop_panel),
   "Worries (3)" = glm(Sor ~ interethnic, data = bop_panel),
-  "Worries (4)" = glm(Sor ~ poverty, data = bop_panel),
+  "Worries (4)" = glm(Sor ~ war, data = bop_panel),
   "International politics (1)" = glm(Sor ~ Unification_For, data = bop_panel),
   "International politics (2)" = glm(Sor ~ Putin, data = bop_panel),
+  "International politics (3)" = glm(Sor ~ EU_For, data = bop_panel),
+  "International politics (4)" = glm(Sor ~ Eurasia_For, data = bop_panel),
   "Year" = glm(Sor ~ year, data = bop_panel),
-  "All" = glm(Sor ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + top_TV + top_internet + Unification_For + Putin + good + poverty + corruption + interethnic + war + year, data = bop_panel)
+  "All" = glm(Sor ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + + good + + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel)
 )
 
 modelsummary(Sor_models, stars = TRUE, coef_map = coef_model)
 ```
 
+
+### Dodon
 ```{r}
 Dodon_models <- list(
   "Age" = glm(Dodon ~ Age, data = bop_panel),
   "Gender" = glm(Dodon ~ Gender, data = bop_panel),
   "Ethnicity" = glm(Dodon ~ Ethnicity, data = bop_panel),
   "Language" = glm(Dodon ~ Language_Questionnaire, data = bop_panel),
+  "Macro Region" = glm(Dodon ~ Macro_Region, data = bop_panel),
   "Ecology" = glm(Dodon ~ Ecology, data = bop_panel),
   "Education" = glm(Dodon ~ Education, data = bop_panel),
   "Socioeconomic" = glm(Dodon ~ Socioeconomic, data = bop_panel),
-  "Macro Region" = glm(Dodon ~ Macro_Region, data = bop_panel),
-  "Good direction" = glm(Dodon ~ good, data = bop_panel),
   "Media (1)" = glm(Dodon ~ top_TV, data = bop_panel),
   "Media (2)" = glm(Dodon ~ top_internet, data = bop_panel),
-  "War" = glm(Dodon ~ war, data = bop_panel),
-  "Corruption" = glm(Dodon ~ corruption, data = bop_panel),
-  "Interethnic" = glm(Dodon ~ interethnic, data = bop_panel),
-  "Poverty" = glm(Dodon ~ poverty, data = bop_panel),
-  "Unification" = glm(Dodon ~ Unification_For, data = bop_panel),
+  "Good direction" = glm(Dodon ~ good, data = bop_panel),
+  "Worries (1)" = glm(Dodon ~ poverty, data = bop_panel),
+  "Worries (2)" = glm(Dodon ~ corruption, data = bop_panel),
+  "Worries (3)" = glm(Dodon ~ interethnic, data = bop_panel),
+  "Worries (4)" = glm(Dodon ~ war, data = bop_panel),
+  "International politics (1)" = glm(Dodon ~ Unification_For, data = bop_panel),
+  "International politics (2)" = glm(Dodon ~ Putin, data = bop_panel),
+  "International politics (3)" = glm(Dodon ~ EU_For, data = bop_panel),
+  "International politics (4)" = glm(Dodon ~ Eurasia_For, data = bop_panel),
   "Year" = glm(Dodon ~ year, data = bop_panel),
-  "All" = glm(Dodon ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + top_TV + top_internet + Unification_For + good + poverty + corruption + interethnic + war + year, data = bop_panel)
+  "All" = glm(Dodon ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + + good + + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel)
 )
 
 modelsummary(Dodon_models, stars = TRUE, coef_map = coef_model)
+```
+
+### All
+```{r}
+domestic_leaders <- list(
+  "Sandu" = glm(Sandu ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel),
+    "Sor" = glm(Sor ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel),
+  "Dodon" = glm(Dodon ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel)
+)
+
+modelplot(domestic_leaders, coef_map = coef_plot_attitudes) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4) +
+  theme(legend.position = "bottom") +
+  xlab("Coefficient estimates and 95% CIs") 
+
+modelplot(domestic_leaders, coef_map = coef_plot_demographics) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4) +
+  theme(legend.position = "bottom") +
+  xlab("Coefficient estimates and 95% CIs") 
+
+modelplot(domestic_leaders, coef_map = coef_plot_locations) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4) +
+  theme(legend.position = "bottom") +
+  xlab("Coefficient estimates and 95% CIs") 
 ```
 
 # International politics
@@ -914,7 +1000,17 @@ unification_support <- bop_panel %>%
   group_by(wave, date, Unification_For) %>%
   summarise(n = n(), .groups = "drop") %>%
   group_by(wave, date) %>%
-  mutate(percentage = n/sum(n))
+  mutate(
+    total      = sum(n),
+    percentage = n / total
+  ) %>%
+  filter(Unification_For == 1) %>%
+  mutate(
+    se    = sqrt(percentage * (1 - percentage) / total),
+    lower = percentage - 1.96 * se,
+    upper = percentage + 1.96 * se
+  ) %>%
+  ungroup()
 
 unification_support <- remove_missing(unification_support)
 ```
@@ -923,8 +1019,9 @@ unification_support <- remove_missing(unification_support)
 unification_support %>%
   filter(Unification_For == 1) %>%
   ggplot(aes(x = date, y = percentage)) +
-  geom_smooth(se = TRUE, color = "black", alpha = 0.3) +
-  geom_point(size = 2, color = "black", alpha = 0.5) +
+  geom_line(linewidth = 0.8) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
   scale_y_continuous(labels = scales::percent) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -943,10 +1040,11 @@ Unification_models <- list(
   "Year" = glm(Unification_For ~ year, data = bop_panel, family = "binomial"),
   "Nato" = glm(Unification_For ~ Nato_For, data = bop_panel, family = "binomial"),
   "EU" = glm(Unification_For ~ EU_For, data = bop_panel, family = "binomial"),
-  "All" = glm(Unification_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + Nato_For + EU_For + year, data = bop_panel, family = "binomial")
+  "All (EU)" = glm(Unification_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + EU_For + EU_For + year, data = bop_panel, family = binomial),
+  "All (NATO)" = glm(Unification_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Nato_For + year, data = bop_panel, family = binomial)
 )
 
-modelsummary(Unification_models, stars = TRUE)
+modelsummary(Unification_models, stars = TRUE, coef_map = coef_model, exponentiate = TRUE)
 ```
 
 ## EU support
@@ -956,8 +1054,17 @@ EU_support <- bop_panel %>%
   group_by(wave, date, EU_For) %>%
   summarise(n = n(), .groups = "drop") %>%
   group_by(wave, date) %>%
-  mutate(percentage = n/sum(n)) %>%
-  filter(EU_For == 1)
+  mutate(
+    total      = sum(n),
+    percentage = n / total
+  ) %>%
+  filter(EU_For == 1) %>%
+  mutate(
+    se    = sqrt(percentage * (1 - percentage) / total),
+    lower = percentage - 1.96 * se,
+    upper = percentage + 1.96 * se
+  ) %>%
+  ungroup()
 
 EU_support$Variable <- "EU support (not binary)"
 
@@ -967,8 +1074,17 @@ EU_support2 <- bop_panel %>%
   group_by(wave, date, EU_VS) %>%
   summarise(n = n(), .groups = "drop") %>%
   group_by(wave, date) %>%
-  mutate(percentage = n/sum(n)) %>%
-  filter(EU_VS == 1)
+  mutate(
+    total      = sum(n),
+    percentage = n / total
+  ) %>%
+  filter(EU_VS == 1) %>%
+  mutate(
+    se    = sqrt(percentage * (1 - percentage) / total),
+    lower = percentage - 1.96 * se,
+    upper = percentage + 1.96 * se
+  ) %>%
+  ungroup()
 
 EU_support2$EU_VS <- NULL
 
@@ -981,6 +1097,8 @@ EU_support$IO <- "EU"
 ```{r}
 ggplot(EU_support, aes(x = date, y = percentage, color = Variable)) +
   geom_line(linewidth = 0.8) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = Variable), 
+              alpha = 0.15, color = NA) +
   geom_point(size = 2) +
   scale_y_continuous(labels = scales::percent) +
   theme_minimal() +
@@ -1056,6 +1174,16 @@ ggplot(IO_support, aes(x = date, y = percentage, color = Variable)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+## Models
+```{r}
+IO_models <- list(
+  "EU" = glm(EU_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial),
+  "NATO" = glm(Nato_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial),
+  "Eurasia" = glm(Eurasia_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial)
+)
+
+modelsummary(IO_models, stars = TRUE, coef_map = coef_model, exponentiate = TRUE, fmt = fmt_decimal(digits = 3))
+```
 
 ## Putin & Zelenskyy
 ```{r}
@@ -1125,6 +1253,7 @@ Putin_models <- list(
 
 modelsummary(Putin_models, stars = TRUE, coef_map = coef_model)
 ```
+
 ```{r}
 Zelenskyy_models <- list(
   "Age" = glm(Zelenskyy ~ Age, data = bop_panel),
@@ -1153,15 +1282,8 @@ modelsummary(Zelenskyy_models, stars = TRUE, coef_map = coef_model)
 
 ```{r}
 international_leaders <- list(
-  "Putin" = glm(Putin ~ Age + Gender + Ethnicity + Language_Questionnaire + 
-                  Ecology + Education + Socioeconomic + Macro_Region + 
-                  Unification_For + good + poverty + corruption + 
-                  interethnic + war + year, 
-                data = bop_panel),
-  "Zelenskyy" = glm(Zelenskyy ~ Age + Gender + Ethnicity + Language_Questionnaire + 
-                      Ecology + Education + Socioeconomic + Macro_Region + 
-                      Unification_For + good + poverty + corruption + 
-                      interethnic + war + year, 
+  "Putin" = glm(Putin ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + EU_For + year, data = bop_panel),
+  "Zelenskyy" = glm(Zelenskyy ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + EU_For + year, 
                 data = bop_panel)
 )
 
@@ -1176,5 +1298,5 @@ modelplot(international_leaders, coef_map = coef_plot) +
 # PCA / factor analysis ?
 
 ```{r}
-saveRDS(bop_panel, "~/R projects/MD general/bop_panel.rds")
+saveRDS(bop_panel, "bop_panel.rds")
 ```

@@ -19,17 +19,17 @@ require(factoextra)
 
 ```{r}
 # loading data
-bop_sep_2025 <- read_sav("Project Data/BOP/DB_BOP_IPP_09_2025_1.SAV")
-bop_oct_2024 <- read_sav("Project Data/BOP/BOP_2024.10.SAV")
-bop_aug_2023 <- read_sav("Project Data/BOP/MD_BOP_August_2023_cleaned.sav")
-bop_nov_2022 <- read_sav("Project Data/BOP/MD_BOP_IPP_Noiembrie_2022_cleaned.sav") 
-bop_feb_2021 <- read_sav("Project Data/BOP/2021.02.sav")
-bop_oct_2020 <- read_sav("Project Data/BOP/2020.10.sav")
-bop_jun_2020 <- read_sav("Project Data/BOP/2020.06.sav")
-bop_dec_2019 <- read_sav("Project Data/BOP/2019.12.sav")
-bop_nov_2018 <- read_sav("Project Data/BOP/2018.11.sav")
-bop_may_2018 <- read_sav("Project Data/BOP/2018.05.sav")
-bop_nov_2017 <- read_sav("Project Data/BOP/2017.11.sav")
+bop_sep_2025 <- read_sav("Surveys/DB_BOP_IPP_09_2025_1.SAV")
+bop_oct_2024 <- read_sav("Surveys/BOP_2024.10.SAV")
+bop_aug_2023 <- read_sav("Surveys/MD_BOP_August_2023_cleaned.sav")
+bop_nov_2022 <- read_sav("Surveys/MD_BOP_IPP_Noiembrie_2022_cleaned.sav") 
+bop_feb_2021 <- read_sav("Surveys/2021.02.sav")
+bop_oct_2020 <- read_sav("Surveys/2020.10.sav")
+bop_jun_2020 <- read_sav("Surveys/2020.06.sav")
+bop_dec_2019 <- read_sav("Surveys/2019.12.sav")
+bop_nov_2018 <- read_sav("Surveys/2018.11.sav")
+bop_may_2018 <- read_sav("Surveys/2018.05.sav")
+bop_nov_2017 <- read_sav("Surveys/2017.11.sav")
 ```
 
 ```{r}

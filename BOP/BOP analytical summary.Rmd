@@ -1,0 +1,645 @@
+---
+title: "BOP analytical summary"
+author: "Ellie Knott"
+date: "2026-10-22"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message = FALSE, echo=TRUE)
+require(dplyr)
+require(tidyr)
+require(ggplot2)
+require(forcats)
+require(modelsummary)
+require(lubridate)
+library(ggtext)
+```
+
+```{r, include = FALSE}
+bop_panel <- readRDS("~/R Projects/Moldova General/BOP/bop_panel.rds")
+```
+
+```{r, include = FALSE}
+coef_plot_demographics <- c(
+  "Socioeconomichigh"             = "Socioeconomic: high",
+  "Socioeconomiclow"              = "Socioeconomic: low",
+  "Educationhigh"                 = "Education: high",
+  "Educationlow"                  = "Education: low",
+  "Language_QuestionnaireRussian" = "Russian questionnaire",
+  "EthnicityBulgarian"            = "Bulgarian",
+  "EthnicityGagauz"               = "Gagauz",
+  "EthnicityUkrainian"            = "Ukrainian",
+  "EthnicityRussian"              = "Russian",
+  "EthnicityRomanian"             = "Romanian",
+  "GenderWoman"                   = "Woman",
+  "Age"                           = "Age (per year)"
+)
+
+coef_plot_locations <- c(
+  "Ecologyrural"                  = "Rural",
+  "Macro_RegionGagauzia"          = "Gagauzia",
+  "Macro_RegionSouth"             = "South",
+  "Macro_RegionNorth"             = "North",
+  "Macro_RegionCentre"            = "Centre"
+)
+
+coef_plot_attitudes <- c(
+  "Nato_For" = "NATO membership: in favour",
+  "Eurasia_For"                   = "Eurasia membership: in favour",
+  "EU_For"                        = "EU membership: in favour",
+  "Putin"                         = "Support: Putin",
+  "Unification_For"               = "Unification: in favour",
+  "war"                           = "Worry: War",
+  "interethnic"                   = "Worry: Interethnic relations",
+  "corruption"                    = "Worry: Corruption",
+  "poverty"                       = "Worry: Poverty",
+  "bad"                           = "Bad (Direction)",
+  "good"                          = "Good (Direction)",
+  "top_internet"                  = "Top media: Internet",
+  "top_TV"                        = "Top media: TV"
+)
+```
+
+```{r, include=FALSE}
+theme_set(theme_minimal() +
+          theme(axis.text=element_text(size=14),
+                axis.title=element_text(size=14,face="bold"),
+                legend.title = element_text(size = 14),
+                legend.text = element_text(size = 12)))
+```
+
+# Support for Domestic Politicians
+
+Sandu remains more popular than Sor or Dodon, especially after 2023. Support for Sandu has decreased, while support for Dodon and Sor has declined.
+
+```{r, echo = FALSE}
+bop_panel %>%
+  group_by(wave, date) %>%
+  summarise(
+    Sandu_mean = mean(Sandu, na.rm = TRUE),
+    Sandu_sd = sd(Sandu, na.rm = TRUE),
+    Sandu_n = sum(!is.na(Sandu)),
+    Sandu_se = Sandu_sd / sqrt(Sandu_n),
+    Sandu_lower = Sandu_mean - 1.96 * Sandu_se,
+    Sandu_upper = Sandu_mean + 1.96 * Sandu_se,
+    Dodon_mean = mean(Dodon, na.rm = TRUE),
+    Dodon_sd = sd(Dodon, na.rm = TRUE),
+    Dodon_n = sum(!is.na(Dodon)),
+    Dodon_se = Dodon_sd / sqrt(Dodon_n),
+    Dodon_lower = Dodon_mean - 1.96 * Dodon_se,
+    Dodon_upper = Dodon_mean + 1.96 * Dodon_se,
+    Sor_mean = mean(Sor, na.rm = TRUE),
+    Sor_sd = sd(Sor, na.rm = TRUE),
+    Sor_n = sum(!is.na(Sor)),
+    Sor_se = Sor_sd / sqrt(Sor_n),
+    Sor_lower = Sor_mean - 1.96 * Sor_se,
+    Sor_upper = Sor_mean + 1.96 * Sor_se  
+  ) %>%
+  pivot_longer(
+    cols = c(Sandu_mean, Dodon_mean, Sor_mean, Sandu_lower, Sandu_upper, Dodon_lower, Dodon_upper, Sor_lower, Sor_upper),
+    names_to = c("politician", ".value"),
+    names_pattern = "(Sandu|Dodon|Sor)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean, color = politician, 
+                              group = politician)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = politician), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Year",
+       y = "Mean Score")
+```
+
+```{r, include=FALSE}
+domestic_leaders <- list(
+  "Sandu" = glm(Sandu ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel),
+    "Sor" = glm(Sor ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel),
+  "Dodon" = glm(Dodon ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel)
+)
+```
+
+*Sandu gains from: those identifying as Romanian, high level of education, worry about corruption and war, or support unification and EU membership.*
+
+*Sandu loses from: those who identify as Russian or Ukrainain, complete the survey in Russian, reside in Gagauzia, or are more supportive of Putin.*
+
+*Sandu and Dodon gain from those who think Moldova is heading in a good direction.*
+
+*Those who think Moldova is heading in a good direction are more supportive of Sandu and Dodon.*
+
+*Dodon and Sor gain more those identifying Gagauz, Russia, Ukrainian or Bulgarian, with a lower socioeconomic level, reside in the south, or are more supportive of Putin.*
+
+*Dodon gains from: those with a lower level of education or name TV as an impotrant media source.*
+
+*Sor gains from those who complete the survey in Russian or reside in the centre and north.*
+
+*Dodon loses from those who complete the survey in Russian, have a high level of education, or support EU membership or unification.*
+
+*Sor loses from those who reside in rural areas.*
+
+*Dodon and Sor lose from those who worry about corruption.*
+
+
+## Demographics
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(domestic_leaders, coef_map = coef_plot_demographics) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4) +
+  theme(legend.position = "bottom") +
+  xlab("Coefficient estimates and 95% CIs") +
+  labs(caption = "Reference categories: Man (gender), Moldovan ethnicity), Romanian (questionnaire language), medium (education), medium (socioeconomic status)") +
+  theme(plot.caption = element_textbox_simple(hjust = 0, halign = 0, margin = margin(t = 8)), plot.caption.position = "plot")
+```
+:::
+
+::: {.column width="45%"}
+- Age & gender: not significant
+- Ethnicity:
+  - Romanian: significant for Sandu (+)
+  - Russian: significant for Dodon & Sor (+) and Sandu (-)
+  - Ukrainian: significant for Dodon & Sor (+) and Sandu (-)
+  - Gagauz: (only) significant for Dodon (+)
+  - Bulgarian: significant for Dodon & Sor (+) 
+  - Language of questionnaire: Russian significant for Sor (+) and Sandu and Dodon (-)
+- Education:
+  - Low: significant for Dodon (+)
+  - High: significant for Sandu (+) and Dodon (-)
+- Socioeconomic:
+  - Low: significant for Dodon and Sor (+)
+  - High: not significant 
+  
+:::
+::::::
+
+
+## Geography
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(domestic_leaders, coef_map = coef_plot_locations) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4) +
+  theme(legend.position = "bottom") +
+  xlab("Coefficient estimates and 95% CIs") +
+  labs(caption = "Reference categories: Chisinau (region), urban (ecology)") +
+  theme(plot.caption.position = "plot")
+```
+:::
+::: {.column width="45%"}
+- Macro region: centre & north significant for Sor (+); others not significant
+  - South: significant for Sor (+) and Dodon (-)
+  - Gagauzia: significant for Sandu (-)
+- Ecology: rural significant for Sor (-)
+
+:::
+::::::
+
+## Attitudes
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(domestic_leaders, coef_map = coef_plot_attitudes) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4) +
+  theme(legend.position = "bottom") +
+  xlab("Coefficient estimates and 95% CIs") 
+```
+:::
+::: {.column width="45%"}
+- Media: TV significant for Dodon (+); others not sigificant; internet not significant
+- Direction: good significant for Sandu and Dodon (+) and Sor (-)
+- Worries:
+  - Poverty & interethnic relations: not significant
+  - Corruption: significant for Sandu (+) and Dodon and Sor (-)
+  - War: significant for Sandu (+); not significant for others
+- Unification: in favour significant for Sandu (+) and Dodon (-); not significant for Sor
+- Support for Putin: significant for Sandu (-) and Dodon and Sor (+)
+- EU membership: significant for Sandu (+) and Dodon (-); not significant for Sor
+
+:::
+::::::
+
+
+# Support for International Politicians
+
+Support for Zelenskyy *and* Putin has declined over time. Zelenskyy remains less popular and has continued to decline over time, while support for Putin increased slightly in 2025.
+
+```{r, echo = FALSE}
+bop_panel %>%
+  group_by(wave, date) %>%
+  summarise(
+    Putin_mean = mean(Putin, na.rm = TRUE),
+    Putin_sd = sd(Putin, na.rm = TRUE),
+    Putin_n = sum(!is.na(Putin)),
+    Putin_se = Putin_sd / sqrt(Putin_n),
+    Putin_lower = Putin_mean - 1.96 * Putin_se,
+    Putin_upper = Putin_mean + 1.96 * Putin_se,
+    Zelenskyy_mean = mean(Zelenskyy, na.rm = TRUE),
+    Zelenskyy_sd = sd(Zelenskyy, na.rm = TRUE),
+    Zelenskyy_n = sum(!is.na(Zelenskyy)),
+    Zelenskyy_se = Zelenskyy_sd / sqrt(Zelenskyy_n),
+    Zelenskyy_lower = Zelenskyy_mean - 1.96 * Zelenskyy_se,
+    Zelenskyy_upper = Zelenskyy_mean + 1.96 * Zelenskyy_se) %>%
+  pivot_longer(
+    cols = c(Putin_mean, Putin_sd, Putin_n, Putin_se, Putin_lower, Putin_upper, 
+             Zelenskyy_mean, Zelenskyy_sd, Zelenskyy_n, Zelenskyy_se, Zelenskyy_lower, Zelenskyy_upper),
+    names_to = c("politician", ".value"),
+    names_pattern = "(Putin|Zelenskyy)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean, color = politician, 
+                              group = politician)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = politician), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Year",
+       y = "Mean Score (reverse scale)")
+```
+
+```{r, include = FALSE}
+international_leaders <- list(
+  "Putin" = glm(Putin ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + EU_For + year, data = bop_panel),
+  "Zelenskyy" = glm(Zelenskyy ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + EU_For + year, 
+                data = bop_panel)
+)
+
+```
+
+*Zelenskyy gains from those with a higher level of education or socioeconomic level, identify as Romanian, complete the questionnaire in Romanian, support unification or EU membership, or worry about the war.*
+
+*Zelenskyy loses from those who reside in Gagauzia.*
+
+*Putin gains from those who identify as Russian, Ukrainian, Gagauz and Bulgarian, complete the survey in Russian, or reside in Gagauzia.*
+
+*Putin loses from those who have a higher level of education, identify as Romanian, support EU membership or unification, or worry about war or corruption.*
+
+## Demographics
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(international_leaders, coef_map = coef_plot_demographics) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4) +
+  theme(legend.position = "bottom") +
+  xlab("Coefficient estimates and 95% CIs") +
+  labs(caption = "Reference categories: Man (gender), Moldovan ethnicity), Romanian (questionnaire language), medium (education), medium (socioeconomic status)") +
+  theme(plot.caption = element_textbox_simple(hjust = 0, halign = 0, margin = margin(t = 8)), plot.caption.position = "plot")
+```
+:::
+::: {.column width="45%"}
+- Age: not significant
+- Gender: woman significant for Putin (-)
+- Ethnicity:
+  - Romanian: significant for Zelenskyy (+) and Putin (-)
+  - Russian, Ukrainian, Gagauz, Bulgarian: significant for Putin (+); not significant for Zelenskyy
+- Russian questionnaire: significant for Putin (+) and Zelenskyy (-)
+- Education: low not significant; high significant for Zelenskyy (+) and Putin (-)
+- Socioeconomic: low significant for Putin (+) and high significant for Zelenskyy (+) and Putin (-)
+
+:::
+::::::
+
+## Geography
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(international_leaders, coef_map = coef_plot_locations) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4) +
+  theme(legend.position = "bottom") +
+  xlab("Coefficient estimates and 95% CIs") +
+  labs(caption = "Reference categories: Chisinau (region), urban (ecology)") +
+  theme(plot.caption.position = "plot")
+```
+:::
+::: {.column width="45%"}
+- Region:
+  - Gagauzia: significant for Putin (+) and Zelenskyy (-)
+  - Centre & North: significant for Putin (+); south not significant
+- Ecology: not significant 
+
+:::
+::::::
+
+## Attitudes
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(international_leaders, coef_map = coef_plot_attitudes) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4) +
+  theme(legend.position = "bottom") +
+  xlab("Coefficient estimates and 95% CIs") 
+```
+:::
+::: {.column width="45%"}
+- Media: not significant
+- Good direction: significant in support for Zelenskyy (+)
+- Worries:
+  - Poverty: significant in support for Zelenskyy (-)
+  - Corruption: significant in support for Putin (-)
+  - War: significant in support for Zelenskyy (+) and Putin (-)
+- EU membership: significant in support for Zelenskyy (+) and Putin (-)
+- Unification: significant in support for Zelenskyy (+) and Putin (-)
+
+:::
+::::::
+
+# Unification
+
+Support for unification as rising over time: from 21% in 2017 to over 35% in 2025.
+```{r, echo = FALSE}
+bop_panel %>%
+  group_by(wave, date, Unification_For) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(
+    total      = sum(n),
+    percentage = n / total
+  ) %>%
+  filter(Unification_For == 1) %>%
+  mutate(
+    se    = sqrt(percentage * (1 - percentage) / total),
+    lower = percentage - 1.96 * se,
+    upper = percentage + 1.96 * se
+  ) %>%
+  ungroup() %>%
+  ggplot(aes(x = date, y = percentage)) +
+  geom_point(size = 2, color = "black") +
+  geom_line(linewidth = 0.8) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Year",
+       y = "Percent")
+```
+
+```{r, include = FALSE}
+unification_models_plot <- list(
+  "EU" = glm(Unification_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + EU_For + year, data = bop_panel, family = binomial),
+  "NATO" = glm(Unification_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Nato_For + year, data = bop_panel, family = binomial)
+)
+```
+
+*Those supporting EU membership and NATO membership are more likely to support unification. Those identifying as Romanian as more likely to support unification.*
+
+## Demographics
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(unification_models_plot, coef_map = coef_plot_demographics, exponentiate = TRUE) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
+  theme(legend.position = "bottom") +
+  scale_x_log10() +
+  xlab("Odds Ratios and 95% CIs") +
+  labs(caption = "Reference categories: Man (gender), Moldovan ethnicity), Romanian (questionnaire language), medium (education), medium (socioeconomic status)") +
+  theme(plot.caption = element_textbox_simple(hjust = 0, halign = 0, margin = margin(t = 8)), plot.caption.position = "plot")
+```
+:::
+::: {.column width="45%"}
+- Age & gender: not significant
+- Ethnicity:
+  - Romanian: significant (+)
+  - Russian, Ukrainian, Gagauz, Bulgarian: significant (-)
+- Russian questionnaire: significant (-)
+- Education: low (+); high not consistently significant
+- Socioeconomic: not significant
+
+:::
+::::::
+
+## Geography
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(unification_models_plot, coef_map = coef_plot_locations, exponentiate = TRUE) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
+  theme(legend.position = "bottom") +
+  scale_x_log10() +
+  xlab("Odds Ratios and 95% CIs") +
+  labs(caption = "Reference categories: Chisinau (region), urban (ecology)") +
+  theme(plot.caption.position = "plot")
+```
+:::
+::: {.column width="45%"}
+- Nothing consistently significant
+
+:::
+::::::
+
+## Attitudes
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(unification_models_plot, coef_map = coef_plot_attitudes, exponentiate = TRUE) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
+  scale_x_log10() +
+  theme(legend.position = "bottom") +
+  xlab("Odds Ratios and 95% CIs") 
+```
+:::
+::: {.column width="45%"}
+- Direction: good as significant (+)
+- Worries: poverty and interethnic relations are not significant
+  - Corruption: significant (+)
+  - War: significant (+)
+- EU membership: significant (+)
+- NATO membership: significant (+)
+
+:::
+::::::
+
+# International Organisations
+
+```{r, echo = FALSE}
+EU_support <- bop_panel %>%
+  group_by(wave, date, EU_For) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(
+    total      = sum(n),
+    percentage = n / total
+  ) %>%
+  filter(EU_For == 1) %>%
+  mutate(
+    se    = sqrt(percentage * (1 - percentage) / total),
+    lower = percentage - 1.96 * se,
+    upper = percentage + 1.96 * se
+  ) %>%
+  ungroup()
+
+EU_support$Variable <- "EU"
+EU_support <- EU_support %>%
+  select(-EU_For)
+
+Eurasia_support <- bop_panel %>%
+  group_by(wave, date, Eurasia_For) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(
+    total      = sum(n),
+    percentage = n / total
+  ) %>%
+  filter(Eurasia_For == 1) %>%
+  mutate(
+    se    = sqrt(percentage * (1 - percentage) / total),
+    lower = percentage - 1.96 * se,
+    upper = percentage + 1.96 * se
+  ) %>%
+  ungroup()
+
+Eurasia_support$Variable <- "Eurasia"
+Eurasia_support <- Eurasia_support %>%
+  select(-Eurasia_For)
+
+NATO_support <- bop_panel %>%
+  group_by(wave, date, Nato_For) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(
+    total      = sum(n),
+    percentage = n / total
+  ) %>%
+  filter(Nato_For == 1) %>%
+  mutate(
+    se    = sqrt(percentage * (1 - percentage) / total),
+    lower = percentage - 1.96 * se,
+    upper = percentage + 1.96 * se
+  ) %>%
+  ungroup()
+
+NATO_support$Variable <- "NATO"
+NATO_support <- NATO_support %>%
+  select(-Nato_For)
+
+IO_support <- rbind(EU_support, NATO_support, Eurasia_support)
+
+ggplot(IO_support, aes(x = date, y = percentage, color = Variable)) +
+  geom_line(linewidth = 0.8) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = Variable), 
+              alpha = 0.15, color = NA) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::percent) + 
+  labs(x = "Year",
+       y = "Percent")
+```
+
+*Support for joining the Eurasia Union gains from older respondents, those who identify as Russian, Ukrainian, Bulgarian, or Gagauz, complete the survey in Russia, have a lower socioeconomic level, reside in Gaguazia or the North, or in urban areas, worry about poverty, or name TV or the internet are important sources of media.*
+
+*Support for joining the Eurasia Union loses from those with a high level of education, those who worry about corruption, or think that Moldova is going in a good direction.*
+
+*Support for joining the EU gains from those who identify as Romanian, have a high level of education, high socioeconomic level, reside in rural areas, think that Moldova is heading in a good direction, or worry about war and corruption.*
+
+*Support for joining the EU loses from those answering the survey in Russian, reside in Gagauzia, the centre or north, and those who worry about inter-ethnic relations.*
+
+*Support for joining NATO gains from those who identify as Romanian, have a high socioeonomic level, think that Moldova is heading in a good direction, or worry about war or corruption.*
+
+*Support for NATO loses from those who complete the survey in Russian, or reside in the centre or north.*
+
+*Those residing in the South are less likely to support joining NATO but more likely to support joining the EU.*
+
+
+```{r, include = FALSE}
+IO_models <- list(
+  "EU" = glm(EU_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial),
+  "Eurasia" = glm(Eurasia_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial),
+  "NATO" = glm(Nato_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial)
+)
+```
+
+## Demographics
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(IO_models, coef_map = coef_plot_demographics, exponentiate = TRUE) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
+  scale_x_log10() +
+  theme(legend.position = "bottom") +
+  xlab("Odds Ratios and 95% CIs") +
+  labs(caption = "Reference categories: Man (gender), Moldovan ethnicity), Romanian (questionnaire language), medium (education), medium (socioeconomic status)") +
+  theme(plot.caption = element_textbox_simple(hjust = 0, halign = 0, margin = margin(t = 8)), plot.caption.position = "plot")
+```
+:::
+::: {.column width="45%"}
+- Age: significant for Eurasia (+)
+- Gender: women significant for EU and Eurasia (-)
+- Ethnicity:
+  - Romanian: significant for for EU and NATO (+), and Eurasia (-)
+  - Russian, Ukrainian, Gagauz, Bulgarian: significant for EU and NATO (-), and Eurasia (+)
+- Language: Russian as significant for EU and NATO (-) and Eurasia (+)
+- Education: low as significant for EU (-); Eurasia and NATO not significant
+  - High: significant for EU (+) and Eurasia (-)
+- Socioeconomics: low as significant or EU (-) and Eurasia (+)
+  - High: as significant for EU and NATO (+) and Eurasia (-)
+
+:::
+::::::
+
+## Geography
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(IO_models, coef_map = coef_plot_locations, exponentiate = TRUE) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
+  theme(legend.position = "bottom") +
+  scale_x_log10() +
+  xlab("Odds Ratios and 95% CIs") +
+  labs(caption = "Reference categories: Chisinau (region), urban (ecology)") +
+  theme(plot.caption.position = "plot")
+```
+:::
+::: {.column width="45%"}
+- Region
+  - Gagauzia: significant for Eurasia (+) and EU (-)
+  - Centre: significant for NATO and EU (-); not significant for Eurasia
+  - North: significant for NATO and EU (-) and Eurasia (+)
+  - South: significant fro NATO (-) and EU (+); not significant for Eurasia
+- Ecology: rural as significant for EU (+) and Eurasia (-)
+
+:::
+::::::
+
+## Attitudes
+:::::: {.columns}
+::: {.column width="55%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(IO_models, coef_map = coef_plot_attitudes, exponentiate = TRUE) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4) +
+  theme(legend.position = "bottom") +
+  xlab("Odds Ratios and 95% CIs") 
+```
+:::
+::: {.column width="45%"}
+- Direction: good as significant for EU and NATO (+) and Eurasia (-)
+- Worries:
+  - Poverty: significant for EU and NATO (-) and Eurasia (+)
+  - Corruption: significant for EU and NATO (+) and Eurasia (-)
+  - Inter-ethnic relations: significant for EU (-)
+  - War: significant for EU and NATO (+)
+- Media: TV as significant for Eurasia (+); not significant for others
+  - Internet as significant for Eurasia (+)
+
+:::
+::::::
+
+
