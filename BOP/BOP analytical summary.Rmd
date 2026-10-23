@@ -37,6 +37,10 @@ coef_plot_demographics <- c(
   "EthnicityRussian"              = "Russian",
   "EthnicityRomanian"             = "Romanian",
   "GenderWoman"                   = "Woman",
+  "Age.f75+" = "over 75 years",
+  "Age.f60-74" = "60-74 years",
+  "Age.f30-44"  = "30-44 years",
+  "Age.f18-29"                           = "18-29 years",
   "Age"                           = "Age (per year)"
 )
 
@@ -120,9 +124,9 @@ bop_panel %>%
 
 ```{r, include=FALSE}
 domestic_leaders <- list(
-  "Sandu" = glm(Sandu ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel),
-    "Sor" = glm(Sor ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel),
-  "Dodon" = glm(Dodon ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel)
+  "Sandu" = glm(Sandu ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel),
+    "Sor" = glm(Sor ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel),
+  "Dodon" = glm(Dodon ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + Putin + EU_For + year, data = bop_panel)
 )
 ```
 
@@ -153,7 +157,7 @@ domestic_leaders <- list(
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 modelplot(domestic_leaders, coef_map = coef_plot_demographics) + 
   aes(shape = model) +
-  geom_vline(xintercept = 0, color = 'black', alpha = 0.4) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4, linetype = "dashed") +
   theme(legend.position = "bottom") +
   xlab("Coefficient estimates and 95% CIs") +
   labs(caption = "Reference categories: Man (gender), Moldovan ethnicity), Romanian (questionnaire language), medium (education), medium (socioeconomic status)") +
@@ -270,8 +274,8 @@ bop_panel %>%
 
 ```{r, include = FALSE}
 international_leaders <- list(
-  "Putin" = glm(Putin ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + EU_For + year, data = bop_panel),
-  "Zelenskyy" = glm(Zelenskyy ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + EU_For + year, 
+  "Putin" = glm(Putin ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + EU_For + year, data = bop_panel),
+  "Zelenskyy" = glm(Zelenskyy ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Unification_For + EU_For + year, 
                 data = bop_panel)
 )
 
@@ -390,8 +394,8 @@ bop_panel %>%
 
 ```{r, include = FALSE}
 unification_models_plot <- list(
-  "EU" = glm(Unification_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + EU_For + year, data = bop_panel, family = binomial),
-  "NATO" = glm(Unification_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Nato_For + year, data = bop_panel, family = binomial)
+  "EU" = glm(Unification_For ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + EU_For + year, data = bop_panel, family = binomial),
+  "NATO" = glm(Unification_For ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + Nato_For + year, data = bop_panel, family = binomial)
 )
 ```
 
@@ -558,9 +562,9 @@ ggplot(IO_support, aes(x = date, y = percentage, color = Variable)) +
 
 ```{r, include = FALSE}
 IO_models <- list(
-  "EU" = glm(EU_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial),
-  "Eurasia" = glm(Eurasia_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial),
-  "NATO" = glm(Nato_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial)
+  "EU" = glm(EU_For ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial),
+  "Eurasia" = glm(Eurasia_For ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial),
+  "NATO" = glm(Nato_For ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial)
 )
 ```
 
@@ -624,7 +628,8 @@ modelplot(IO_models, coef_map = coef_plot_locations, exponentiate = TRUE) +
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 modelplot(IO_models, coef_map = coef_plot_attitudes, exponentiate = TRUE) + 
   aes(shape = model) +
-  geom_vline(xintercept = 1, color = 'black', alpha = 0.4) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
+  scale_x_log10() +
   theme(legend.position = "bottom") +
   xlab("Odds Ratios and 95% CIs") 
 ```
@@ -643,3 +648,65 @@ modelplot(IO_models, coef_map = coef_plot_attitudes, exponentiate = TRUE) +
 ::::::
 
 
+## Support for EU AND Eurasia
+```{r}
+bop_panel %>%
+  group_by(wave, date, EU_and_Eurasia) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(
+    total      = sum(n),
+    percentage = n / total
+  ) %>%
+  filter(EU_and_Eurasia == 1) %>%
+  mutate(
+    se    = sqrt(percentage * (1 - percentage) / total),
+    lower = percentage - 1.96 * se,
+    upper = percentage + 1.96 * se
+  ) %>%
+  ungroup() %>%
+  ggplot(aes(x = date, y = percentage)) +
+  geom_line(linewidth = 0.8) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+```{r}
+EU_and_Eurasia_model <- glm(Nato_For ~ Age + Gender + Ethnicity + Language_Questionnaire + Macro_Region + Ecology + Education + Socioeconomic + top_TV + top_internet + good + poverty + corruption + interethnic + war + year, data = bop_panel, family = binomial)
+```
+
+### Demographics
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(EU_and_Eurasia_model, coef_map = coef_plot_demographics, exponentiate = TRUE) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
+  scale_x_log10() +
+  theme(legend.position = "bottom") +
+  xlab("Odds Ratios and 95% CIs") +
+  labs(caption = "Reference categories: Man (gender), Moldovan ethnicity), Romanian (questionnaire language), medium (education), medium (socioeconomic status)") +
+  theme(plot.caption = element_textbox_simple(hjust = 0, halign = 0, margin = margin(t = 8)), plot.caption.position = "plot")
+```
+
+### Locations
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(EU_and_Eurasia_model, coef_map = coef_plot_locations, exponentiate = TRUE) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
+  theme(legend.position = "bottom") +
+  scale_x_log10() +
+  xlab("Odds Ratios and 95% CIs") +
+  labs(caption = "Reference categories: Chisinau (region), urban (ecology)") +
+  theme(plot.caption.position = "plot")
+```
+
+### Attitudes
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modelplot(EU_and_Eurasia_model, coef_map = coef_plot_attitudes, exponentiate = TRUE) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
+    scale_x_log10() +
+  theme(legend.position = "bottom") +
+  xlab("Odds Ratios and 95% CIs") 
+```

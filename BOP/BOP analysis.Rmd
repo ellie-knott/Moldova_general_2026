@@ -30,6 +30,8 @@ bop_panel$EU_VS <- ifelse(bop_panel$EU_vs_Eurasia == "EU", 1, 0)
 bop_panel$Eurasia_VS <- ifelse(bop_panel$EU_vs_Eurasia == "Eurasia", 1, 0)
 bop_panel$good <- ifelse(bop_panel$direction == "Good", 1, 0)
 bop_panel$bad <- ifelse(bop_panel$direction == "Bad", 1, 0)
+
+bop_panel$EU_and_Eurasia <- ifelse(bop_panel$Eurasia_For == "1" & bop_panel$EU_For == "1", 1, 0)
 ```
 
 ```{r}
@@ -43,6 +45,7 @@ bop_panel$interethnic <- as.integer(rowSums(bop_panel[worry_cols] == "Interethni
 ```{r}
 bop_panel$Socioeconomic <- fct_relevel(bop_panel$Socioeconomic, "medium")
 bop_panel$Education <- fct_relevel(bop_panel$Education, "medium")
+bop_panel$Age.f <- fct_relevel(bop_panel$Age.f, "45-59")
 ```
 
 ```{r}
@@ -1174,6 +1177,36 @@ ggplot(IO_support, aes(x = date, y = percentage, color = Variable)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+## Support for Eurasia AND EU
+```{r}
+bop_panel %>%
+  group_by(wave, date, EU_and_Eurasia) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(
+    total      = sum(n),
+    percentage = n / total
+  ) %>%
+  filter(EU_and_Eurasia == 1) %>%
+  mutate(
+    se    = sqrt(percentage * (1 - percentage) / total),
+    lower = percentage - 1.96 * se,
+    upper = percentage + 1.96 * se
+  ) %>%
+  ungroup() %>%
+  ggplot(aes(x = date, y = percentage)) +
+  geom_line(linewidth = 0.8) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```
+
+
 ## Models
 ```{r}
 IO_models <- list(

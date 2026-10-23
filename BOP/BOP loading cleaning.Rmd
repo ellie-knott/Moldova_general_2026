@@ -41,7 +41,7 @@ waves <- c(bop_nov_2017, bop_may_2018, bop_nov_2018, bop_dec_2019, bop_jun_2020,
 
 # Cleaning
 ```{r labels, include=FALSE}
-attr(bop_sep_2025$D6_3, "labels")
+attr(bop_sep_2025$D10_23, "label")
 attr(bop_oct_2024$E_3, "labels")
 attr(bop_aug_2023$D17_2, "labels")
 attr(bop_nov_2022$D17_1, "labels")
