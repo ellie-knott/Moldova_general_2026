@@ -30,8 +30,8 @@ bop_panel$EU_VS <- ifelse(bop_panel$EU_vs_Eurasia == "EU", 1, 0)
 bop_panel$Eurasia_VS <- ifelse(bop_panel$EU_vs_Eurasia == "Eurasia", 1, 0)
 bop_panel$good <- ifelse(bop_panel$direction == "Good", 1, 0)
 bop_panel$bad <- ifelse(bop_panel$direction == "Bad", 1, 0)
-
 bop_panel$EU_and_Eurasia <- ifelse(bop_panel$Eurasia_For == "1" & bop_panel$EU_For == "1", 1, 0)
+bop_panel$Elections_Yes <- ifelse(bop_panel$Elections == "Yes", 1, 0)
 ```
 
 ```{r}
