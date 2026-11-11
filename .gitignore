@@ -34,3 +34,8 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 .DS_Store
+<<<<<<< HEAD
+=======
+.DS_Store
+workspace.RData
+>>>>>>> aa3433c15812fd090d46a8ada7a6bd9e7b181a9d
