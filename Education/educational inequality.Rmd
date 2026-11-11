@@ -1,0 +1,502 @@
+---
+title: "Education inequality"
+output: html_document
+date: "2026-08-05"
+---
+
+```{r setup, include=FALSE}
+require(readtext)
+require(dplyr)
+require(ggplot2)
+require(forcats)
+require(tidyr)
+require(ggridges)
+```
+
+```{r}
+# loading data 
+lyceums <- read.csv("Education/ranks 2016 2018 2019 2022 2024 2026.csv")
+```
+
+# Grades
+
+```{r}
+# Making macro-regions
+lyceums$Macro.Region <- fct_collapse(lyceums$Region, 
+                               North = c("BRICENI", "EDINEŢ", "DONDUŞENI", "DROCHIA", "FĂLEŞTI", "FLOREŞTI", "GLODENI", "OCNIŢA", "RÎŞCANI", "SÎNGEREI", "SOROCA"),
+                               South = c("CANTEMIR", "CIMIŞLIA", "CĂUŞENI", "ŞTEFAN VODĂ", "BASARABEASCA", "CAHUL", "LEOVA", "TARACLIA", "BĂLŢI"),
+                               Centre = c("ŞOLDĂNEŞTI", "STRĂŞENI", "REZINA", "TELENEŞTI", "ORHEI", "CRIULENI", "ANENII NOI", "IALOVENI", "HÎNCEŞTI", "NISPORENI", "UNGHENI", "CĂLĂRAŞI"),
+                               Chișinău = c("CHIŞINĂU"),
+                               Găgăuzia = c("UTA GĂGĂUZIA"),
+                               Transnistria = c("DUBĂSARI", "TIRASPOL", "BENDER", "GRIGORIOPOL", "RÎBNIŢA"))
+
+```
+
+## Descriptives
+
+```{r}
+
+lyceums %>%
+  group_by(Macro.Region) %>%
+  summarise(
+    weighted_mean = weighted.mean(Average.grade, w = Total.candidates),
+    unweighted_mean = mean(Average.grade),
+    n_schools = n(),
+    total_students = sum(Total.candidates),
+    .groups = "drop"
+  )
+
+lyceums %>%
+  group_by(Language) %>%
+  summarise(
+    weighted_mean = weighted.mean(Average.grade, w = Total.candidates),
+    unweighted_mean = mean(Average.grade),
+    n_schools = n(),
+    total_students = sum(Total.candidates),
+    .groups = "drop"
+  )
+
+
+lyceums %>%
+  group_by(Type) %>%
+  summarise(
+    weighted_mean = weighted.mean(Average.grade, w = Total.candidates),
+    unweighted_mean = mean(Average.grade),
+    n_schools = n(),
+    total_students = sum(Total.candidates),
+    .groups = "drop"
+  )
+
+```
+
+## Regional summary
+```{r}
+# creating a regional summary
+
+regional_lyceums <- lyceums %>%
+  group_by(Region, Year) %>%
+  summarise(
+    weighted_mean = weighted.mean(Average.grade, w = Total.candidates),
+    unweighted_mean = mean(Average.grade),
+    n_schools = n(),
+    total_students = sum(Total.candidates),
+    .groups = "drop"
+  )
+```
+
+
+```{r}
+# dispersion by region
+
+regional_dispersion <- lyceums %>%
+  group_by(Region, Year) %>%
+  summarise(
+    sd_mark = sd(Average.grade),
+    iqr_mark = IQR(Average.grade),
+    cv = sd(Average.grade) / mean(Average.grade),   
+    .groups = "drop"
+  )
+```
+
+```{r}
+# joining data
+
+regional_full <- regional_lyceums %>%
+  left_join(regional_dispersion, by = c("Region", "Year"))
+```
+
+## Macro-regions
+```{r}
+# creating a macro regional summary
+
+macro.regional_lyceums <- lyceums %>%
+  group_by(Macro.Region, Year) %>%
+  summarise(
+    weighted_mean = weighted.mean(Average.grade, w = Total.candidates),
+    unweighted_mean = mean(Average.grade),
+    n_schools = n(),
+    total_students = sum(Total.candidates),
+    .groups = "drop"
+  )
+```
+
+
+```{r}
+# dispersion by region
+
+macro.regional_dispersion <- lyceums %>%
+  group_by(Macro.Region, Year) %>%
+  summarise(
+    sd_mark = sd(Average.grade),
+    iqr_mark = IQR(Average.grade),
+    cv = sd(Average.grade) / mean(Average.grade),   
+    .groups = "drop"
+  )
+```
+
+```{r}
+# joining data
+
+macro.regional_full <- macro.regional_lyceums %>%
+  left_join(macro.regional_dispersion, by = c("Macro.Region", "Year"))
+```
+
+
+#### Plots
+```{r}
+ggplot(macro.regional_full, aes(x = Year, y = weighted_mean, color = Macro.Region)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  labs(title = "Within-Region Dispersion Over Time",
+       y = "SD of School Grade", x = "Year") +
+  theme_minimal()
+
+ggplot(macro.regional_full, 
+       aes(y = weighted_mean, x = Year, color = Macro.Region)) +
+  geom_line(alpha = 0.7) +
+  theme_minimal()
+```
+
+```{r}
+ggplot(lyceums, aes(x = factor(Year), y = Average.grade)) +
+  geom_boxplot(outlier.alpha = 0.4) +
+  facet_wrap(~ Macro.Region) +
+  labs(title = "Distribution of School Grade by Region and Year",
+       x = "Year", y = "Average Grade") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_line(data = national_mean, aes(x = factor(Year), y = nat_mean, group = 1),
+            color = "red", alpha = 0.6, linewidth = 0.8, inherit.aes = FALSE) 
+```
+
+```{r}
+# how many schools in macro regions
+lyceums %>%
+  group_by(Macro.Region, Year) %>%
+  summarise(n_schools = n(), .groups = "drop") %>%
+  tidyr::pivot_wider(names_from = Year, values_from = n_schools)
+```
+
+
+### Deviation from National mean
+```{r}
+national_mean <- lyceums %>%
+  group_by(Year) %>%
+  summarise(nat_mean = weighted.mean(Average.grade, w = Total.candidates), .groups = "drop")
+```
+
+```{r}
+gap <-  macro.regional_full %>%
+  left_join(national_mean, by = "Year") %>%
+  mutate(gap = weighted_mean - nat_mean)
+```
+
+#### Plot
+```{r}
+ggplot(gap, aes(x = Year, y = gap, color = Macro.Region)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  labs(title = "Regional Gap from National Average Grade",
+       y = "Deviation from National Mean", x = "Year") +
+  theme_minimal()
+```
+
+### Variance over Time
+```{r}
+variance <- lyceums %>%
+  group_by(Year) %>%
+  summarise(
+    total_var = var(Average.grade),
+    between_var = var(ave(Average.grade, Macro.Region, FUN = mean)),
+    within_var = total_var - between_var,
+    .groups = "drop"
+  ) %>%
+  mutate(
+    pct_between = between_var / total_var * 100,
+    pct_within = within_var / total_var * 100
+  )
+
+ggplot(variance, aes(x = Year, y = pct_between)) +
+  geom_point(alpha = 0.8) +
+  geom_smooth(method = lm, color = "darkgrey") +
+  labs(title = "Share of Total Inequality: Between Region",
+       y = "% of Total Variance", x = "Year") +
+  theme_minimal()
+```
+
+### Beta-convergence scatter
+```{r}
+convergence_data <- macro.regional_full %>%
+  group_by(Macro.Region) %>%
+  summarise(
+    start_mark = weighted_mean[Year == min(Year)],
+    growth = (weighted_mean[Year == max(Year)] - weighted_mean[Year == min(Year)]) / weighted_mean[Year == min(Year)] * 100,
+    .groups = "drop"
+  )
+```
+
+```{r}
+ggplot(convergence_data, aes(x = start_mark, y = growth, label = Macro.Region)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = TRUE, color = "grey40") +
+  ggrepel::geom_text_repel() +
+  labs(title = "Beta-Convergence: Starting Grade vs Growth Rate",
+       x = "Starting Average Grade", y = "% Growth Over Period") +
+  theme_minimal()
+```
+
+```{r}
+ggplot(lyceums, aes(x = Average.grade, y = factor(Year), fill = Macro.Region)) +
+  geom_density_ridges(alpha = 0.6, scale = 1.2) +
+  facet_wrap(~ Macro.Region) +
+  labs(title = "Distribution of Grades Over Time, by Macro Region", x = "Average Grade", y = "Year") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Linguistic Inequality
+```{r}
+language_lyceums <- lyceums %>%
+  group_by(Language, Year) %>%
+  summarise(
+    weighted_mean = weighted.mean(Average.grade, w = Total.candidates),
+    unweighted_mean = mean(Average.grade),
+    n_schools = n(),
+    total_students = sum(Total.candidates),
+    .groups = "drop"
+  )
+```
+
+```{r}
+# dispersion by region
+
+language_dispersion <- lyceums %>%
+  group_by(Language, Year) %>%
+  summarise(
+    sd_mark = sd(Average.grade),
+    iqr_mark = IQR(Average.grade),
+    cv = sd(Average.grade) / mean(Average.grade),   
+    .groups = "drop"
+  )
+```
+
+```{r}
+# joining data
+
+language_full <- language_lyceums %>%
+  left_join(language_dispersion, by = c("Language", "Year"))
+```
+
+```{r}
+language_gap <-  language_full %>%
+  left_join(national_mean, by = "Year") %>%
+  mutate(gap = weighted_mean - nat_mean)
+
+language_gap.ro.rus <- language_gap %>% 
+  filter(Language %in% c("Russian", "Romanian", "Bilingual (Romanian, Russian)"))
+         
+```
+
+#### Plots
+```{r}
+ggplot(language_gap.ro.rus, aes(x = Year, y = gap, color = Language)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  labs(title = "Language Gap from National Average Grade",
+       y = "Deviation from National Mean", x = "Year") +
+  theme_minimal()
+```
+
+```{r}
+ggplot(lyceums, aes(x = factor(Year), y = Average.grade)) +
+  geom_boxplot(outlier.alpha = 0.4) +
+  facet_wrap(~ Language) +
+  labs(title = "Distribution of School Grades by Language and Year",
+       x = "Year", y = "Average Grade") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_line(data = national_mean, aes(x = factor(Year), y = nat_mean, group = 1),
+            color = "red", alpha = 0.6, linewidth = 0.8, inherit.aes = FALSE) 
+```
+
+```{r}
+ggplot(lyceums, aes(x = factor(Year), y = Average.grade)) +
+  geom_boxplot(outlier.alpha = 0.4) +
+  facet_wrap(~ Type) +
+  labs(title = "Distribution of School Grade by Urban/Rural and Year",
+       x = "Year", y = "Average Grade") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_line(data = national_mean, aes(x = factor(Year), y = nat_mean, group = 1),
+            color = "red", alpha = 0.6, linewidth = 0.8, inherit.aes = FALSE) 
+```
+
+### Variance over Time
+```{r}
+variance_language <- lyceums %>%
+  group_by(Year) %>%
+  summarise(
+    total_var = var(Average.grade),
+    between_var = var(ave(Average.grade, Language, FUN = mean)),
+    within_var = total_var - between_var,
+    .groups = "drop"
+  ) %>%
+  mutate(
+    pct_between = between_var / total_var * 100,
+    pct_within = within_var / total_var * 100
+  )
+
+ggplot(variance_language, aes(x = Year, y = pct_between)) +
+  geom_point(alpha = 0.8) +
+  geom_smooth(method = lm, color = "darkgrey") +
+  labs(title = "Share of Total Inequality: Between Language",
+       y = "% of Total Variance", x = "Year") +
+  theme_minimal()
+```
+
+### Beta-convergence scatter
+```{r}
+convergence_language_data <- language_full %>%
+  group_by(Language) %>%
+  summarise(
+    start_mark = weighted_mean[Year == min(Year)],
+    growth = (weighted_mean[Year == max(Year)] - weighted_mean[Year == min(Year)]) / weighted_mean[Year == min(Year)] * 100,
+    .groups = "drop"
+  )
+```
+
+```{r}
+ggplot(convergence_language_data, aes(x = start_mark, y = growth, label = Language)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = TRUE, color = "grey40") +
+  ggrepel::geom_text_repel() +
+  labs(title = "Beta-Convergence: Starting Grade vs Growth Rate",
+       x = "Starting Average Grade", y = "% Growth Over Period") +
+  theme_minimal()
+```
+
+## Language and Macro Regions
+```{r}
+
+language_region_lyceums <- lyceums %>%
+  group_by(Language, Macro.Region, Year) %>%
+  summarise(
+    weighted_mean = weighted.mean(Average.grade, w = Total.candidates),
+    unweighted_mean = mean(Average.grade),
+    n_schools = n(),
+    total_students = sum(Total.candidates),
+    .groups = "drop"
+  )
+```
+
+```{r}
+
+language_region_decomp <- lyceums %>%
+  group_by(Year) %>%
+  summarise(
+    total_var = var(Average.grade),
+    region_var = var(ave(Average.grade, Macro.Region, FUN = mean)),
+    region_lang_var = var(ave(Average.grade, Macro.Region, Language, FUN = mean)),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    pct_region_only = region_var / total_var * 100,
+    pct_added_by_language = (region_lang_var - region_var) / total_var * 100,
+    pct_within_region_lang = (total_var - region_lang_var) / total_var * 100
+  )
+```
+
+
+
+### Gap
+```{r}
+
+language_region_lyceums_gap <-  language_region_lyceums %>%
+  filter(Language %in% c("Russian", "Romanian", "Bilingual (Romanian, Russian)")) %>%  
+  left_join(national_mean, by = "Year") %>%
+  mutate(gap = weighted_mean - nat_mean)
+
+ggplot(language_region_lyceums_gap, aes(x = Year, y = gap, color = Language)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_wrap(~ Macro.Region) +
+  labs(title = "Language Gap from National Average Grade, by Region",
+       y = "Deviation from National Mean", x = "Year") +
+  theme_minimal()
+```
+
+### Model
+```{r}
+
+lyceums_no_NA <- na.omit(lyceums)
+
+model <- lm(Average.grade ~ factor(Macro.Region) + factor(Language) + factor(Type) + factor(Year), data = lyceums)
+
+model <- lm(Average.grade ~ Macro.Region * Language + factor(Type) + factor(Year), data = lyceums)
+
+summary(model)
+
+model2 <- lm(Graduation.rate ~ Macro.Region * Language + factor(Type) + factor(Year), data = lyceums)
+
+summary(model2)
+```
+
+```{r}
+ggplot(language_region_lyceums, aes(x = Year, y = weighted_mean, color = Language)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_wrap(~ Macro.Region) +
+  labs(title = "Average Marks by Language of Instruction, by Region, Over Time",
+       y = "Weighted Mean Mark", x = "Year") +
+  theme_minimal()
+
+```
+
+# Graduation Rate
+```{r}
+
+language_region_lyceums.gr <- lyceums %>%
+  group_by(Language, Macro.Region, Year) %>%
+  summarise(
+    weighted_mean = weighted.mean(Graduation.rate, w = Total.candidates),
+    unweighted_mean = mean(Graduation.rate),
+    n_schools = n(),
+    total_students = sum(Total.candidates),
+    .groups = "drop"
+  )
+
+ggplot(language_region_lyceums.gr, aes(x = Year, y = weighted_mean, color = Language)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_wrap(~ Macro.Region) +
+  labs(title = "Graduation Rate by Language of Instruction, by Region, Over Time",
+       y = "% Graduating", x = "Year") +
+  theme_minimal()
+```
+
+## Gap
+```{r}
+national_mean.gr <- lyceums %>%
+  group_by(Year) %>%
+  summarise(nat_mean = weighted.mean(Graduation.rate, w = Total.candidates), .groups = "drop")
+```
+
+```{r}
+
+language_region_lyceums_gr.gap <-  language_region_lyceums.gr %>%
+  filter(Language %in% c("Russian", "Romanian")) %>%  
+  left_join(national_mean.gr, by = "Year") %>%
+  mutate(gap = weighted_mean - nat_mean)
+
+ggplot(language_region_lyceums_gr.gap, aes(x = Year, y = gap, color = Language)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_wrap(~ Macro.Region) +
+  labs(title = "Language Gap from National Graduation Rate, by Region",
+       y = "Deviation from National Mean", x = "Year") +
+  theme_minimal()
+```

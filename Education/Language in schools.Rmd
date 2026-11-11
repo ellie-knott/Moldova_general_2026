@@ -1,0 +1,101 @@
+---
+title: "Language in schools"
+output: html_document
+date: "2026-08-13"
+---
+
+```{r setup, include=FALSE}
+require(readtext)
+require(dplyr)
+require(ggplot2)
+require(forcats)
+require(tidyr)
+require(ggridges)
+```
+
+```{r}
+language_2025 <- read.csv("Education/Raw data/institutii_2025_fixed.csv")
+language_2020 <- read.csv("Education/Raw data/institutii_2020_fixed.csv")
+```
+
+```{r}
+language_2025$year <- "2025"
+language_2020$year <- "2020"
+```
+
+```{r}
+language <- language_2020
+
+language <- language %>% 
+  rbind(language_2025)
+```
+
+```{r}
+
+language$Language <- fct_collapse(language$Limba, 
+                                  Romanian = c("Română"),
+                                  Russian = c("Rusă"),
+                                  Bilingual_Romanian_Russian = c("Română, Rusă"),
+                                  Bilingual_Other = c("Bulgara, Rusă","Alta, Română", "Alta, Română, Rusă", "Alta, Rusă", "Bulgara, Rusă", "Engleză, Română, Rusă", "Franceză, Română", "Rusă, Ucraineana"))
+```
+
+```{r}
+language$Type <- fct_collapse(language$Tip,
+  Middle_School = c("Gimnaziu"),
+  High_School = c("Liceu"),
+  Primary_School = c("Şcoală primară", "Școală primară-grădiniță"),
+  Combined_institutions = c("Gimnaziu-grădiniță", "Liceu – grădiniță"),
+  Special_education = c("Auxiliară", 
+                         "Pentru copii cu afecţiuni neuromotorii",
+                         "Pentru copii orbi şi slab văzători",
+                         "Pentru copii surzi şi hipoacuzici"))
+```
+
+```{r}
+language_counts <- language %>% 
+  count(year, Language, Type) %>%
+  group_by(year, Type) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ungroup()
+
+language_counts %>%
+  filter(Language == "Russian") %>%
+  ggplot(aes(x = year, y = pct, fill = year, group = year)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~Type)
+  labs(y = "Percent of Schools", color = "Language") +
+  theme_minimal()
+  
+language_counts %>%
+  filter(Language == "Bilingual_Romanian_Russian") %>%
+  ggplot(aes(x = year, y = pct, fill = year, group = year)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~Type)
+  labs(y = "Percent of Schools", color = "Language") +
+  theme_minimal()
+```
+
+```{r}
+language_counts_region <- language %>% 
+  count(year, Language, Raion, Type) %>%
+  group_by(year, Raion, Type) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ungroup()
+
+language_counts_region %>%
+  filter(Language == "Russian") %>%
+  ggplot(aes(x = year, y = pct, fill = Type, group = Type)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~Raion)
+  labs(y = "Percent of Schools", color = "Language") +
+  theme_minimal()
+  
+language_counts_region %>%
+  filter(Language == "Bilingual_Romanian_Russian") %>%
+  ggplot(aes(x = year, y = pct, fill = Type, group = Type)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~Raion)
+  labs(y = "Percent of Schools", color = "Language") +
+  theme_minimal()
+```
+```
