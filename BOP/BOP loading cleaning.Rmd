@@ -20,7 +20,6 @@ require(factoextra)
 ```{r}
 # loading data
 bop_sep_2026 <- read_sav("BOP/Surveys/Baza de date BOP_1809.sav")
-bop_sep_2026_GT <- read_sav("BOP/Surveys/Baza de date Gagauzia+Taraclia final 2309.sav")
 bop_sep_2025 <- read_sav("BOP/Surveys/DB_BOP_IPP_09_2025_1.SAV")
 bop_oct_2024 <- read_sav("BOP/Surveys/BOP_2024.10.SAV")
 bop_aug_2023 <- read_sav("BOP/Surveys/MD_BOP_August_2023_cleaned.sav")
@@ -61,7 +60,6 @@ attr(bop_nov_2017$D13, "label")
 ```{r}
 # adding date
 bop_sep_2026$date <- dmy("01-09-2026")
-bop_sep_2026_GT$date <- dmy("01-09-2026")
 bop_sep_2025$date <- dmy("01-09-2025")
 bop_oct_2024$date <- dmy("01-10-2024")
 bop_aug_2023$date <- dmy("01-08-2023")
@@ -77,7 +75,6 @@ bop_nov_2017$date <- dmy("01-11-2017")
 
 ```{r}
 # weights
-bop_sep_2026_GT$Weights <- bop_sep_2026_GT$weight
 bop_sep_2026$Weights <- bop_sep_2026$weight
 bop_sep_2025$Weights <- bop_sep_2025$W
 bop_oct_2024$Weights <- bop_oct_2024$W
@@ -92,13 +89,12 @@ bop_may_2018$Weights <- bop_may_2018$weight
 bop_nov_2017$Weights <- bop_nov_2017$weight_age_sex2
 ```
 
-## Demographics
+# Demographics
 
 ```{r}
 # Gender
 gender_labels <- c("Man", "Woman")
 
-bop_sep_2026_GT$Gender <-  factor(bop_sep_2026_GT$gen, labels = gender_labels)
 bop_sep_2026$Gender <- factor(bop_sep_2026$gen, labels = gender_labels)
 bop_sep_2025$Gender <- factor(bop_sep_2025$Genul, labels = gender_labels)
 bop_oct_2024$Gender <- factor(bop_oct_2024$S_8, labels = gender_labels)
@@ -116,7 +112,6 @@ bop_nov_2017$Gender <- factor(bop_nov_2017$S1, labels = gender_labels)
 ```{r}
 # Age
 
-bop_sep_2026_GT$Age <- bop_sep_2026_GT$varsta
 bop_sep_2026$Age <- bop_sep_2026$varsta
 bop_sep_2025$Age <- bop_sep_2025$G2
 bop_oct_2024$Age <- bop_oct_2024$S_2
@@ -133,8 +128,6 @@ bop_nov_2017$Age <- bop_nov_2017$S2
 # As factor
 age_levels <- c("18-29", "30-44", "45-59", "60-74", "75+")
 
-bop_sep_2026_GT$Age.f <- cut(bop_sep_2026_GT$Age, breaks = c(17, 29, 44, 59, 74, Inf), 
-                          labels = age_levels)
 bop_sep_2026$Age.f <- cut(bop_sep_2026$Age, breaks = c(17, 29, 44, 59, 74, Inf), 
                           labels = age_levels)
 bop_sep_2025$Age.f <- cut(bop_sep_2025$Age, breaks = c(17, 29, 44, 59, 74, Inf), 
@@ -248,6 +241,152 @@ bop_may_2018$Language_Questionnaire <- factor(bop_may_2018$Limba,
                                               labels = questionnaire_labels)
 bop_nov_2017$Language_Questionnaire <- factor(bop_nov_2017$S18, 
                                               labels = questionnaire_labels)
+```
+
+## Languages @ Home
+```{r}
+# Moldovan
+bop_nov_2017$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_may_2018$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2018$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_dec_2019$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_jun_2020$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2020$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_feb_2021$HomeLanguage_Moldovan <- factor(bop_feb_2021$S7_1, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2022$HomeLanguage_Moldovan <- factor(bop_nov_2022$S8_1, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_aug_2023$HomeLanguage_Moldovan <- factor(bop_aug_2023$S6_1, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2024$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2025$HomeLanguage_Moldovan <- factor(bop_sep_2025$S6_1, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2026$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+```
+
+```{r}
+# Romanian
+bop_nov_2017$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_may_2018$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2018$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_dec_2019$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_jun_2020$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2020$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_feb_2021$HomeLanguage_Romanian <- factor(bop_feb_2021$S7_2, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2022$HomeLanguage_Romanian <- factor(bop_nov_2022$S8_2, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_aug_2023$HomeLanguage_Romanian <- factor(bop_aug_2023$S6_2, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2024$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2025$HomeLanguage_Romanian <- factor(bop_sep_2025$S6_2, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2026$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+```
+
+```{r}
+# Russian
+bop_nov_2017$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_may_2018$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2018$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_dec_2019$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_jun_2020$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2020$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_feb_2021$HomeLanguage_Russian <- factor(bop_feb_2021$S7_3, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2022$HomeLanguage_Russian <- factor(bop_nov_2022$S8_3, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_aug_2023$HomeLanguage_Russian <- factor(bop_aug_2023$S6_3, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2024$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2025$HomeLanguage_Russian <- factor(bop_sep_2025$S6_3, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2026$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+```
+
+```{r}
+# Ukrainian
+bop_nov_2017$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_may_2018$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2018$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_dec_2019$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_jun_2020$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2020$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_feb_2021$HomeLanguage_Ukrainian <- factor(bop_feb_2021$S7_4, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2022$HomeLanguage_Ukrainian <- factor(bop_nov_2022$S8_4, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_aug_2023$HomeLanguage_Ukrainian <- factor(bop_aug_2023$S6_4, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2024$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2025$HomeLanguage_Ukrainian <- factor(bop_sep_2025$S6_4, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2026$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+```
+
+```{r}
+# Gagauz
+bop_nov_2017$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_may_2018$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2018$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_dec_2019$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_jun_2020$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2020$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_feb_2021$HomeLanguage_Gagauz <- factor(bop_feb_2021$S7_5, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2022$HomeLanguage_Gagauz <- factor(bop_nov_2022$S8_5, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_aug_2023$HomeLanguage_Gagauz <- factor(bop_aug_2023$S6_5, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2024$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2025$HomeLanguage_Gagauz <- factor(bop_sep_2025$S6_5, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2026$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+```
+
+```{r}
+# Other
+bop_nov_2017$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_may_2018$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2018$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_dec_2019$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_jun_2020$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2020$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_feb_2021$HomeLanguage_Other <- factor(bop_feb_2021$S7_6, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2022$HomeLanguage_Other <- factor(bop_nov_2022$S8_6, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_aug_2023$HomeLanguage_Other <- factor(bop_aug_2023$S6_6, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_oct_2024$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2025$HomeLanguage_Other <- factor(bop_sep_2025$S6_8, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_sep_2026$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+```
+
+```{r}
+# 2026 is different
+bop_sep_2026$HomeLanguage_One <- bop_sep_2026$limba_vorbita_O1
+bop_sep_2026$HomeLanguage_Two <- bop_sep_2026$limba_vorbita_O2
+
+# recoding
+# Moldovan
+bop_sep_2026$HomeLanguage_Moldovan <- factor(
+  ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
+         ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 1) |
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 1), 1, 2)),
+  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+
+# Romanian
+bop_sep_2026$HomeLanguage_Romanian <- factor(
+  ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
+         ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 2) |
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 2), 1, 2)),
+  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+
+# Russian
+bop_sep_2026$HomeLanguage_Russian <- factor(
+  ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
+         ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 3) |
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 3), 1, 2)),
+  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+
+# Ukrainian
+bop_sep_2026$HomeLanguage_Ukrainian <- factor(
+  ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
+         ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 4) |
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 4), 1, 2)),
+  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+
+# Gagauz
+bop_sep_2026$HomeLanguage_Gagauz <- factor(
+  ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
+         ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 5) |
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 5), 1, 2)),
+  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+
+# Other
+bop_sep_2026$HomeLanguage_Other <- factor(
+  ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
+         ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 6) |
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 6), 1, 2)),
+  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
 ```
 
 ```{r}
@@ -539,7 +678,7 @@ bop_nov_2017$Socioeconomic <- factor(bop_nov_2017$varimax,
                                      labels = socioeconomic_labels)
 ```
 
-## Moldova's Direction
+# Moldova's Direction
 ```{r}
 direction_labels <- c("Good", "Bad", "DK", "NR", NA)
 
@@ -569,7 +708,7 @@ bop_sep_2026$direction <- factor(bop_sep_2026$T_Q_2_1, levels = c(1:2, 8:9),
                                  labels = c("Good", "Bad", "DK", "NR"))
 ```
 
-## World's direction
+# World's direction
 ```{r}
 bop_nov_2017$direction_world <- factor(bop_nov_2017$A2, 
                                        levels = c(1, 2, 98, 99),
@@ -607,7 +746,7 @@ bop_sep_2026$direction_world <- factor(bop_sep_2026$T_Q_2_2,
                                        labels = c("Good", "Bad", "DK", "NR"))
 ```
 
-## Problems
+# Problems
 ```{r}
 # First 
 bop_sep_2026$First_Problem <- NA
@@ -826,7 +965,7 @@ bop_nov_2017$Third_Problem <- factor(bop_nov_2017$B6_3, levels = c(1:11, 100),
                                      labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
 ```
 
-## Media
+# Media
 ```{r}
 # first important media
 bop_sep_2026$Important_Media <- factor(bop_sep_2026$T_Q_14_1,
@@ -919,7 +1058,7 @@ bop_nov_2017$Trust_Media <- factor(bop_nov_2017$B11,
                                    labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "DK", "NR"))
 ```
 
-## Worries
+# Worries
 ```{r}
 # First worry
 bop_sep_2026$First_Worry <- factor(bop_sep_2026$T_Q_8_1, 
@@ -1001,7 +1140,915 @@ bop_nov_2017$Third_Worry <- factor(bop_nov_2017$B1_3, levels = c(1:15, 100),
 
 ```
 
-## Domestic Politics
+
+-----------
+
+# Socioeconomics
+
+```{r}
+# Job_Satisfaction
+bop_nov_2017$Job_Satisfaction <- factor(bop_nov_2017$B3_E, levels = 1:4)
+bop_may_2018$Job_Satisfaction <- factor(bop_may_2018$B3_05, levels = 1:4)
+bop_nov_2018$Job_Satisfaction <- factor(bop_nov_2018$B3_5, levels = 1:4)
+bop_dec_2019$Job_Satisfaction <- factor(bop_dec_2019$B3_5, levels = 1:4)
+bop_jun_2020$Job_Satisfaction <- NA
+bop_oct_2020$Job_Satisfaction <- factor(bop_oct_2020$B3_5, levels = 1:4)
+bop_feb_2021$Job_Satisfaction <- factor(bop_feb_2021$B3_5, levels = 1:4)
+bop_nov_2022$Job_Satisfaction <- factor(bop_nov_2022$B3_5, levels = 1:4)
+bop_aug_2023$Job_Satisfaction <- factor(bop_aug_2023$B3_5, levels = 1:4)
+bop_oct_2024$Job_Satisfaction <- factor(bop_oct_2024$B_2_5, levels = 1:4)
+bop_sep_2025$Job_Satisfaction <- factor(bop_sep_2025$B3_1, levels = 1:4)
+bop_sep_2026$Job_Satisfaction <- factor(bop_sep_2026$T_Q_10_6, levels = 1:4)
+```
+
+```{r}
+# Money_Satisfaction
+bop_nov_2017$Money_Satisfaction <- factor(bop_nov_2017$B3_F, levels = 1:4)
+bop_may_2018$Money_Satisfaction <- factor(bop_may_2018$B3_06, levels = 1:4)
+bop_nov_2018$Money_Satisfaction <- factor(bop_nov_2018$B3_6, levels = 1:4)
+bop_dec_2019$Money_Satisfaction <- factor(bop_dec_2019$B3_6, levels = 1:4)
+bop_jun_2020$Money_Satisfaction <- NA
+bop_oct_2020$Money_Satisfaction <- factor(bop_oct_2020$B3_6, levels = 1:4)
+bop_feb_2021$Money_Satisfaction <- factor(bop_feb_2021$B3_6, levels = 1:4)
+bop_nov_2022$Money_Satisfaction <- factor(bop_nov_2022$B3_6, levels = 1:4)
+bop_aug_2023$Money_Satisfaction <- factor(bop_aug_2023$B3_6, levels = 1:4)
+bop_oct_2024$Money_Satisfaction <- factor(bop_oct_2024$B_2_6, levels = 1:4)
+bop_sep_2025$Money_Satisfaction <- factor(bop_sep_2025$B3_6, levels = 1:4)
+bop_sep_2026$Money_Satisfaction <- factor(bop_sep_2026$T_Q_10_7, levels = 1:4)
+```
+
+```{r}
+# Savings_Perception
+bop_nov_2017$Income_Perception <- factor(bop_nov_2017$B7, levels = 1:5)
+bop_may_2018$Income_Perception <- factor(bop_may_2018$B7, levels = 1:5)
+bop_nov_2018$Income_Perception <- factor(bop_nov_2018$B7, levels = 1:5)
+bop_dec_2019$Income_Perception <- factor(bop_dec_2019$B7, levels = 1:5)
+bop_jun_2020$Income_Perception <- factor(bop_jun_2020$B3, levels = 1:5)
+bop_oct_2020$Income_Perception <- factor(bop_oct_2020$B7, levels = 1:5)
+bop_feb_2021$Income_Perception <- factor(bop_feb_2021$B7, levels = 1:5)
+bop_nov_2022$Income_Perception <- factor(bop_nov_2022$B8, levels = 1:5)
+bop_aug_2023$Income_Perception <- factor(bop_aug_2023$B6, levels = 1:5)
+bop_oct_2024$Income_Perception <- factor(NA, levels = 1:5)
+bop_sep_2025$Income_Perception <- factor(bop_sep_2025$B7, levels = 1:5)
+bop_sep_2026$Income_Perception <- factor(bop_sep_2026$Q_69, levels = 1:5)
+```
+
+```{r}
+# Savings
+bop_nov_2017$Savings_Perception <- factor(bop_nov_2017$B8, levels = 1:6)
+bop_may_2018$Savings_Perception <- factor(bop_may_2018$B8, levels = 1:6)
+bop_nov_2018$Savings_Perception <- factor(bop_nov_2018$B8, levels = 1:6)
+bop_dec_2019$Savings_Perception <- factor(bop_dec_2019$B8, levels = 1:6)
+bop_jun_2020$Savings_Perception <- factor(NA, levels = 1:6)
+bop_oct_2020$Savings_Perception <- factor(bop_oct_2020$B8, levels = 1:6)
+bop_feb_2021$Savings_Perception <- factor(NA, levels = 1:6)
+bop_nov_2022$Savings_Perception <- factor(bop_nov_2022$B9, levels = 1:6)
+bop_aug_2023$Savings_Perception <- factor(NA, levels = 1:6)
+bop_oct_2024$Savings_Perception <- factor(NA, levels = 1:6)
+bop_sep_2025$Savings_Perception <- factor(NA, levels = 1:6)
+bop_sep_2026$Savings_Perception <- factor(NA, levels = 1:6)
+```
+
+```{r}
+# Income_Actual
+
+# income maps to help harmonise
+map_2017    <- c(1,1,1,1,1,2,2,3,3,4,4,5)               
+map_may2018 <- c(1,1,1,2,2,3,3,4,4,5,5,5)               
+map_nov2018 <- map_2017
+map_2019    <- c(1,1,1,1,1,2,2,3,3,4,4,5,5,5,5)         
+map_jun2020 <- map_2017
+map_2024    <- c(1,2,3,4,5,5,5,5,5)                    
+
+bop_nov_2017$Income_Actual <- map_2017[as.numeric(bop_nov_2017$S14)]
+bop_may_2018$Income_Actual <- map_may2018[as.numeric(bop_may_2018$S14)]
+bop_nov_2018$Income_Actual <- map_nov2018[as.numeric(bop_nov_2018$S14)]
+bop_dec_2019$Income_Actual <- map_2019[as.numeric(bop_dec_2019$S15)]
+bop_jun_2020$Income_Actual <- map_jun2020[as.numeric(bop_jun_2020$S7)]
+bop_oct_2020$Income_Actual <- NA
+bop_feb_2021$Income_Actual <- NA
+bop_nov_2022$Income_Actual <- NA
+bop_aug_2023$Income_Actual <- NA
+bop_oct_2024$Income_Actual <- map_2024[as.numeric(bop_oct_2024$S_10)]
+bop_sep_2025$Income_Actual <- NA
+bop_sep_2026$Income_Actual <- NA
+```
+
+```{r}
+# Turn into labelled factors (same levels in every wave)
+inc_labels <- c("<=2000", "2001-4000", "4001-6000", "6001-8000", ">8000")
+
+bop_nov_2017$Income_Actual <- factor(bop_nov_2017$Income_Actual, levels = 1:5, labels = inc_labels)
+bop_may_2018$Income_Actual <- factor(bop_may_2018$Income_Actual, levels = 1:5, labels = inc_labels)
+bop_nov_2018$Income_Actual <- factor(bop_nov_2018$Income_Actual, levels = 1:5, labels = inc_labels)
+bop_dec_2019$Income_Actual <- factor(bop_dec_2019$Income_Actual, levels = 1:5, labels = inc_labels)
+bop_jun_2020$Income_Actual <- factor(bop_jun_2020$Income_Actual, levels = 1:5, labels = inc_labels)
+bop_oct_2020$Income_Actual <- factor(NA, levels = 1:5, labels = inc_labels)
+bop_feb_2021$Income_Actual <- factor(NA, levels = 1:5, labels = inc_labels)
+bop_nov_2022$Income_Actual <- factor(NA, levels = 1:5, labels = inc_labels)
+bop_aug_2023$Income_Actual <- factor(NA, levels = 1:5, labels = inc_labels)
+bop_oct_2024$Income_Actual <- factor(bop_oct_2024$Income_Actual, levels = 1:5, labels = inc_labels)
+bop_sep_2025$Income_Actual <- factor(NA, levels = 1:5, labels = inc_labels)
+bop_sep_2026$Income_Actual <- factor(NA, levels = 1:5, labels = inc_labels)
+```
+
+```{r}
+# Land_Ownership
+bop_nov_2017$Land_Ownership <- factor(bop_nov_2017$S16_1, labels = c("Yes", "No", "DK/NR"))
+bop_may_2018$Land_Ownership <- factor(bop_may_2018$S15_01, labels = c("Yes", "No", "DK/NR"))
+bop_nov_2018$Land_Ownership <- factor(bop_nov_2018$S16_1, labels = c("Yes", "No", "DK/NR"))
+bop_dec_2019$Land_Ownership <- factor(bop_dec_2019$S16_1, labels = c("Yes", "No", "DK/NR", "DK/NR"))
+bop_jun_2020$Land_Ownership <- NA
+bop_oct_2020$Land_Ownership <- NA
+bop_feb_2021$Land_Ownership <- NA
+bop_nov_2022$Land_Ownership <- NA
+bop_aug_2023$Land_Ownership <- NA
+bop_oct_2024$Land_Ownership <- NA
+bop_sep_2025$Land_Ownership <- NA
+bop_sep_2026$Land_Ownership <- factor(bop_sep_2026$T_Q_80_1, labels = c("Yes", "No", "DK/NR"))
+```
+
+```{r}
+# Home_Ownership
+bop_nov_2017$Home_Ownership <- factor(bop_nov_2017$S16_2, labels = c("Yes", "No", "DK/NR"))
+bop_may_2018$Home_Ownership <- factor(bop_may_2018$S15_02, labels = c("Yes", "No", "DK/NR"))
+bop_nov_2018$Home_Ownership <- factor(bop_nov_2018$S16_2, labels = c("Yes", "No", "DK/NR"))
+bop_dec_2019$Home_Ownership <- factor(bop_dec_2019$S16_2, labels = c("Yes", "No", "DK/NR", "DK/NR"))
+bop_jun_2020$Home_Ownership <- NA
+bop_oct_2020$Home_Ownership <- NA
+bop_feb_2021$Home_Ownership <- NA
+bop_nov_2022$Home_Ownership <- NA
+bop_aug_2023$Home_Ownership <- NA
+bop_oct_2024$Home_Ownership <- NA
+bop_sep_2025$Home_Ownership <- NA
+bop_sep_2026$Home_Ownership <- factor(bop_sep_2026$T_Q_80_2, labels = c("Yes", "No", "DK/NR"))
+```
+
+```{r}
+# Water_Access
+bop_nov_2017$Water_Access <- factor(bop_nov_2017$S17_1, labels = c("Yes", "No"))
+bop_may_2018$Water_Access <- factor(bop_may_2018$S16_01, labels = c("Yes", "No", "DK/NR"))
+bop_nov_2018$Water_Access <- factor(bop_nov_2018$S17_1, labels = c("Yes", "No"))
+bop_dec_2019$Water_Access <- factor(bop_dec_2019$S17_1, labels = c("Yes", "No", "DK/NR", "DK/NR"))
+bop_jun_2020$Water_Access <- NA
+bop_oct_2020$Water_Access <- factor(bop_oct_2020$S11_1, labels = c("Yes", "No"))
+bop_feb_2021$Water_Access <- factor(bop_feb_2021$S8_1, labels = c("Yes", "No", "DK/NR"))
+bop_nov_2022$Water_Access <- factor(bop_nov_2022$S9_1, labels = c("Yes", "No"))
+bop_aug_2023$Water_Access <- factor(bop_aug_2023$S7_1, labels = c("Yes", "No"))
+bop_oct_2024$Water_Access <- NA
+bop_sep_2025$Water_Access <- factor(bop_sep_2025$S9_1, labels = c("Yes", "No", "DK/NR"))
+bop_sep_2026$Water_Access <- factor(bop_sep_2026$T_Q_81_1, labels = c("Yes", "No", "DK/NR"))
+```
+
+```{r}
+# Gas_Access
+bop_nov_2017$Gas_Access <- factor(bop_nov_2017$S17_3, labels = c("Yes", "No"))
+bop_may_2018$Gas_Access <- factor(bop_may_2018$S16_03, labels = c("Yes", "No", "DK/NR"))
+bop_nov_2018$Gas_Access <- factor(bop_nov_2018$S17_3, labels = c("Yes", "No"))
+bop_dec_2019$Gas_Access <- factor(bop_dec_2019$S17_3, labels = c("Yes", "No", "DK/NR", "DK/NR"))
+bop_jun_2020$Gas_Access <- NA
+bop_oct_2020$Gas_Access <- factor(bop_oct_2020$S11_2, labels = c("Yes", "No"))
+bop_feb_2021$Gas_Access <- factor(bop_feb_2021$S8_2, labels = c("Yes", "No"))
+bop_nov_2022$Gas_Access <- factor(bop_nov_2022$S9_2, labels = c("Yes", "No"))
+bop_aug_2023$Gas_Access <- factor(bop_aug_2023$S7_2, labels = c("Yes", "No"))
+bop_oct_2024$Gas_Access <- NA
+bop_sep_2025$Gas_Access <- factor(bop_sep_2025$S9_2, labels = c("Yes", "No", "DK/NR"))
+bop_sep_2026$Gas_Access <- factor(bop_sep_2026$T_Q_81_3, labels = c("Yes", "No", "DK/NR"))
+```
+
+```{r}
+# Car_Access
+bop_nov_2017$Car_Access <- factor(bop_nov_2017$S17_4, labels = c("Yes", "No"))
+bop_may_2018$Car_Access <- factor(bop_may_2018$S16_04, labels = c("Yes", "No", "DK/NR"))
+bop_nov_2018$Car_Access <- factor(bop_nov_2018$S17_4, labels = c("Yes", "No"))
+bop_dec_2019$Car_Access <- factor(bop_dec_2019$S17_4, labels = c("Yes", "No", "DK/NR", "DK/NR"))
+bop_jun_2020$Car_Access <- NA
+bop_oct_2020$Car_Access <- factor(bop_oct_2020$S11_3, labels = c("Yes", "No"))
+bop_feb_2021$Car_Access <- factor(bop_feb_2021$S8_3, labels = c("Yes", "No"))
+bop_nov_2022$Car_Access <- factor(bop_nov_2022$S9_3, labels = c("Yes", "No"))
+bop_aug_2023$Car_Access <- factor(bop_aug_2023$S7_3, labels = c("Yes", "No"))
+bop_oct_2024$Car_Access <- NA
+bop_sep_2025$Car_Access <- factor(bop_sep_2025$S9_3, labels = c("Yes", "No", "DK/NR"))
+bop_sep_2026$Car_Access <- factor(bop_sep_2026$T_Q_81_4, labels = c("Yes", "No", "DK/NR"))
+```
+
+```{r}
+# WashingMachine_Access
+bop_nov_2017$WashingMachine_Access <- factor(bop_nov_2017$S17_7, labels = c("Yes", "No"))
+bop_may_2018$WashingMachine_Access <- factor(bop_may_2018$S16_07, labels = c("Yes", "No", "DK/NR"))
+bop_nov_2018$WashingMachine_Access <- factor(bop_nov_2018$S17_7, labels = c("Yes", "No"))
+bop_dec_2019$WashingMachine_Access <- factor(bop_dec_2019$S17_7, labels = c("Yes", "No", "DK/NR", "DK/NR"))
+bop_jun_2020$WashingMachine_Access <- NA
+bop_oct_2020$WashingMachine_Access <- factor(bop_oct_2020$S11_5, labels = c("Yes", "No"))
+bop_feb_2021$WashingMachine_Access <- factor(bop_feb_2021$S8_5, labels = c("Yes", "No"))
+bop_nov_2022$WashingMachine_Access <- factor(bop_nov_2022$S9_5, labels = c("Yes", "No"))
+bop_aug_2023$WashingMachine_Access <- factor(bop_aug_2023$S7_5, labels = c("Yes", "No"))
+bop_oct_2024$WashingMachine_Access <- NA
+bop_sep_2025$WashingMachine_Access <- factor(bop_sep_2025$S9_5, labels = c("Yes", "No", "DK/NR"))
+bop_sep_2026$WashingMachine_Access <- factor(bop_sep_2026$T_Q_81_7, labels = c("Yes", "No", "DK/NR"))
+```
+
+```{r}
+# DoubleGlazing_Access
+bop_nov_2017$DoubleGlazing_Access <- NA
+bop_may_2018$DoubleGlazing_Access <- NA
+bop_nov_2018$DoubleGlazing_Access <- NA
+bop_dec_2019$DoubleGlazing_Access <- NA
+bop_jun_2020$DoubleGlazing_Access <- NA
+bop_oct_2020$DoubleGlazing_Access <- factor(bop_oct_2020$S11_9, labels = c("Yes", "No"))
+bop_feb_2021$DoubleGlazing_Access <- factor(bop_feb_2021$S8_9, labels = c("Yes", "No"))
+bop_nov_2022$DoubleGlazing_Access <- factor(bop_nov_2022$S9_9, labels = c("Yes", "No"))
+bop_aug_2023$DoubleGlazing_Access <- factor(bop_aug_2023$S7_9, labels = c("Yes", "No"))
+bop_oct_2024$DoubleGlazing_Access <- NA
+bop_sep_2025$DoubleGlazing_Access <- factor(bop_sep_2025$S9_9, labels = c("Yes", "No", "DK/NR"))
+bop_sep_2026$DoubleGlazing_Access <- NA
+```
+
+```{r}
+# FridgeFreezer_Access
+bop_nov_2017$FridgeFreezer_Access <- factor(bop_nov_2017$S17_10, labels = c("Yes", "No"))
+bop_may_2018$FridgeFreezer_Access <- factor(bop_may_2018$S16_10, labels = c("Yes", "No", "DK/NR"))
+bop_nov_2018$FridgeFreezer_Access <- factor(bop_nov_2018$S17_10, labels = c("Yes", "No"))
+bop_dec_2019$FridgeFreezer_Access <- factor(bop_dec_2019$S17_10, labels = c("Yes", "No", "DK/NR", "DK/NR"))
+bop_jun_2020$FridgeFreezer_Access <- NA
+bop_oct_2020$FridgeFreezer_Access <- NA
+bop_feb_2021$FridgeFreezer_Access <- NA
+bop_nov_2022$FridgeFreezer_Access <- NA
+bop_aug_2023$FridgeFreezer_Access <- NA
+bop_oct_2024$FridgeFreezer_Access <- NA
+bop_sep_2025$FridgeFreezer_Access <- NA
+bop_sep_2026$FridgeFreezer_Access <- factor(bop_sep_2026$T_Q_81_11, labels = c("Yes", "No", "DK/NR"))
+```
+
+```{r}
+# Internet_Access
+bop_nov_2017$Internet_Access <- factor(bop_nov_2017$S17_12, labels = c("Yes", "No"))
+bop_may_2018$Internet_Access <- factor(bop_may_2018$S16_12, labels = c("Yes", "No", "DK/NR"))
+bop_nov_2018$Internet_Access <- factor(bop_nov_2018$S17_12, labels = c("Yes", "No"))
+bop_dec_2019$Internet_Access <- factor(bop_dec_2019$S17_12, labels = c("Yes", "No", "DK/NR", "DK/NR"))
+bop_jun_2020$Internet_Access <- NA
+bop_oct_2020$Internet_Access <- factor(bop_oct_2020$S11_12, labels = c("Yes", "No"))
+bop_feb_2021$Internet_Access <- factor(bop_feb_2021$S8_12, labels = c("Yes", "No"))
+bop_nov_2022$Internet_Access <- factor(bop_nov_2022$S9_12, labels = c("Yes", "No"))
+bop_aug_2023$Internet_Access <- factor(bop_aug_2023$S7_12, labels = c("Yes", "No"))
+bop_oct_2024$Internet_Access <- NA
+bop_sep_2025$Internet_Access <- factor(bop_sep_2025$S9_12, labels = c("Yes", "No", "DK/NR"))
+bop_sep_2026$Internet_Access <- NA
+```
+
+-----------
+
+# Mass-Elite Dynamics
+
+```{r}
+# PoliticalLife_Satisfaction 
+bop_nov_2017$PoliticalLife_Satisfaction <- factor(bop_nov_2017$B3_G, levels = 1:4)
+bop_may_2018$PoliticalLife_Satisfaction <- factor(bop_may_2018$B3_07, levels = 1:4)
+bop_nov_2018$PoliticalLife_Satisfaction <- factor(bop_nov_2018$B3_7, levels = 1:4)
+bop_dec_2019$PoliticalLife_Satisfaction <- factor(bop_dec_2019$B3_7, levels = 1:4)
+bop_jun_2020$PoliticalLife_Satisfaction <- NA
+bop_oct_2020$PoliticalLife_Satisfaction <- factor(bop_oct_2020$B3_7, levels = 1:4)
+bop_feb_2021$PoliticalLife_Satisfaction <- factor(bop_feb_2021$B3_7, levels = 1:4)
+bop_nov_2022$PoliticalLife_Satisfaction <- factor(bop_nov_2022$B3_7, levels = 1:4)
+bop_aug_2023$PoliticalLife_Satisfaction <- factor(bop_aug_2023$B3_7, levels = 1:4)
+bop_oct_2024$PoliticalLife_Satisfaction <- factor(bop_oct_2024$B_2_7, levels = 1:4)
+bop_sep_2025$PoliticalLife_Satisfaction <- factor(bop_sep_2025$B3_7, levels = 1:4)
+bop_sep_2026$PoliticalLife_Satisfaction <- factor(bop_sep_2026$T_Q_10_8, levels = 1:4)
+```
+
+```{r}
+# WillofPeople
+bop_nov_2017$WillofPeople <- factor(bop_nov_2017$C10, levels = 1:2, labels = c("Yes", "No"))
+bop_may_2018$WillofPeople <- factor(bop_may_2018$C9, levels = 1:2, labels = c("Yes", "No"))
+bop_nov_2018$WillofPeople <- factor(bop_nov_2018$C9, levels = 1:2, labels = c("Yes", "No"))
+bop_dec_2019$WillofPeople <- factor(bop_dec_2019$C32, levels = 1:2, labels = c("Yes", "No"))
+bop_jun_2020$WillofPeople <- factor(bop_jun_2020$C8, levels = 1:2, labels = c("Yes", "No"))
+bop_oct_2020$WillofPeople <- factor(bop_oct_2020$C13, levels = 1:2, labels = c("Yes", "No"))
+bop_feb_2021$WillofPeople <- factor(bop_feb_2021$D13, levels = 1:2, labels = c("Yes", "No"))
+bop_nov_2022$WillofPeople <- factor(bop_nov_2022$D1, levels = 1:2, labels = c("Yes", "No"))
+bop_aug_2023$WillofPeople <- factor(bop_aug_2023$D1, levels = 1:2, labels = c("Yes", "No"))
+bop_oct_2024$WillofPeople <- NA
+bop_sep_2025$WillofPeople <- factor(bop_sep_2025$D4, levels = 1:2, labels = c("Yes", "No"))
+bop_sep_2026$WillofPeople <- factor(bop_sep_2026$T_Q_22_1, levels = 1:2, labels = c("Yes", "No"))
+```
+
+```{r}
+# President_Represented 
+bop_nov_2017$President_Represented <- factor(bop_nov_2017$E1, levels = 1:4)
+bop_may_2018$President_Represented <- NA
+bop_nov_2018$President_Represented <- NA
+bop_dec_2019$President_Represented <- NA
+bop_jun_2020$President_Represented <- NA
+bop_oct_2020$President_Represented <- NA
+bop_feb_2021$President_Represented <- NA
+bop_nov_2022$President_Represented <- factor(bop_nov_2022$D6, levels = 1:4)
+bop_aug_2023$President_Represented <- NA
+bop_oct_2024$President_Represented <- factor(bop_oct_2024$C_15_17, levels = 1:4)
+bop_sep_2025$President_Represented <- NA
+bop_sep_2026$President_Represented <- NA
+```
+
+```{r}
+# MillionDollarTheft
+bop_nov_2017$MillionDollarTheft <- factor(bop_nov_2017$E6, levels = 1:4)
+```
+
+```{r}
+# Country_Influence
+bop_feb_2021$Country_Influence <- factor(bop_feb_2021$D2_2, levels = 1:4)
+bop_sep_2025$Country_Influence <- factor(bop_sep_2025$D3_2, levels = 1:4)
+```
+
+```{r}
+# Represented 
+bop_sep_2026$Represented <- factor(bop_sep_2026$Q_31, levels = 1:2, labels = c("Yes", "No"))
+```
+
+-----------
+
+# Political Values & Satisfaction
+
+## Satisfaction
+```{r}
+# Jobs_Leadership
+bop_nov_2017$Jobs_Leadership <- factor(bop_nov_2017$A3_1, levels = 1:4)
+bop_may_2018$Jobs_Leadership <- factor(bop_may_2018$A3_01, levels = 1:4)
+bop_nov_2018$Jobs_Leadership <- factor(bop_nov_2018$A3_1, levels = 1:4)
+bop_dec_2019$Jobs_Leadership <- factor(bop_dec_2019$A3_1, levels = 1:4)
+bop_jun_2020$Jobs_Leadership <- factor(NA, levels = 1:4)
+bop_oct_2020$Jobs_Leadership <- factor(bop_oct_2020$A3_1, levels = 1:4)
+bop_feb_2021$Jobs_Leadership <- factor(bop_feb_2021$A3_1, levels = 1:4)
+bop_nov_2022$Jobs_Leadership <- factor(bop_nov_2022$A3_1, levels = 1:4)
+bop_aug_2023$Jobs_Leadership <- factor(bop_aug_2023$A3_1, levels = 1:4)
+bop_oct_2024$Jobs_Leadership <- factor(NA, levels = 1:4)
+bop_sep_2025$Jobs_Leadership <- factor(bop_sep_2025$A3_1, levels = 1:4)
+bop_sep_2026$Jobs_Leadership <- factor(bop_sep_2026$T_Q_6_1, levels = 1:4)
+```
+
+
+```{r}
+# StandardofLiving_Leadership
+bop_nov_2017$StandardofLiving_Leadership <- factor(bop_nov_2017$A3_2, levels = 1:4)
+bop_may_2018$StandardofLiving_Leadership <- factor(bop_may_2018$A3_02, levels = 1:4)
+bop_nov_2018$StandardofLiving_Leadership <- factor(bop_nov_2018$A3_2, levels = 1:4)
+bop_dec_2019$StandardofLiving_Leadership <- factor(bop_dec_2019$A3_2, levels = 1:4)
+bop_jun_2020$StandardofLiving_Leadership <- factor(NA, levels = 1:4)
+bop_oct_2020$StandardofLiving_Leadership <- factor(bop_oct_2020$A3_2, levels = 1:4)
+bop_feb_2021$StandardofLiving_Leadership <- factor(bop_feb_2021$A3_2, levels = 1:4)
+bop_nov_2022$StandardofLiving_Leadership <- factor(bop_nov_2022$A3_2, levels = 1:4)
+bop_aug_2023$StandardofLiving_Leadership <- factor(bop_aug_2023$A3_2, levels = 1:4)
+bop_oct_2024$StandardofLiving_Leadership <- factor(NA, levels = 1:4)
+bop_sep_2025$StandardofLiving_Leadership <- factor(bop_sep_2025$A3_2, levels = 1:4)
+bop_sep_2026$StandardofLiving_Leadership <- factor(bop_sep_2026$T_Q_6_2, levels = 1:4)
+```
+
+```{r}
+# Wages_Leadership
+bop_nov_2017$Wages_Leadership <- factor(bop_nov_2017$A3_3, levels = 1:4)
+bop_may_2018$Wages_Leadership <- factor(bop_may_2018$A3_03,levels = 1:4)
+bop_nov_2018$Wages_Leadership <- factor(bop_nov_2018$A3_3,levels = 1:4)
+bop_dec_2019$Wages_Leadership <- factor(bop_dec_2019$A3_3,levels = 1:4)
+bop_jun_2020$Wages_Leadership <- factor(NA,levels = 1:4)
+bop_oct_2020$Wages_Leadership <- factor(bop_oct_2020$A3_3,levels = 1:4)
+bop_feb_2021$Wages_Leadership <- factor(bop_feb_2021$A3_3,levels = 1:4)
+bop_nov_2022$Wages_Leadership <- factor(bop_nov_2022$A3_3,levels = 1:4)
+bop_aug_2023$Wages_Leadership <- factor(bop_aug_2023$A3_3,levels = 1:4)
+bop_oct_2024$Wages_Leadership <- factor(NA,levels = 1:4)
+bop_sep_2025$Wages_Leadership <- factor(bop_sep_2025$A3_3,levels = 1:4)
+bop_sep_2026$Wages_Leadership <- factor(bop_sep_2026$T_Q_6_3,levels = 1:4)
+```
+
+```{r}
+# Pensions_Leadership
+bop_nov_2017$Pensions_Leadership <- factor(bop_nov_2017$A3_4,levels = 1:4)
+bop_may_2018$Pensions_Leadership <- factor(bop_may_2018$A3_04,levels = 1:4)
+bop_nov_2018$Pensions_Leadership <- factor(bop_nov_2018$A3_4,levels = 1:4)
+bop_dec_2019$Pensions_Leadership <- factor(bop_dec_2019$A3_4,levels = 1:4)
+bop_jun_2020$Pensions_Leadership <- factor(NA,levels = 1:4)
+bop_oct_2020$Pensions_Leadership <- factor(bop_oct_2020$A3_4,levels = 1:4)
+bop_feb_2021$Pensions_Leadership <- factor(bop_feb_2021$A3_4,levels = 1:4)
+bop_nov_2022$Pensions_Leadership <- factor(bop_nov_2022$A3_4,levels = 1:4)
+bop_aug_2023$Pensions_Leadership <- factor(bop_aug_2023$A3_4,levels = 1:4)
+bop_oct_2024$Pensions_Leadership <- factor(NA,levels = 1:4)
+bop_sep_2025$Pensions_Leadership <- factor(bop_sep_2025$A3_4,levels = 1:4)
+bop_sep_2026$Pensions_Leadership <- factor(bop_sep_2026$T_Q_6_4,levels = 1:4)
+```
+
+```{r}
+# Corruption_Leadership
+bop_nov_2017$Corruption_Leadership <- factor(bop_nov_2017$A3_5,levels = 1:4)
+bop_may_2018$Corruption_Leadership <- factor(bop_may_2018$A3_05,levels = 1:4)
+bop_nov_2018$Corruption_Leadership <- factor(bop_nov_2018$A3_5,levels = 1:4)
+bop_dec_2019$Corruption_Leadership <- factor(bop_dec_2019$A3_5,levels = 1:4)
+bop_jun_2020$Corruption_Leadership <- factor(NA,levels = 1:4)
+bop_oct_2020$Corruption_Leadership <- factor(bop_oct_2020$A3_5,levels = 1:4)
+bop_feb_2021$Corruption_Leadership <- factor(bop_feb_2021$A3_5,levels = 1:4)
+bop_nov_2022$Corruption_Leadership <- factor(bop_nov_2022$A3_5,levels = 1:4)
+bop_aug_2023$Corruption_Leadership <- factor(bop_aug_2023$A3_5,levels = 1:4)
+bop_oct_2024$Corruption_Leadership <- factor(NA,levels = 1:4)
+bop_sep_2025$Corruption_Leadership <- factor(bop_sep_2025$A3_5,levels = 1:4)
+bop_sep_2026$Corruption_Leadership <- factor(bop_sep_2026$T_Q_6_5,levels = 1:4)
+```
+
+```{r}
+# Industry_Leadership
+bop_nov_2017$Industry_Leadership <- factor(bop_nov_2017$A3_6,levels = 1:4)
+bop_may_2018$Industry_Leadership <- factor(bop_may_2018$A3_06,levels = 1:4)
+bop_nov_2018$Industry_Leadership <- factor(bop_nov_2018$A3_6,levels = 1:4)
+bop_dec_2019$Industry_Leadership <- factor(bop_dec_2019$A3_6,levels = 1:4)
+bop_jun_2020$Industry_Leadership <- factor(NA,levels = 1:4)
+bop_oct_2020$Industry_Leadership <- factor(bop_oct_2020$A3_6,levels = 1:4)
+bop_feb_2021$Industry_Leadership <- factor(bop_feb_2021$A3_6,levels = 1:4)
+bop_nov_2022$Industry_Leadership <- factor(bop_nov_2022$A3_6,levels = 1:4)
+bop_aug_2023$Industry_Leadership <- factor(bop_aug_2023$A3_6,levels = 1:4)
+bop_oct_2024$Industry_Leadership <- factor(NA,levels = 1:4)
+bop_sep_2025$Industry_Leadership <- factor(bop_sep_2025$A3_6,levels = 1:4)
+bop_sep_2026$Industry_Leadership <- factor(bop_sep_2026$T_Q_6_6,levels = 1:4)
+```
+
+```{r}
+# Agri_Leadership
+bop_nov_2017$Agri_Leadership <- factor(bop_nov_2017$A3_7,levels = 1:4)
+bop_may_2018$Agri_Leadership <- factor(bop_may_2018$A3_07,levels = 1:4)
+bop_nov_2018$Agri_Leadership <- factor(bop_nov_2018$A3_7,levels = 1:4)
+bop_dec_2019$Agri_Leadership <- factor(bop_dec_2019$A3_7,levels = 1:4)
+bop_jun_2020$Agri_Leadership <- factor(NA,levels = 1:4)
+bop_oct_2020$Agri_Leadership <- factor(bop_oct_2020$A3_7,levels = 1:4)
+bop_feb_2021$Agri_Leadership <- factor(bop_feb_2021$A3_7,levels = 1:4)
+bop_nov_2022$Agri_Leadership <- factor(bop_nov_2022$A3_7,levels = 1:4)
+bop_aug_2023$Agri_Leadership <- factor(bop_aug_2023$A3_7,levels = 1:4)
+bop_oct_2024$Agri_Leadership <- factor(NA,levels = 1:4)
+bop_sep_2025$Agri_Leadership <- factor(bop_sep_2025$A3_7,levels = 1:4)
+bop_sep_2026$Agri_Leadership <- factor(bop_sep_2026$T_Q_6_7,levels = 1:4)
+```
+
+```{r}
+# Edu_Leadership
+bop_nov_2017$Edu_Leadership <- factor(bop_nov_2017$A3_8,levels = 1:4)
+bop_may_2018$Edu_Leadership <- factor(bop_may_2018$A3_08,levels = 1:4)
+bop_nov_2018$Edu_Leadership <- factor(bop_nov_2018$A3_8,levels = 1:4)
+bop_dec_2019$Edu_Leadership <- factor(bop_dec_2019$A3_8,levels = 1:4)
+bop_jun_2020$Edu_Leadership <- factor(NA,levels = 1:4)
+bop_oct_2020$Edu_Leadership <- factor(bop_oct_2020$A3_8,levels = 1:4)
+bop_feb_2021$Edu_Leadership <- factor(bop_feb_2021$A3_8,levels = 1:4)
+bop_nov_2022$Edu_Leadership <- factor(bop_nov_2022$A3_8,levels = 1:4)
+bop_aug_2023$Edu_Leadership <- factor(bop_aug_2023$A3_8,levels = 1:4)
+bop_oct_2024$Edu_Leadership <- factor(NA,levels = 1:4)
+bop_sep_2025$Edu_Leadership <- factor(bop_sep_2025$A3_8,levels = 1:4)
+bop_sep_2026$Edu_Leadership <- factor(bop_sep_2026$T_Q_6_8,levels = 1:4)
+```
+
+```{r}
+# Culture_Leadership
+bop_nov_2017$Culture_Leadership <- factor(bop_nov_2017$A3_9,levels = 1:4)
+bop_may_2018$Culture_Leadership <- factor(bop_may_2018$A3_09,levels = 1:4)
+bop_nov_2018$Culture_Leadership <- factor(bop_nov_2018$A3_9,levels = 1:4)
+bop_dec_2019$Culture_Leadership <- factor(bop_dec_2019$A3_9,levels = 1:4)
+bop_jun_2020$Culture_Leadership <- factor(NA,levels = 1:4)
+bop_oct_2020$Culture_Leadership <- factor(bop_oct_2020$A3_9,levels = 1:4)
+bop_feb_2021$Culture_Leadership <- factor(bop_feb_2021$A3_9,levels = 1:4)
+bop_nov_2022$Culture_Leadership <- factor(bop_nov_2022$A3_9,levels = 1:4)
+bop_aug_2023$Culture_Leadership <- factor(bop_aug_2023$A3_9,levels = 1:4)
+bop_oct_2024$Culture_Leadership <- factor(NA,levels = 1:4)
+bop_sep_2025$Culture_Leadership <- factor(bop_sep_2025$A3_9,levels = 1:4)
+bop_sep_2026$Culture_Leadership <- factor(bop_sep_2026$T_Q_6_9,levels = 1:4)
+```
+
+```{r}
+# Healthcare_Leadership
+bop_nov_2017$Healthcare_Leadership <- factor(bop_nov_2017$A3_10,levels = 1:4)
+bop_may_2018$Healthcare_Leadership <- factor(bop_may_2018$A3_10,levels = 1:4)
+bop_nov_2018$Healthcare_Leadership <- factor(bop_nov_2018$A3_10,levels = 1:4)
+bop_dec_2019$Healthcare_Leadership <- factor(bop_dec_2019$A3_10,levels = 1:4)
+bop_jun_2020$Healthcare_Leadership <- factor(NA,levels = 1:4)
+bop_oct_2020$Healthcare_Leadership <- factor(bop_oct_2020$A3_10,levels = 1:4)
+bop_feb_2021$Healthcare_Leadership <- factor(bop_feb_2021$A3_10,levels = 1:4)
+bop_nov_2022$Healthcare_Leadership <- factor(bop_nov_2022$A3_10,levels = 1:4)
+bop_aug_2023$Healthcare_Leadership <- factor(bop_aug_2023$A3_10,levels = 1:4)
+bop_oct_2024$Healthcare_Leadership <- factor(NA,levels = 1:4)
+bop_sep_2025$Healthcare_Leadership <- factor(bop_sep_2025$A3_10,levels = 1:4)
+bop_sep_2026$Healthcare_Leadership <- factor(bop_sep_2026$T_Q_6_10,levels = 1:4)
+```
+
+```{r}
+# ForeignPolicy_Leadership
+bop_nov_2017$ForeignPolicy_Leadership <- factor(bop_nov_2017$A3_11,levels = 1:4)
+bop_may_2018$ForeignPolicy_Leadership <- factor(bop_may_2018$A3_11,levels = 1:4)
+bop_nov_2018$ForeignPolicy_Leadership <- factor(bop_nov_2018$A3_11,levels = 1:4)
+bop_dec_2019$ForeignPolicy_Leadership <- factor(bop_dec_2019$A3_11,levels = 1:4)
+bop_jun_2020$ForeignPolicy_Leadership <- factor(NA,levels = 1:4)
+bop_oct_2020$ForeignPolicy_Leadership <- factor(bop_oct_2020$A3_11,levels = 1:4)
+bop_feb_2021$ForeignPolicy_Leadership <- factor(bop_feb_2021$A3_11,levels = 1:4)
+bop_nov_2022$ForeignPolicy_Leadership <- factor(bop_nov_2022$A3_11,levels = 1:4)
+bop_aug_2023$ForeignPolicy_Leadership <- factor(bop_aug_2023$A3_11,levels = 1:4)
+bop_oct_2024$ForeignPolicy_Leadership <- factor(NA,levels = 1:4)
+bop_sep_2025$ForeignPolicy_Leadership <- factor(bop_sep_2025$A3_11,levels = 1:4)
+bop_sep_2026$ForeignPolicy_Leadership <- factor(bop_sep_2026$T_Q_6_11,levels = 1:4)
+```
+
+```{r}
+# Transnistria_Leadership
+bop_nov_2017$Transnistria_Leadership <- factor(bop_nov_2017$A3_12,levels = 1:4)
+bop_may_2018$Transnistria_Leadership <- factor(bop_may_2018$A3_12,levels = 1:4)
+bop_nov_2018$Transnistria_Leadership <- factor(bop_nov_2018$A3_12,levels = 1:4)
+bop_dec_2019$Transnistria_Leadership <- factor(bop_dec_2019$A3_12,levels = 1:4)
+bop_jun_2020$Transnistria_Leadership <- factor(NA,levels = 1:4)
+bop_oct_2020$Transnistria_Leadership <- factor(bop_oct_2020$A3_12,levels = 1:4)
+bop_feb_2021$Transnistria_Leadership <- factor(bop_feb_2021$A3_12,levels = 1:4)
+bop_nov_2022$Transnistria_Leadership <- factor(bop_nov_2022$A3_12,levels = 1:4)
+bop_aug_2023$Transnistria_Leadership <- factor(bop_aug_2023$A3_12,levels = 1:4)
+bop_oct_2024$Transnistria_Leadership <- factor(NA,levels = 1:4)
+bop_sep_2025$Transnistria_Leadership <- factor(bop_sep_2025$A3_12,levels = 1:4)
+bop_sep_2026$Transnistria_Leadership <- factor(bop_sep_2026$T_Q_6_12,levels = 1:4)
+```
+
+## Trust
+```{r}
+# Government_Trust
+bop_nov_2017$Government_Trust <- factor(bop_nov_2017$C2_1, levels = 1:4)
+bop_may_2018$Government_Trust <- factor(bop_may_2018$C2_01, levels = 1:4)
+bop_nov_2018$Government_Trust <- factor(bop_nov_2018$C2_1, levels = 1:4)
+bop_dec_2019$Government_Trust <- factor(bop_dec_2019$C5_1, levels = 1:4)
+bop_jun_2020$Government_Trust <- factor(bop_jun_2020$C2_1, levels = 1:4)
+bop_oct_2020$Government_Trust <- factor(bop_oct_2020$C2_1, levels = 1:4)
+bop_feb_2021$Government_Trust <- factor(bop_feb_2021$D3_1, levels = 1:4)
+bop_nov_2022$Government_Trust <- factor(bop_nov_2022$D4_1, levels = 1:4)
+bop_aug_2023$Government_Trust <- factor(bop_aug_2023$D4_1, levels = 1:4)
+bop_oct_2024$Government_Trust <- factor(bop_oct_2024$C_15_1, levels = 1:4)
+bop_sep_2025$Government_Trust <- factor(bop_sep_2025$D7_1, levels = 1:4)
+bop_sep_2026$Government_Trust <- factor(bop_sep_2026$T_Q_21_1, levels = 1:4)
+```
+
+```{r}
+# Parliament_Trust
+bop_nov_2017$Parliament_Trust <- factor(bop_nov_2017$C2_2, levels = 1:4)
+bop_may_2018$Parliament_Trust <- factor(bop_may_2018$C2_02, levels = 1:4)
+bop_nov_2018$Parliament_Trust <- factor(bop_nov_2018$C2_2, levels = 1:4)
+bop_dec_2019$Parliament_Trust <- factor(bop_dec_2019$C5_2, levels = 1:4)
+bop_jun_2020$Parliament_Trust <- factor(bop_jun_2020$C2_2, levels = 1:4)
+bop_oct_2020$Parliament_Trust <- factor(bop_oct_2020$C2_2, levels = 1:4)
+bop_feb_2021$Parliament_Trust <- factor(bop_feb_2021$D3_2, levels = 1:4)
+bop_nov_2022$Parliament_Trust <- factor(bop_nov_2022$D4_2, levels = 1:4)
+bop_aug_2023$Parliament_Trust <- factor(bop_aug_2023$D4_2, levels = 1:4)
+bop_oct_2024$Parliament_Trust <- factor(bop_oct_2024$C_15_2, levels = 1:4)
+bop_sep_2025$Parliament_Trust <- factor(bop_sep_2025$D7_2, levels = 1:4)
+bop_sep_2026$Parliament_Trust <- factor(bop_sep_2026$T_Q_21_2, levels = 1:4)
+```
+
+```{r}
+# President_Trust
+bop_nov_2017$President_Trust <- factor(bop_nov_2017$C2_3, levels = 1:4)
+bop_may_2018$President_Trust <- factor(bop_may_2018$C2_03, levels = 1:4)
+bop_nov_2018$President_Trust <- factor(bop_nov_2018$C2_3, levels = 1:4)
+bop_dec_2019$President_Trust <- factor(bop_dec_2019$C5_3, levels = 1:4)
+bop_jun_2020$President_Trust <- factor(bop_jun_2020$C2_3, levels = 1:4)
+bop_oct_2020$President_Trust <- factor(bop_oct_2020$C2_3, levels = 1:4)
+bop_feb_2021$President_Trust <- factor(bop_feb_2021$D3_3, levels = 1:4)
+bop_nov_2022$President_Trust <- factor(bop_nov_2022$D4_3, levels = 1:4)
+bop_aug_2023$President_Trust <- factor(bop_aug_2023$D4_3, levels = 1:4)
+bop_oct_2024$President_Trust <- factor(bop_oct_2024$C_15_3, levels = 1:4)
+bop_sep_2025$President_Trust <- factor(bop_sep_2025$D7_3, levels = 1:4)
+bop_sep_2026$President_Trust <- factor(bop_sep_2026$T_Q_21_3, levels = 1:4)
+```
+
+```{r}
+# Judiciary_Trust
+bop_nov_2017$Judiciary_Trust <- factor(bop_nov_2017$C2_4, levels = 1:4)
+bop_may_2018$Judiciary_Trust <- factor(bop_may_2018$C2_04, levels = 1:4)
+bop_nov_2018$Judiciary_Trust <- factor(bop_nov_2018$C2_4, levels = 1:4)
+bop_dec_2019$Judiciary_Trust <- factor(bop_dec_2019$C5_4, levels = 1:4)
+bop_jun_2020$Judiciary_Trust <- factor(bop_jun_2020$C2_4, levels = 1:4)
+bop_oct_2020$Judiciary_Trust <- factor(bop_oct_2020$C2_4, levels = 1:4)
+bop_feb_2021$Judiciary_Trust <- factor(bop_feb_2021$D3_4, levels = 1:4)
+bop_nov_2022$Judiciary_Trust <- factor(bop_nov_2022$D4_4, levels = 1:4)
+bop_aug_2023$Judiciary_Trust <- factor(bop_aug_2023$D4_4, levels = 1:4)
+bop_oct_2024$Judiciary_Trust <- factor(bop_oct_2024$C_15_4, levels = 1:4)
+bop_sep_2025$Judiciary_Trust <- factor(bop_sep_2025$D7_4, levels = 1:4)
+bop_sep_2026$Judiciary_Trust <- factor(bop_sep_2026$T_Q_21_4, levels = 1:4)
+```
+
+```{r}
+# Mayors_Trust
+bop_nov_2017$Mayors_Trust <- factor(bop_nov_2017$C2_7, levels = 1:4)
+bop_may_2018$Mayors_Trust <- factor(bop_may_2018$C2_07, levels = 1:4)
+bop_nov_2018$Mayors_Trust <- factor(bop_nov_2018$C2_7, levels = 1:4)
+bop_dec_2019$Mayors_Trust <- factor(bop_dec_2019$C5_5, levels = 1:4)
+bop_jun_2020$Mayors_Trust <- factor(bop_jun_2020$C2_5, levels = 1:4)
+bop_oct_2020$Mayors_Trust <- factor(bop_oct_2020$C2_7, levels = 1:4)
+bop_feb_2021$Mayors_Trust <- factor(bop_feb_2021$D3_7, levels = 1:4)
+bop_nov_2022$Mayors_Trust <- factor(bop_nov_2022$D4_7, levels = 1:4)
+bop_aug_2023$Mayors_Trust <- factor(bop_aug_2023$D4_7, levels = 1:4)
+bop_oct_2024$Mayors_Trust <- factor(bop_oct_2024$C_15_7, levels = 1:4)
+bop_sep_2025$Mayors_Trust <- factor(bop_sep_2025$D7_9, levels = 1:4)
+bop_sep_2026$Mayors_Trust <- factor(bop_sep_2026$T_Q_21_7, levels = 1:4)
+
+```
+
+```{r}
+# PoliticalParties_Trust
+bop_nov_2017$PoliticalParties_Trust <- factor(bop_nov_2017$C2_8, levels = 1:4)
+bop_may_2018$PoliticalParties_Trust <- factor(bop_may_2018$C2_08, levels = 1:4)
+bop_nov_2018$PoliticalParties_Trust <- factor(bop_nov_2018$C2_8, levels = 1:4)
+bop_dec_2019$PoliticalParties_Trust <- factor(bop_dec_2019$C5_8, levels = 1:4)
+bop_jun_2020$PoliticalParties_Trust <- factor(bop_jun_2020$C2_8, levels = 1:4)
+bop_oct_2020$PoliticalParties_Trust <- factor(bop_oct_2020$C2_8, levels = 1:4)
+bop_feb_2021$PoliticalParties_Trust <- factor(bop_feb_2021$D3_8, levels = 1:4)
+bop_nov_2022$PoliticalParties_Trust <- factor(bop_nov_2022$D4_8, levels = 1:4)
+bop_aug_2023$PoliticalParties_Trust <- factor(bop_aug_2023$D4_8, levels = 1:4)
+bop_oct_2024$PoliticalParties_Trust <- factor(bop_oct_2024$C_15_8, levels = 1:4)
+bop_sep_2025$PoliticalParties_Trust <- factor(bop_sep_2025$D7_10, levels = 1:4)
+bop_sep_2026$PoliticalParties_Trust <- factor(bop_sep_2026$T_Q_21_8, levels = 1:4)
+```
+
+```{r}
+# GeneralProsecutor_Trust
+bop_nov_2017$GeneralProsecutor_Trust <- factor(bop_nov_2017$C2_15, levels = 1:4)
+bop_may_2018$GeneralProsecutor_Trust <- factor(bop_may_2018$C2_15, levels = 1:4)
+bop_nov_2018$GeneralProsecutor_Trust <- factor(bop_nov_2018$C2_15, levels = 1:4)
+bop_dec_2019$GeneralProsecutor_Trust <- factor(bop_dec_2019$C5_15, levels = 1:4)
+bop_jun_2020$GeneralProsecutor_Trust <- factor(NA, levels = 1:4)
+bop_oct_2020$GeneralProsecutor_Trust <- factor(bop_oct_2020$C2_15, levels = 1:4)
+bop_feb_2021$GeneralProsecutor_Trust <- factor(NA, levels = 1:4)
+bop_nov_2022$GeneralProsecutor_Trust <- factor(NA, levels = 1:4)
+bop_aug_2023$GeneralProsecutor_Trust <- factor(NA, levels = 1:4)
+bop_oct_2024$GeneralProsecutor_Trust <- factor(bop_oct_2024$C_15_14, levels = 1:4)
+bop_sep_2025$GeneralProsecutor_Trust <- factor(NA, levels = 1:4)
+bop_sep_2026$GeneralProsecutor_Trust <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# IntelligenceService_Trust
+bop_nov_2017$IntelligenceService_Trust <- factor(bop_nov_2017$C2_16, levels = 1:4)
+bop_may_2018$IntelligenceService_Trust <- factor(bop_may_2018$C2_16, levels = 1:4)
+bop_nov_2018$IntelligenceService_Trust <- factor(bop_nov_2018$C2_16, levels = 1:4)
+bop_dec_2019$IntelligenceService_Trust <- factor(bop_dec_2019$C5_16, levels = 1:4)
+bop_jun_2020$IntelligenceService_Trust <- factor(NA, levels = 1:4)
+bop_oct_2020$IntelligenceService_Trust <- factor(bop_oct_2020$C2_16, levels = 1:4)
+bop_feb_2021$IntelligenceService_Trust <- factor(NA, levels = 1:4)
+bop_nov_2022$IntelligenceService_Trust <- factor(NA, levels = 1:4)
+bop_aug_2023$IntelligenceService_Trust <- factor(NA, levels = 1:4)
+bop_oct_2024$IntelligenceService_Trust <- factor(bop_oct_2024$C_15_15, levels = 1:4)
+bop_sep_2025$IntelligenceService_Trust <- factor(NA, levels = 1:4)
+bop_sep_2026$IntelligenceService_Trust <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# ConstitutionalCourt_Trust
+bop_nov_2017$ConstitutionalCourt_Trust <- factor(bop_nov_2017$C2_17, levels = 1:4)
+bop_may_2018$ConstitutionalCourt_Trust <- factor(bop_may_2018$C2_17, levels = 1:4)
+bop_nov_2018$ConstitutionalCourt_Trust <- factor(bop_nov_2018$C2_17, levels = 1:4)
+bop_dec_2019$ConstitutionalCourt_Trust <- factor(bop_dec_2019$C5_17, levels = 1:4)
+bop_jun_2020$ConstitutionalCourt_Trust <- factor(NA, levels = 1:4)
+bop_oct_2020$ConstitutionalCourt_Trust <- factor(bop_oct_2020$C2_17, levels = 1:4)
+bop_feb_2021$ConstitutionalCourt_Trust <- factor(NA, levels = 1:4)
+bop_nov_2022$ConstitutionalCourt_Trust <- factor(NA, levels = 1:4)
+bop_aug_2023$ConstitutionalCourt_Trust <- factor(NA, levels = 1:4)
+bop_oct_2024$ConstitutionalCourt_Trust <- factor(bop_oct_2024$C_15_16, levels = 1:4)
+bop_sep_2025$ConstitutionalCourt_Trust <- factor(NA, levels = 1:4)
+bop_sep_2026$ConstitutionalCourt_Trust <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# CEC_Trust
+bop_nov_2017$CEC_Trust <- factor(bop_nov_2017$C2_18, levels = 1:4)
+bop_may_2018$CEC_Trust <- factor(bop_may_2018$C2_18, levels = 1:4)
+bop_nov_2018$CEC_Trust <- factor(bop_nov_2018$C2_18, levels = 1:4)
+bop_dec_2019$CEC_Trust <- factor(bop_dec_2019$C5_18, levels = 1:4)
+bop_jun_2020$CEC_Trust <- factor(NA, levels = 1:4)
+bop_oct_2020$CEC_Trust <- factor(bop_oct_2020$C2_18, levels = 1:4)
+bop_feb_2021$CEC_Trust <- factor(NA, levels = 1:4)
+bop_nov_2022$CEC_Trust <- factor(NA, levels = 1:4)
+bop_aug_2023$CEC_Trust <- factor(NA, levels = 1:4)
+bop_oct_2024$CEC_Trust <- factor(bop_oct_2024$C_15_12, levels = 1:4)
+bop_sep_2025$CEC_Trust <- factor(NA, levels = 1:4)
+bop_sep_2026$CEC_Trust <- factor(NA, levels = 1:4)
+```
+
+-----------
+
+# Regional
+
+```{r}
+# Healthcare_Satisfaction
+bop_nov_2017$Healthcare_Satisfaction <- factor(bop_nov_2017$B3_A, levels = 1:4)
+bop_may_2018$Healthcare_Satisfaction <- factor(bop_may_2018$B3_01, levels = 1:4)
+bop_nov_2018$Healthcare_Satisfaction <- factor(bop_nov_2018$B3_1, levels = 1:4)
+bop_dec_2019$Healthcare_Satisfaction <- factor(bop_dec_2019$B3_1, levels = 1:4)
+bop_jun_2020$Healthcare_Satisfaction <- factor(NA, levels = 1:4)
+bop_oct_2020$Healthcare_Satisfaction <- factor(bop_oct_2020$B3_1, levels = 1:4)
+bop_feb_2021$Healthcare_Satisfaction <- factor(bop_feb_2021$B3_1, levels = 1:4)
+bop_nov_2022$Healthcare_Satisfaction <- factor(bop_nov_2022$B3_1, levels = 1:4)
+bop_aug_2023$Healthcare_Satisfaction <- factor(bop_aug_2023$B3_1, levels = 1:4)
+bop_oct_2024$Healthcare_Satisfaction <- factor(bop_oct_2024$B_2_1, levels = 1:4)
+bop_sep_2025$Healthcare_Satisfaction <- factor(bop_sep_2025$B3_2, levels = 1:4)
+bop_sep_2026$Healthcare_Satisfaction <- factor(bop_sep_2026$T_Q_10_1, levels = 1:4)
+```
+
+```{r}
+# Housing_Satisfaction
+bop_nov_2017$Housing_Satisfaction <- factor(bop_nov_2017$B3_B, levels = 1:4)
+bop_may_2018$Housing_Satisfaction <- factor(bop_may_2018$B3_02, levels = 1:4)
+bop_nov_2018$Housing_Satisfaction <- factor(bop_nov_2018$B3_2, levels = 1:4)
+bop_dec_2019$Housing_Satisfaction <- factor(bop_dec_2019$B3_2, levels = 1:4)
+bop_jun_2020$Housing_Satisfaction <- factor(NA, levels = 1:4)
+bop_oct_2020$Housing_Satisfaction <- factor(bop_oct_2020$B3_2, levels = 1:4)
+bop_feb_2021$Housing_Satisfaction <- factor(bop_feb_2021$B3_2, levels = 1:4)
+bop_nov_2022$Housing_Satisfaction <- factor(bop_nov_2022$B3_2, levels = 1:4)
+bop_aug_2023$Housing_Satisfaction <- factor(bop_aug_2023$B3_2, levels = 1:4)
+bop_oct_2024$Housing_Satisfaction <- factor(bop_oct_2024$B_2_2, levels = 1:4)
+bop_sep_2025$Housing_Satisfaction <- factor(bop_sep_2025$B3_3, levels = 1:4)
+bop_sep_2026$Housing_Satisfaction <- factor(bop_sep_2026$T_Q_10_2, levels = 1:4)
+```
+
+```{r}
+# PublicTransport_Satisfaction
+bop_nov_2017$PublicTransport_Satisfaction <- factor(bop_nov_2017$B3_C, levels = 1:4)
+bop_may_2018$PublicTransport_Satisfaction <- factor(bop_may_2018$B3_03, levels = 1:4)
+bop_nov_2018$PublicTransport_Satisfaction <- factor(bop_nov_2018$B3_3, levels = 1:4)
+bop_dec_2019$PublicTransport_Satisfaction <- factor(bop_dec_2019$B3_3, levels = 1:4)
+bop_jun_2020$PublicTransport_Satisfaction <- factor(NA, levels = 1:4)
+bop_oct_2020$PublicTransport_Satisfaction <- factor(bop_oct_2020$B3_3, levels = 1:4)
+bop_feb_2021$PublicTransport_Satisfaction <- factor(bop_feb_2021$B3_3, levels = 1:4)
+bop_nov_2022$PublicTransport_Satisfaction <- factor(bop_nov_2022$B3_3, levels = 1:4)
+bop_aug_2023$PublicTransport_Satisfaction <- factor(bop_aug_2023$B3_3, levels = 1:4)
+bop_oct_2024$PublicTransport_Satisfaction <- factor(bop_oct_2024$B_2_3, levels = 1:4)
+bop_sep_2025$PublicTransport_Satisfaction <- factor(bop_sep_2025$B3_4, levels = 1:4)
+bop_sep_2026$PublicTransport_Satisfaction <- factor(bop_sep_2026$T_Q_10_4, levels = 1:4)
+```
+
+```{r}
+# CleanlinessLocality_Satisfaction
+bop_nov_2017$CleanlinessLocality_Satisfaction <- factor(bop_nov_2017$B3_H, levels = 1:4)
+bop_may_2018$CleanlinessLocality_Satisfaction <- factor(bop_may_2018$B3_08, levels = 1:4)
+bop_nov_2018$CleanlinessLocality_Satisfaction <- factor(bop_nov_2018$B3_8, levels = 1:4)
+bop_dec_2019$CleanlinessLocality_Satisfaction <- factor(bop_dec_2019$B3_8, levels = 1:4)
+bop_jun_2020$CleanlinessLocality_Satisfaction <- factor(NA, levels = 1:4)
+bop_oct_2020$CleanlinessLocality_Satisfaction <- factor(bop_oct_2020$B3_8, levels = 1:4)
+bop_feb_2021$CleanlinessLocality_Satisfaction <- factor(bop_feb_2021$B3_8, levels = 1:4)
+bop_nov_2022$CleanlinessLocality_Satisfaction <- factor(bop_nov_2022$B3_8, levels = 1:4)
+bop_aug_2023$CleanlinessLocality_Satisfaction <- factor(bop_aug_2023$B3_8, levels = 1:4)
+bop_oct_2024$CleanlinessLocality_Satisfaction <- factor(bop_oct_2024$B_2_8, levels = 1:4)
+bop_sep_2025$CleanlinessLocality_Satisfaction <- factor(bop_sep_2025$B3_8, levels = 1:4)
+bop_sep_2026$CleanlinessLocality_Satisfaction <- factor(bop_sep_2026$T_Q_10_9, levels = 1:4)
+```
+
+```{r}
+# Locality_Influence
+bop_feb_2021$Locality_Influence <- factor(bop_feb_2021$D2_1, levels = 1:4)
+bop_sep_2025$Locality_Influence <- factor(bop_sep_2025$D3_1, levels = 1:4)
+```
+
+-----------
+# Education
+
+```{r}
+# Education_Satisfaction
+bop_nov_2017$Education_Satisfaction <- factor(bop_nov_2017$B3_D, levels = 1:4)
+bop_may_2018$Education_Satisfaction <- factor(bop_may_2018$B3_04, levels = 1:4)
+bop_nov_2018$Education_Satisfaction <- factor(bop_nov_2018$B3_4, levels = 1:4)
+bop_dec_2019$Education_Satisfaction <- factor(bop_dec_2019$B3_4, levels = 1:4)
+bop_jun_2020$Education_Satisfaction <- factor(NA, levels = 1:4)
+bop_oct_2020$Education_Satisfaction <- factor(bop_oct_2020$B3_4, levels = 1:4)
+bop_feb_2021$Education_Satisfaction <- factor(bop_feb_2021$B3_4, levels = 1:4)
+bop_nov_2022$Education_Satisfaction <- factor(bop_nov_2022$B3_4, levels = 1:4)
+bop_aug_2023$Education_Satisfaction <- factor(bop_aug_2023$B3_4, levels = 1:4)
+bop_oct_2024$Education_Satisfaction <- factor(bop_oct_2024$B_2_4, levels = 1:4)
+bop_sep_2025$Education_Satisfaction <- factor(bop_sep_2025$B3_5, levels = 1:4)
+bop_sep_2026$Education_Satisfaction <- factor(bop_sep_2026$T_Q_10_5, levels = 1:4)
+```
+
+-----------
+# History
+- Only available for November 2018
+```{r}
+# USSR memory
+bop_nov_2018$USSR_Attitude <- bop_nov_2018$D8
+bop_nov_2018$Regret_Collapse <- factor(bop_nov_2018$D9, levels = 1:2, labels = c("Regret", "Don't Regret"))
+bop_nov_2018$USSR_Today <- factor(bop_nov_2018$D10, levels = 1:4)
+bop_nov_2018$Soviet_CollapseImpact <- factor(bop_nov_2018$D11, levels = 1:4)
+bop_nov_2018$USSR_Reformed <- factor(bop_nov_2018$D12, levels = 1:2, labels = c("Would Like", "Would not like"))
+bop_nov_2018$USSR_Referendum <- factor(bop_nov_2018$D13, labels = c("For", "Against", "Wouldn't participate", "DK/NR", "DK/NR"))
+
+#recoding values for USSR memory
+bop_nov_2018$USSR_Attitude[bop_nov_2018$USSR_Attitude %in% c(2)] <- -1 # negative values
+bop_nov_2018$USSR_Attitude[bop_nov_2018$USSR_Attitude %in% c(3)] <- 0 # indifferent values
+
+
+```
+
+# Ethnolinguistic
+```{r}
+# State_Language (2017 only, no labels/levels)
+bop_nov_2017$State_Language <- factor(bop_nov_2017$D7, labels = c("Moldovan", "Romanian", "Other", "DK/NR", "DK/NR"))
+```
+
+```{r}
+# Equal_Ethnicity (no labels/levels)
+bop_nov_2018$Equal_Ethnicity <- factor(bop_nov_2018$E8_3, levels = 1:4)
+bop_dec_2019$Equal_Ethnicity <- factor(bop_dec_2019$C29_3, levels = 1:4)
+bop_feb_2021$Equal_Ethnicity <- factor(bop_feb_2021$C17_3, levels = 1:4)
+```
+
+# Territory
+```{r}
+# Unification with Romania
+bop_sep_2026$Unification <- factor(bop_sep_2026$T_Q_43_2, labels = referendum_labels)
+bop_sep_2025$Unification <- factor(bop_sep_2025$H10, labels = referendum_labels)
+bop_oct_2024$Unification <- factor(bop_oct_2024$E_6, labels = referendum_labels)
+bop_aug_2023$Unification <- factor(bop_aug_2023$E8, labels = referendum_labels)
+bop_nov_2022$Unification <- factor(bop_nov_2022$E12, labels = referendum_labels)
+bop_feb_2021$Unification <- NA
+bop_oct_2020$Unification <- factor(bop_oct_2020$D5, labels = referendum_labels)
+bop_jun_2020$Unification <- NA
+bop_dec_2019$Unification <- NA
+bop_nov_2018$Unification <- NA
+bop_may_2018$Unification <- factor(bop_may_2018$D8, labels = referendum_labels)
+bop_nov_2017$Unification <- factor(bop_nov_2017$D8, labels = referendum_labels)
+```
+
+```{r}
+# Unification with Russia
+bop_may_2018$Unification_Russia <- factor(bop_may_2018$D10, labels = referendum_labels)
+bop_nov_2017$Unification_Russia <- factor(bop_nov_2017$D10, labels = referendum_labels)
+```
+
+```{r}
+# Unification with Romania as a threat
+bop_nov_2017$Unification_Threat <- factor(bop_nov_2017$E3, levels = 1:4)
+```
+
+-----------
+
+# Religion
+```{r}
+# Church_Trust
+bop_nov_2017$Church_Trust <- factor(bop_nov_2017$C2_6, levels = 1:4)
+bop_may_2018$Church_Trust <- factor(bop_may_2018$C2_06, levels = 1:4)
+bop_nov_2018$Church_Trust <- factor(bop_nov_2018$C2_6, levels = 1:4)
+bop_dec_2019$Church_Trust <- factor(bop_dec_2019$C5_6, levels = 1:4)
+bop_jun_2020$Church_Trust <- factor(bop_jun_2020$C2_6, levels = 1:4)
+bop_oct_2020$Church_Trust <- factor(bop_oct_2020$C2_6, levels = 1:4)
+bop_feb_2021$Church_Trust <- factor(bop_feb_2021$D3_6, levels = 1:4)
+bop_nov_2022$Church_Trust <- factor(bop_nov_2022$D4_6, levels = 1:4)
+bop_aug_2023$Church_Trust <- factor(bop_aug_2023$D4_6, levels = 1:4)
+bop_oct_2024$Church_Trust <- factor(bop_oct_2024$C_15_6, levels = 1:4)
+bop_sep_2025$Church_Trust <- factor(bop_sep_2025$D7_8, levels = 1:4)
+bop_sep_2026$Church_Trust <- factor(bop_sep_2026$T_Q_21_6, levels = 1:4)
+```
+
+```{r}
+# Religious_Affiliation 
+bop_nov_2017$Religious_Affiliation <- factor(bop_nov_2017$S5, 
+                                             labels = c("MOC", "BOC", "Baptist", 
+                                                        "JW", "Catholic", "Other",
+                                                        "Other", "DK/NR")
+bop_may_2018$Religious_Affiliation <- factor(bop_may_2018$S5, 
+                                             labels = c("MOC", "BOC", "Baptist", 
+                                                        "JW", "Catholic", "Other", 
+                                                        "DK/NR")
+bop_nov_2018$Religious_Affiliation <- factor(bop_nov_2018$S5, 
+                                             labels = c("MOC", "BOC", "Baptist", 
+                                                        "JW", "Catholic", "Other",
+                                                        "Other", "DK/NR")
+bop_dec_2019$Religious_Affiliation <- factor(bop_dec_2019$S5,
+                                             labels = c("MOC", "BOC", "Baptist", 
+                                                        "JW", "Catholic", "Other",
+                                                        "Other", "DK/NR", "DK/NR")
+bop_jun_2020$Religious_Affiliation <- NA
+bop_oct_2020$Religious_Affiliation <- NA
+bop_feb_2021$Religious_Affiliation <- NA
+bop_nov_2022$Religious_Affiliation <- NA
+bop_aug_2023$Religious_Affiliation <- NA
+bop_oct_2024$Religious_Affiliation <- factor(bop_oct_2024$S_5,
+                                             labels = c("MOC", "BOC", "Catholic", 
+                                                        "Baptist", "Other", "JW", 
+                                                        "Other", "Other", "Other", 
+                                                        "Other", "DK/NR"))
+bop_sep_2025$Religious_Affiliation <- NA
+bop_sep_2026$Religious_Affiliation <- NA
+```
+
+```{r}
+# Indepence of Ukraianian Orthodox Church (from ROC)
+bop_nov_2018$UOC_Independence <- factor(bop_nov_2018$E1, levels = 1:4)
+
+# Indepence of Moldovan Orthodox Church (from ROC)
+bop_nov_2018$MOC_Independence <- factor(bop_nov_2018$E1_1, levels = 1:4)
+```
+
+```{r}
+# Church_Frequency (Feb 2021 only, no labels/levels)
+bop_feb_2021$Church_Frequency <- factor(bop_feb_2021$S10, 
+                                        labels = c("Weekly",
+                                                   "Monthly",
+                                                   "Occasionally",
+                                                   "Rarely", 
+                                                   "DK/NR"))
+```
+
+-----------
+
+# Domestic Politics
 
 ```{r}
 # Sandu
@@ -1122,23 +2169,10 @@ bop_may_2018$Elections <- factor(bop_may_2018$C10, labels = c("Yes", "No", "DK",
 bop_nov_2017$Elections <- factor(bop_nov_2017$C11, labels = c("Yes", "No", "DK", "NR"))
 ```
 
-## International Politics
+# International Politics
 
 ```{r}
 referendum_labels <- c("For", "Against", "Wouldn't participate", "DK", "NR")
-
-bop_sep_2026$Unification <- factor(bop_sep_2026$T_Q_43_2, labels = referendum_labels)
-bop_sep_2025$Unification <- factor(bop_sep_2025$H10, labels = referendum_labels)
-bop_oct_2024$Unification <- factor(bop_oct_2024$E_6, labels = referendum_labels)
-bop_aug_2023$Unification <- factor(bop_aug_2023$E8, labels = referendum_labels)
-bop_nov_2022$Unification <- factor(bop_nov_2022$E12, labels = referendum_labels)
-bop_feb_2021$Unification <- NA
-bop_oct_2020$Unification <- factor(bop_oct_2020$D5, labels = referendum_labels)
-bop_jun_2020$Unification <- NA
-bop_dec_2019$Unification <- NA
-bop_nov_2018$Unification <- NA
-bop_may_2018$Unification <- factor(bop_may_2018$D8, labels = referendum_labels)
-bop_nov_2017$Unification <- factor(bop_nov_2017$D8, labels = referendum_labels)
 ```
 
 ```{r}
@@ -1242,7 +2276,7 @@ bop_nov_2017$Zelenskyy <- NA
 ```
 
 
-### Relations  
+## Relations  
 ```{r}
 # Russia
 bop_sep_2026$Russia_rels <- factor(bop_sep_2026$T_Q_40_13, levels = 1:4)
