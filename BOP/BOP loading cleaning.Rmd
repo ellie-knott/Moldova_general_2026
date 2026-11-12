@@ -1,5 +1,4 @@
 ---
-title: "BOP surveys - loading and cleaning"
 author: "Ellie Knott"
 date: "2026-09-18"
 output: html_document
@@ -151,7 +150,7 @@ bop_nov_2018$Age.f <- cut(bop_nov_2018$Age, breaks = c(17, 29, 44, 59, 74, Inf),
 bop_may_2018$Age.f <- cut(bop_may_2018$Age, breaks = c(17, 29, 44, 59, 74, Inf), 
                           labels = age_levels)
 bop_nov_2017$Age.f <- cut(bop_nov_2017$Age, breaks = c(17, 29, 44, 59, 74, Inf), 
-                          abels = age_levels)
+                          labels = age_levels)
 ```
 
 ```{r}
@@ -678,7 +677,222 @@ bop_nov_2017$Socioeconomic <- factor(bop_nov_2017$varimax,
                                      labels = socioeconomic_labels)
 ```
 
-# Moldova's Direction
+# International Exposure
+```{r}
+# Would leave Moldova
+bop_nov_2017$LeaveMD_Would <- factor(bop_nov_2017$C17,
+                                     levels = 1:4,
+                                     labels = c(
+                                       "Would leave forever",
+                                       "Would leave for a period",
+                                       "Wouldn't leave",
+                                       "DK/NR"))
+bop_may_2018$LeaveMD_Would <- factor(bop_may_2018$C14,
+                                     levels = 1:4,
+                                     labels = c(
+                                       "Would leave forever",
+                                       "Would leave for a period",
+                                       "Wouldn't leave",
+                                       "DK/NR"))
+bop_nov_2018$LeaveMD_Would <- factor(bop_nov_2018$C12,
+                                     levels = 1:4,
+                                     labels = c(
+                                       "Would leave forever",
+                                       "Would leave for a period",
+                                       "Wouldn't leave",
+                                       "DK/NR"))
+bop_dec_2019$LeaveMD_Would <- factor(bop_dec_2019$S11,
+                                     levels = 1:4,
+                                     labels = c(
+                                       "Would leave forever",
+                                       "Would leave for a period",
+                                       "Wouldn't leave",
+                                       "DK/NR"))
+bop_feb_2021$LeaveMD_Would <- factor(bop_feb_2021$C10,
+                                     levels = 1:4,
+                                     labels = c(
+                                       "Would leave forever",
+                                       "Would leave for a period",
+                                       "Wouldn't leave",
+                                       "DK/NR"))
+```
+
+```{r}
+# Has lived outside Moldova for > 3 months
+bop_nov_2017$LeaveMD_Have <- factor(bop_nov_2017$S9,
+                                    levels = 1:4,
+                                    labels = c(
+                                      "Yes, myself",
+                                      "Yes family",
+                                      "No",
+                                      "DK/NR"))
+bop_may_2018$LeaveMD_Have <- factor(bop_may_2018$S9,
+                                    levels = 1:4,
+                                    labels = c(
+                                      "Yes, myself",
+                                      "Yes family",
+                                      "No",
+                                      "DK/NR"))
+bop_nov_2018$LeaveMD_Have <- factor(bop_nov_2018$S9,
+                                    levels = 1:4,
+                                    labels = c(
+                                      "Yes, myself",
+                                      "Yes family",
+                                      "No",
+                                      "DK/NR"))
+bop_dec_2019$LeaveMD_Have <- factor(bop_dec_2019$S9,
+                                    levels = 1:4,
+                                    labels = c(
+                                      "Yes, myself",
+                                      "Yes family",
+                                      "No",
+                                      "DK/NR"))
+```
+
+```{r}
+# Does your family intend to settle/move abroad permanently in the future?
+bop_nov_2017$LeaveMD_PlanPermanently <- factor(bop_nov_2017$S10,
+                                               levels = c(1:2, 100),
+                                               labels = c("Yes", "No", "DK/NR"))
+bop_may_2018$LeaveMD_PlanPermanently <- factor(bop_may_2018$S10,
+                                               levels = 1:3,
+                                               labels = c("Yes", "No", "DK/NR"))
+bop_nov_2018$LeaveMD_PlanPermanently <- factor(bop_nov_2018$S10,
+                                               levels = c(1:2, 100),
+                                               labels = c("Yes", "No", "DK/NR"))
+bop_dec_2019$LeaveMD_PlanPermanently <- factor(bop_dec_2019$S10,
+                                               levels = 1:4,
+                                               labels = c("Yes", "No", "DK/NR",
+                                                          "DK/NR"))
+```
+
+```{r}
+# 2020 is different
+# Lived Abroad Personally
+bop_oct_2020$LivedAbroad_Personally <- factor(bop_oct_2020$S7_1,
+                                              levels = 0:1,
+                                              labels = c("Not Mentioned",
+                                                         "Mentioned"))
+
+# Lived Abroad Family
+bop_oct_2020$LivedAbroad_Family <- factor(bop_oct_2020$S7_2,
+                                          levels = 0:1,
+                                          labels = c("Not Mentioned",
+                                                     "Mentioned"))
+
+# recoding
+bop_oct_2020$LeaveMD_Have <- factor(
+  ifelse(is.na(bop_oct_2020$LivedAbroad_Personally) & is.na(bop_oct_2020$LivedAbroad_Family), NA,
+         ifelse(bop_oct_2020$LivedAbroad_Personally %in% "Mentioned", 1,
+                ifelse(bop_oct_2020$LivedAbroad_Family %in% "Mentioned", 2, 3))),
+  levels = 1:4,
+  labels = c(
+    "Yes, myself",
+    "Yes family",
+    "No",
+    "DK/NR"))
+```
+
+```{r}
+# 2022
+bop_nov_2022$WorkedAbroad <- factor(bop_nov_2022$S10, levels = 1:3, 
+                                    labels = c("Yes", "No", "DK/NR"))
+bop_nov_2022$Worked_Ukraine    <- factor(bop_nov_2022$S11_1,  levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Germany    <- factor(bop_nov_2022$S11_2,  levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Russia     <- factor(bop_nov_2022$S11_3,  levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Spain      <- factor(bop_nov_2022$S11_4,  levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_GB         <- factor(bop_nov_2022$S11_5,  levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Czechia    <- factor(bop_nov_2022$S11_6,  levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Turkey     <- factor(bop_nov_2022$S11_7,  levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Portugal   <- factor(bop_nov_2022$S11_8,  levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Poland     <- factor(bop_nov_2022$S11_9,  levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Israel     <- factor(bop_nov_2022$S11_10, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Romania    <- factor(bop_nov_2022$S11_11, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Bulgaria   <- factor(bop_nov_2022$S11_12, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Hungary    <- factor(bop_nov_2022$S11_13, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Italy      <- factor(bop_nov_2022$S11_14, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Kaz        <- factor(bop_nov_2022$S11_15, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Austria    <- factor(bop_nov_2022$S11_16, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Croatia    <- factor(bop_nov_2022$S11_17, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Slovenia   <- factor(bop_nov_2022$S11_18, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Serbia     <- factor(bop_nov_2022$S11_19, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Latvia     <- factor(bop_nov_2022$S11_20, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Greece     <- factor(bop_nov_2022$S11_21, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Uzb        <- factor(bop_nov_2022$S11_22, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_USA        <- factor(bop_nov_2022$S11_23, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Cyprus     <- factor(bop_nov_2022$S11_24, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Lithuania  <- factor(bop_nov_2022$S11_25, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Armenia    <- factor(bop_nov_2022$S11_26, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Belgium    <- factor(bop_nov_2022$S11_27, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_France     <- factor(bop_nov_2022$S11_28, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_Other      <- factor(bop_nov_2022$S11_29, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+bop_nov_2022$Worked_DK_NR      <- factor(bop_nov_2022$S11_30, levels = 0:1,
+                                         labels = c("Not Mentioned",
+                                                    "Mentioned"))
+
+```
+
+# Direction
+
+## Moldova
 ```{r}
 direction_labels <- c("Good", "Bad", "DK", "NR", NA)
 
@@ -708,7 +922,7 @@ bop_sep_2026$direction <- factor(bop_sep_2026$T_Q_2_1, levels = c(1:2, 8:9),
                                  labels = c("Good", "Bad", "DK", "NR"))
 ```
 
-# World's direction
+## World
 ```{r}
 bop_nov_2017$direction_world <- factor(bop_nov_2017$A2, 
                                        levels = c(1, 2, 98, 99),
@@ -749,8 +963,8 @@ bop_sep_2026$direction_world <- factor(bop_sep_2026$T_Q_2_2,
 # Problems
 ```{r}
 # First 
-bop_sep_2026$First_Problem <- NA
-bop_sep_2025$First_Problem <- factor(bop_sep_2025$D6_1, levels = 1:16, 
+bop_sep_2026$Problems_First <- NA
+bop_sep_2025$Problems_First <- factor(bop_sep_2025$D6_1, levels = 1:16, 
                                      labels =  c("Internal order", 
                                                  "Peace and understanding among people", 
                                                  "Infrastructure", "Economy", 
@@ -763,7 +977,7 @@ bop_sep_2025$First_Problem <- factor(bop_sep_2025$D6_1, levels = 1:16,
                                                  "Cooperation with IOs", 
                                                  "Corruption", "Other", 
                                                  "DK", "NR", "NR"))
-bop_oct_2024$First_Problem <- factor(bop_oct_2024$A_7_1, levels = c(1:11, 98, 99), 
+bop_oct_2024$Problems_First <- factor(bop_oct_2024$A_7_1, levels = c(1:11, 98, 99), 
                                      labels =  c("Internal order", 
                                                  "Peace and understanding among people", 
                                                  "Economy", "Standard of living", 
@@ -774,7 +988,7 @@ bop_oct_2024$First_Problem <- factor(bop_oct_2024$A_7_1, levels = c(1:11, 98, 99
                                                  "Cooperation with IOs", 
                                                  "Corruption", "Other", 
                                                  "DK", "NR"))
-bop_aug_2023$First_Problem <- factor(bop_aug_2023$D17_1, levels = c(1:13), 
+bop_aug_2023$Problems_First <- factor(bop_aug_2023$D17_1, levels = c(1:13), 
                                      labels =  c("Internal order", 
                                                  "Peace and understanding among people", 
                                                  "Economy", "Standard of living", 
@@ -785,7 +999,7 @@ bop_aug_2023$First_Problem <- factor(bop_aug_2023$D17_1, levels = c(1:13),
                                                  "Cooperation with IOs", 
                                                  "Corruption", "Other", 
                                                  "DK", "NR"))
-bop_nov_2022$First_Problem <- factor(bop_nov_2022$D17_1, levels = c(1:13), 
+bop_nov_2022$Problems_First <- factor(bop_nov_2022$D17_1, levels = c(1:13), 
                                      labels =  c("Internal order", 
                                                  "Peace and understanding among people", 
                                                  "Economy", 
@@ -797,7 +1011,7 @@ bop_nov_2022$First_Problem <- factor(bop_nov_2022$D17_1, levels = c(1:13),
                                                  "Cooperation with IOs", 
                                                  "Corruption", 
                                                  "Other", "DK", "NR"))
-bop_oct_2020$First_Problem <- factor(bop_oct_2020$B6_1, levels = c(1:11, 99), 
+bop_oct_2020$Problems_First <- factor(bop_oct_2020$B6_1, levels = c(1:11, 99), 
                                      labels =  c("Internal order", 
                                                  "Peace and understanding among people", 
                                                  "Economy", "Standard of living",
@@ -807,7 +1021,7 @@ bop_oct_2020$First_Problem <- factor(bop_oct_2020$B6_1, levels = c(1:11, 99),
                                                  "Independent Judiciary", 
                                                  "Cooperation with IOs", 
                                                  "Corruption", "Other", "DK"))
-bop_dec_2019$First_Problem <- factor(bop_dec_2019$B6_1, levels = c(1:13), 
+bop_dec_2019$Problems_First <- factor(bop_dec_2019$B6_1, levels = c(1:13), 
                                      labels =  c("Internal order", 
                                                  "Peace and understanding among people", 
                                                  "Economy", 
@@ -819,7 +1033,7 @@ bop_dec_2019$First_Problem <- factor(bop_dec_2019$B6_1, levels = c(1:13),
                                                  "Cooperation with IOs", 
                                                  "Corruption", "Other", 
                                                  "DK", "NR"))
-bop_may_2018$First_Problem <- factor(bop_may_2018$B6_01, levels = c(1:12), 
+bop_may_2018$Problems_First <- factor(bop_may_2018$B6_01, levels = c(1:12), 
                                      labels =  c("Internal order", 
                                                  "Peace and understanding among people", 
                                                  "Economy", 
@@ -830,7 +1044,7 @@ bop_may_2018$First_Problem <- factor(bop_may_2018$B6_01, levels = c(1:12),
                                                  "Independent Judiciary", 
                                                  "Cooperation with IOs", 
                                                  "Corruption", "Other", "DK"))
-bop_nov_2017$First_Problem <- factor(bop_nov_2017$B6_1, levels = c(1:11, 100), 
+bop_nov_2017$Problems_First <- factor(bop_nov_2017$B6_1, levels = c(1:11, 100), 
                                      labels =  c("Internal order", 
                                                  "Peace and understanding among people", 
                                                  "Economy", 
@@ -845,8 +1059,8 @@ bop_nov_2017$First_Problem <- factor(bop_nov_2017$B6_1, levels = c(1:11, 100),
 
 ```{r}
 # Second
-bop_sep_2026$Second_Problem <- NA
-bop_sep_2025$Second_Problem <- factor(bop_sep_2025$D6_2, levels = 1:16, 
+bop_sep_2026$Problems_Second <- NA
+bop_sep_2025$Problems_Second <- factor(bop_sep_2025$D6_2, levels = 1:16, 
                                       labels =  c("Internal order", 
                                                   "Peace and understanding among people", 
                                                   "Infrastructure", "Economy", 
@@ -859,7 +1073,7 @@ bop_sep_2025$Second_Problem <- factor(bop_sep_2025$D6_2, levels = 1:16,
                                                   "Cooperation with IOs", 
                                                   "Corruption", 
                                                   "Other", "DK", "NR", "NR"))
-bop_oct_2024$Second_Problem <- factor(bop_oct_2024$A_7_2, levels = c(1:11, 98, 99), 
+bop_oct_2024$Problems_Second <- factor(bop_oct_2024$A_7_2, levels = c(1:11, 98, 99), 
                                       labels =  c("Internal order", 
                                                   "Peace and understanding among people", 
                                                   "Economy", 
@@ -871,7 +1085,7 @@ bop_oct_2024$Second_Problem <- factor(bop_oct_2024$A_7_2, levels = c(1:11, 98, 9
                                                   "Cooperation with IOs", 
                                                   "Corruption", 
                                                   "Other", "DK", "NR"))
-bop_aug_2023$Second_Problem <- factor(bop_aug_2023$D17_2, levels = c(1:13), 
+bop_aug_2023$Problems_Second <- factor(bop_aug_2023$D17_2, levels = c(1:13), 
                                       labels =  c("Internal order", 
                                                   "Peace and understanding among people", 
                                                   "Economy", 
@@ -883,7 +1097,7 @@ bop_aug_2023$Second_Problem <- factor(bop_aug_2023$D17_2, levels = c(1:13),
                                                   "Cooperation with IOs",
                                                   "Corruption",
                                                   "Other", "DK", "NR"))
-bop_nov_2022$Second_Problem <- factor(bop_nov_2022$D17_2, levels = c(1:13), 
+bop_nov_2022$Problems_Second <- factor(bop_nov_2022$D17_2, levels = c(1:13), 
                                       labels =  c("Internal order",
                                                   "Peace and understanding among people", 
                                                   "Economy", 
@@ -895,7 +1109,7 @@ bop_nov_2022$Second_Problem <- factor(bop_nov_2022$D17_2, levels = c(1:13),
                                                   "Cooperation with IOs", 
                                                   "Corruption", "Other",
                                                   "DK", "NR"))
-bop_oct_2020$Second_Problem <- factor(bop_oct_2020$B6_2, levels = c(1:11, 99), 
+bop_oct_2020$Problems_Second <- factor(bop_oct_2020$B6_2, levels = c(1:11, 99), 
                                       labels =  c("Internal order", 
                                                   "Peace and understanding among people", 
                                                   "Economy", 
@@ -907,7 +1121,7 @@ bop_oct_2020$Second_Problem <- factor(bop_oct_2020$B6_2, levels = c(1:11, 99),
                                                   "Cooperation with IOs", 
                                                   "Corruption", 
                                                   "Other", "DK"))
-bop_dec_2019$Second_Problem <- factor(bop_dec_2019$B6_2, levels = c(1:13), 
+bop_dec_2019$Problems_Second <- factor(bop_dec_2019$B6_2, levels = c(1:13), 
                                       labels =  c("Internal order", 
                                                   "Peace and understanding among people", 
                                                   "Economy", 
@@ -919,7 +1133,7 @@ bop_dec_2019$Second_Problem <- factor(bop_dec_2019$B6_2, levels = c(1:13),
                                                   "Cooperation with IOs", 
                                                   "Corruption", 
                                                   "Other", "DK", "NR"))
-bop_may_2018$Second_Problem <- factor(bop_may_2018$B6_02, levels = c(1:12), 
+bop_may_2018$Problems_Second <- factor(bop_may_2018$B6_02, levels = c(1:12), 
                                       labels =  c("Internal order", 
                                                   "Peace and understanding among people", 
                                                   "Economy", 
@@ -931,7 +1145,7 @@ bop_may_2018$Second_Problem <- factor(bop_may_2018$B6_02, levels = c(1:12),
                                                   "Cooperation with IOs", 
                                                   "Corruption", 
                                                   "Other", "DK"))
-bop_nov_2017$Second_Problem <- factor(bop_nov_2017$B6_2, levels = c(1:11, 100), 
+bop_nov_2017$Problems_Second <- factor(bop_nov_2017$B6_2, levels = c(1:11, 100), 
                                       labels =  c("Internal order", 
                                                   "Peace and understanding among people", 
                                                   "Economy", 
@@ -946,55 +1160,55 @@ bop_nov_2017$Second_Problem <- factor(bop_nov_2017$B6_2, levels = c(1:11, 100),
 
 ```{r}
 # Third
-bop_sep_2026$Third_Problem <- NA
-bop_sep_2025$Third_Problem <- factor(bop_sep_2025$D6_3, levels = 1:16, 
+bop_sep_2026$Problems_Third <- NA
+bop_sep_2025$Problems_Third <- factor(bop_sep_2025$D6_3, levels = 1:16, 
                                      labels =  c("Internal order", "Peace and understanding among people", "Infrastructure", "Economy", "Standard of living", "Education, science, culture", "Social services", "Social cohesion", "Spiritual development", "Territorial integrity (Transnistria)", "Cooperation with IOs", "Corruption", "Other", "DK", "NR", "NR"))
-bop_oct_2024$Third_Problem <- factor(bop_oct_2024$A_7_3, levels = c(1:11, 98, 99), 
+bop_oct_2024$Problems_Third <- factor(bop_oct_2024$A_7_3, levels = c(1:11, 98, 99), 
                                      labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
-bop_aug_2023$Third_Problem <- factor(bop_aug_2023$D17_3, levels = c(1:13), 
+bop_aug_2023$Problems_Third <- factor(bop_aug_2023$D17_3, levels = c(1:13), 
                                      labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
-bop_nov_2022$Third_Problem <- factor(bop_nov_2022$D17_3, levels = c(1:13), 
+bop_nov_2022$Problems_Third <- factor(bop_nov_2022$D17_3, levels = c(1:13), 
                                      labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
-bop_oct_2020$Third_Problem <- factor(bop_oct_2020$B6_3, levels = c(1:11, 99), 
+bop_oct_2020$Problems_Third <- factor(bop_oct_2020$B6_3, levels = c(1:11, 99), 
                                      labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
-bop_dec_2019$Third_Problem <- factor(bop_dec_2019$B6_3, levels = c(1:13),
+bop_dec_2019$Problems_Third <- factor(bop_dec_2019$B6_3, levels = c(1:13),
                                      labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK", "NR"))
-bop_may_2018$Third_Problem <- factor(bop_may_2018$B6_03, levels = c(1:12), 
+bop_may_2018$Problems_Third <- factor(bop_may_2018$B6_03, levels = c(1:12), 
                                      labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
-bop_nov_2017$Third_Problem <- factor(bop_nov_2017$B6_3, levels = c(1:11, 100),
+bop_nov_2017$Problems_Third <- factor(bop_nov_2017$B6_3, levels = c(1:11, 100),
                                      labels =  c("Internal order", "Peace and understanding among people", "Economy", "Standard of living", "Education, science, culture", "Spiritual development", "Territorial integrity (Transnistria)", "Independent Judiciary", "Cooperation with IOs", "Corruption", "Other", "DK"))
 ```
 
 # Media
 ```{r}
 # first important media
-bop_sep_2026$Important_Media <- factor(bop_sep_2026$T_Q_14_1,
+bop_sep_2026$Media_First <- factor(bop_sep_2026$T_Q_14_1,
                                        levels = c(1:11, 96:99),
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls",
                                                   "Local authorities", "Social media", "Internet", "DK", "DK", "DK", "NR"))
-bop_sep_2025$Important_Media <- factor(bop_sep_2025$B10_1, 
+bop_sep_2025$Media_First <- factor(bop_sep_2025$B10_1, 
                                        labels =  c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "Social media", "DK", "DK", "NR"))
-bop_oct_2024$Important_Media <- factor(bop_oct_2024$C_13_O1, 
+bop_oct_2024$Media_First <- factor(bop_oct_2024$C_13_O1, 
                                        levels = c(1:10, 96:99), 
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Internet", "Social media", "Social media", "Other", "Other", "None", "DK", "DK", "NR"))
-bop_aug_2023$Important_Media <- factor(bop_aug_2023$С3_1, 
+bop_aug_2023$Media_First <- factor(bop_aug_2023$С3_1, 
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
-bop_nov_2022$Important_Media <- factor(bop_nov_2022$С3_1, 
+bop_nov_2022$Media_First <- factor(bop_nov_2022$С3_1, 
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
-bop_feb_2021$Important_Media <- factor(bop_feb_2021$B10_1, 
+bop_feb_2021$Media_First <- factor(bop_feb_2021$B10_1, 
                                        levels = 1:13, 
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
-bop_oct_2020$Important_Media <- factor(bop_oct_2020$B11_1, 
+bop_oct_2020$Media_First <- factor(bop_oct_2020$B11_1, 
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "NR"))
-bop_jun_2020$Important_Media <- factor(bop_jun_2020$B4_1, 
+bop_jun_2020$Media_First <- factor(bop_jun_2020$B4_1, 
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Internet", "DK", "DK", "NR"))
-bop_dec_2019$Important_Media <- factor(bop_dec_2019$B10, 
+bop_dec_2019$Media_First <- factor(bop_dec_2019$B10, 
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Internet", "None", "DK", "DK", "NR"))
-bop_nov_2018$Important_Media <- factor(bop_nov_2018$B10_1, 
+bop_nov_2018$Media_First <- factor(bop_nov_2018$B10_1, 
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Internet", "DK", "DK", "NR"))
-bop_may_2018$Important_Media <- factor(bop_may_2018$B10_01, 
+bop_may_2018$Media_First <- factor(bop_may_2018$B10_01, 
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
-bop_nov_2017$Important_Media <- factor(bop_nov_2017$B10_1, 
+bop_nov_2017$Media_First <- factor(bop_nov_2017$B10_1, 
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Internet", "DK", "DK", "NR"))
 
 ```
@@ -1002,31 +1216,31 @@ bop_nov_2017$Important_Media <- factor(bop_nov_2017$B10_1,
 
 ```{r}
 # second important media
-bop_sep_2026$Second_Media <- factor(bop_sep_2026$T_Q_14_2,
+bop_sep_2026$Media_Second <- factor(bop_sep_2026$T_Q_14_2,
                                     levels = c(1:11, 96:99),
                                        labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls",
                                                   "Local authorities", "Social media", "Internet", "DK", "DK", "DK", "NR"))
-bop_sep_2025$Second_Media <- factor(bop_sep_2025$B10_2, 
+bop_sep_2025$Media_Second <- factor(bop_sep_2025$B10_2, 
                                     labels =  c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "Social media"))
-bop_oct_2024$Second_Media <- factor(bop_oct_2024$C_13_O2, levels = c(1:10, 96:99), 
+bop_oct_2024$Media_Second <- factor(bop_oct_2024$C_13_O2, levels = c(1:10, 96:99), 
                                     labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Internet", "Social media", "Social media", "Other", "Other", "None", "DK", "DK", "NR"))
-bop_aug_2023$Second_Media <- factor(bop_aug_2023$С3_2, levels = 1:13, 
+bop_aug_2023$Media_Second <- factor(bop_aug_2023$С3_2, levels = 1:13, 
                                     labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
-bop_nov_2022$Second_Media <- factor(bop_nov_2022$С3_2, 
+bop_nov_2022$Media_Second <- factor(bop_nov_2022$С3_2, 
                                     labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet"))
-bop_feb_2021$Second_Media <- factor(bop_feb_2021$B10_2, levels = 1:13, 
+bop_feb_2021$Media_Second <- factor(bop_feb_2021$B10_2, levels = 1:13, 
                                     labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
-bop_oct_2020$Second_Media <- factor(bop_oct_2020$B11_2, levels = 1:13, 
+bop_oct_2020$Media_Second <- factor(bop_oct_2020$B11_2, levels = 1:13, 
                                     labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
-bop_jun_2020$Second_Media <- factor(bop_jun_2020$B4_2, levels = 1:13, 
+bop_jun_2020$Media_Second <- factor(bop_jun_2020$B4_2, levels = 1:13, 
                                     labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
-bop_dec_2019$Second_Media <- factor(bop_dec_2019$B10a, levels = 1:14, 
+bop_dec_2019$Media_Second <- factor(bop_dec_2019$B10a, levels = 1:14, 
                                     labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "DK", "NR"))
-bop_nov_2018$Second_Media <- factor(bop_nov_2018$B10_2, 
+bop_nov_2018$Media_Second <- factor(bop_nov_2018$B10_2, 
                                     labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet"))
-bop_may_2018$Second_Media <- factor(bop_may_2018$B10_02, 
+bop_may_2018$Media_Second <- factor(bop_may_2018$B10_02, 
                                     labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "DK", "DK", "NR"))
-bop_nov_2017$Second_Media <- factor(bop_nov_2017$B10_2, 
+bop_nov_2017$Media_Second <- factor(bop_nov_2017$B10_2, 
                                     labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet"))
 ```
 
@@ -1058,88 +1272,919 @@ bop_nov_2017$Trust_Media <- factor(bop_nov_2017$B11,
                                    labels = c("TV", "Newspapers", "Radio", "Family", "Friends and neighbours", "Colleagues", "Hearsay", "Opinion polls", "Local authorities", "Internet", "None", "DK", "DK", "NR"))
 ```
 
+## Countries Trust
+```{r}
+# Trust: Russian Media
+bop_nov_2017$RussianMedia_Trust <- factor(bop_nov_2017$B14_1, levels = 1:4)
+bop_may_2018$RussianMedia_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$RussianMedia_Trust <- factor(bop_nov_2018$B15_1, levels = 1:4)
+bop_dec_2019$RussianMedia_Trust <- factor(bop_dec_2019$B15_1, levels = 1:4)
+bop_jun_2020$RussianMedia_Trust <- factor(NA, levels = 1:4)
+bop_oct_2020$RussianMedia_Trust <- factor(NA, levels = 1:4)
+bop_feb_2021$RussianMedia_Trust <- factor(bop_feb_2021$B14_1, levels = 1:4)
+bop_nov_2022$RussianMedia_Trust <- factor(bop_nov_2022$C9_1, levels = 1:4)
+bop_aug_2023$RussianMedia_Trust <- factor(bop_aug_2023$C9_1, levels = 1:4)
+bop_oct_2024$RussianMedia_Trust <- factor(NA, levels = 1:4)
+bop_sep_2025$RussianMedia_Trust <- factor(bop_sep_2025$B14_1, levels = 1:4)
+bop_sep_2026$RussianMedia_Trust <- factor(bop_sep_2026$T_Q_16_1, levels = 1:4)
+```
+
+```{r}
+# Trust: Romanian Media
+bop_nov_2017$RomanianMedia_Trust <- factor(bop_nov_2017$B14_2, levels = 1:4)
+bop_may_2018$RomanianMedia_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$RomanianMedia_Trust <- factor(bop_nov_2018$B15_2, levels = 1:4)
+bop_dec_2019$RomanianMedia_Trust <- factor(bop_dec_2019$B15_2, levels = 1:4)
+bop_jun_2020$RomanianMedia_Trust <- factor(NA, levels = 1:4)
+bop_oct_2020$RomanianMedia_Trust <- factor(NA, levels = 1:4)
+bop_feb_2021$RomanianMedia_Trust <- factor(bop_feb_2021$B14_2, levels = 1:4)
+bop_nov_2022$RomanianMedia_Trust <- factor(bop_nov_2022$C9_2, levels = 1:4)
+bop_aug_2023$RomanianMedia_Trust <- factor(bop_aug_2023$C9_2, levels = 1:4)
+bop_oct_2024$RomanianMedia_Trust <- factor(NA, levels = 1:4)
+bop_sep_2025$RomanianMedia_Trust <- factor(bop_sep_2025$B14_2, levels = 1:4)
+bop_sep_2026$RomanianMedia_Trust <- factor(bop_sep_2026$T_Q_16_2, levels = 1:4)
+```
+
+```{r}
+# Trust: EU Media
+bop_nov_2017$EUMedia_Trust <- factor(bop_nov_2017$B14_3, levels = 1:4)
+bop_may_2018$EUMedia_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$EUMedia_Trust <- factor(bop_nov_2018$B15_3, levels = 1:4)
+bop_dec_2019$EUMedia_Trust <- factor(bop_dec_2019$B15_3, levels = 1:4)
+bop_jun_2020$EUMedia_Trust <- factor(NA, levels = 1:4)
+bop_oct_2020$EUMedia_Trust <- factor(NA, levels = 1:4)
+bop_feb_2021$EUMedia_Trust <- factor(bop_feb_2021$B14_3, levels = 1:4)
+bop_nov_2022$EUMedia_Trust <- factor(bop_nov_2022$C9_3, levels = 1:4)
+bop_aug_2023$EUMedia_Trust <- factor(bop_aug_2023$C9_3, levels = 1:4)
+bop_oct_2024$EUMedia_Trust <- factor(NA, levels = 1:4)
+bop_sep_2025$EUMedia_Trust <- factor(bop_sep_2025$B14_3, levels = 1:4)
+bop_sep_2026$EUMedia_Trust <- factor(bop_sep_2026$T_Q_16_3, levels = 1:4)
+```
+
+```{r}
+# Trust: Moldovan Media
+bop_nov_2017$MoldovanMedia_Trust <- factor(bop_nov_2017$B14_4, levels = 1:4)
+bop_may_2018$MoldovanMedia_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$MoldovanMedia_Trust <- factor(bop_nov_2018$B15_4, levels = 1:4)
+bop_dec_2019$MoldovanMedia_Trust <- factor(bop_dec_2019$B15_4, levels = 1:4)
+bop_jun_2020$MoldovanMedia_Trust <- factor(NA, levels = 1:4)
+bop_oct_2020$MoldovanMedia_Trust <- factor(NA, levels = 1:4)
+bop_feb_2021$MoldovanMedia_Trust <- factor(bop_feb_2021$B14_4, levels = 1:4)
+bop_nov_2022$MoldovanMedia_Trust <- factor(bop_nov_2022$C9_4, levels = 1:4)
+bop_aug_2023$MoldovanMedia_Trust <- factor(bop_aug_2023$C9_4, levels = 1:4)
+bop_oct_2024$MoldovanMedia_Trust <- factor(NA, levels = 1:4)
+bop_sep_2025$MoldovanMedia_Trust <- factor(bop_sep_2025$B14_4, levels = 1:4)
+bop_sep_2026$MoldovanMedia_Trust <- factor(bop_sep_2026$T_Q_16_4, levels = 1:4)
+```
+
+## Behaviours
+```{r}
+freq_labels <- c(
+  "Daily",
+  "Weekly",
+  "Monthly",
+  "Occasionally",
+  "Rarely",
+  "DK/NR")
+```
+
+```{r}
+# How often: newspapers
+bop_nov_2017$Newspapers_HowOften <- factor(bop_nov_2017$B9_1, levels = 1:6, labels = freq_labels)
+bop_may_2018$Newspapers_HowOften <- factor(bop_may_2018$B9_01, levels = 1:6, labels = freq_labels)
+bop_nov_2018$Newspapers_HowOften <- factor(bop_nov_2018$B9_1, levels = 1:6, labels = freq_labels)
+bop_dec_2019$Newspapers_HowOften <- factor(bop_dec_2019$B9_1, levels = 1:6, labels = freq_labels)
+bop_jun_2020$Newspapers_HowOften <- factor(NA, levels = 1:6, labels = freq_labels)
+bop_oct_2020$Newspapers_HowOften <- factor(bop_oct_2020$B10_1, levels = 1:6, labels = freq_labels)
+bop_feb_2021$Newspapers_HowOften <- factor(bop_feb_2021$B9_1, levels = 1:6, labels = freq_labels)
+bop_nov_2022$Newspapers_HowOften <- factor(bop_nov_2022$С2_1, levels = 1:6, labels = freq_labels)
+bop_aug_2023$Newspapers_HowOften <- factor(bop_aug_2023$С2_1, levels = 1:6, labels = freq_labels)
+bop_oct_2024$Newspapers_HowOften <- factor(bop_oct_2024$C_12_1, levels = 1:6, labels = freq_labels)
+bop_sep_2025$Newspapers_HowOften <- factor(bop_sep_2025$B9_1, levels = 1:6, labels = freq_labels)
+bop_sep_2026$Newspapers_HowOften <- factor(bop_sep_2026$T_Q_13_1, levels = 1:6, labels = freq_labels)
+```
+
+```{r}
+# How often: radio
+bop_nov_2017$Radio_HowOften <- factor(bop_nov_2017$B9_2, levels = 1:6, labels = freq_labels)
+bop_may_2018$Radio_HowOften <- factor(bop_may_2018$B9_02, levels = 1:6, labels = freq_labels)
+bop_nov_2018$Radio_HowOften <- factor(bop_nov_2018$B9_2, levels = 1:6, labels = freq_labels)
+bop_dec_2019$Radio_HowOften <- factor(bop_dec_2019$B9_2, levels = 1:6, labels = freq_labels)
+bop_jun_2020$Radio_HowOften <- factor(NA, levels = 1:6, labels = freq_labels)
+bop_oct_2020$Radio_HowOften <- factor(bop_oct_2020$B10_2, levels = 1:6, labels = freq_labels)
+bop_feb_2021$Radio_HowOften <- factor(bop_feb_2021$B9_2, levels = 1:6, labels = freq_labels)
+bop_nov_2022$Radio_HowOften <- factor(bop_nov_2022$С2_2, levels = 1:6, labels = freq_labels)
+bop_aug_2023$Radio_HowOften <- factor(bop_aug_2023$С2_2, levels = 1:6, labels = freq_labels)
+bop_oct_2024$Radio_HowOften <- factor(bop_oct_2024$C_12_2, levels = 1:6, labels = freq_labels)
+bop_sep_2025$Radio_HowOften <- factor(bop_sep_2025$B9_2, levels = 1:6, labels = freq_labels)
+bop_sep_2026$Radio_HowOften <- factor(bop_sep_2026$T_Q_13_2, levels = 1:6, labels = freq_labels)
+```
+
+```{r}
+# How often: TV
+bop_nov_2017$TV_HowOften <- factor(bop_nov_2017$B9_3, levels = 1:6, labels = freq_labels)
+bop_may_2018$TV_HowOften <- factor(bop_may_2018$B9_03, levels = 1:6, labels = freq_labels)
+bop_nov_2018$TV_HowOften <- factor(bop_nov_2018$B9_3, levels = 1:6, labels = freq_labels)
+bop_dec_2019$TV_HowOften <- factor(bop_dec_2019$B9_3, levels = 1:6, labels = freq_labels)
+bop_jun_2020$TV_HowOften <- factor(NA, levels = 1:6, labels = freq_labels)
+bop_oct_2020$TV_HowOften <- factor(bop_oct_2020$B10_3, levels = 1:6, labels = freq_labels)
+bop_feb_2021$TV_HowOften <- factor(bop_feb_2021$B9_3, levels = 1:6, labels = freq_labels)
+bop_nov_2022$TV_HowOften <- factor(bop_nov_2022$С2_3, levels = 1:6, labels = freq_labels)
+bop_aug_2023$TV_HowOften <- factor(bop_aug_2023$С2_3, levels = 1:6, labels = freq_labels)
+bop_oct_2024$TV_HowOften <- factor(bop_oct_2024$C_12_3, levels = 1:6, labels = freq_labels)
+bop_sep_2025$TV_HowOften <- factor(bop_sep_2025$B9_3, levels = 1:6, labels = freq_labels)
+bop_sep_2026$TV_HowOften <- factor(bop_sep_2026$T_Q_13_3, levels = 1:6, labels = freq_labels)
+```
+
+```{r}
+# How often: books
+bop_nov_2017$Books_HowOften <- factor(bop_nov_2017$B9_4, levels = 1:6, labels = freq_labels)
+bop_may_2018$Books_HowOften <- factor(bop_may_2018$B9_04, levels = 1:6, labels = freq_labels)
+bop_nov_2018$Books_HowOften <- factor(bop_nov_2018$B9_4, levels = 1:6, labels = freq_labels)
+bop_dec_2019$Books_HowOften <- factor(bop_dec_2019$B9_4, levels = 1:6, labels = freq_labels)
+bop_jun_2020$Books_HowOften <- factor(NA, levels = 1:6, labels = freq_labels)
+bop_oct_2020$Books_HowOften <- factor(bop_oct_2020$B10_4, levels = 1:6, labels = freq_labels)
+bop_feb_2021$Books_HowOften <- factor(bop_feb_2021$B9_4, levels = 1:6, labels = freq_labels)
+bop_nov_2022$Books_HowOften <- factor(bop_nov_2022$С2_4, levels = 1:6, labels = freq_labels)
+bop_aug_2023$Books_HowOften <- factor(bop_aug_2023$С2_4, levels = 1:6, labels = freq_labels)
+bop_oct_2024$Books_HowOften <- factor(bop_oct_2024$C_12_4, levels = 1:6, labels = freq_labels)
+bop_sep_2025$Books_HowOften <- factor(bop_sep_2025$B9_4, levels = 1:6, labels = freq_labels)
+bop_sep_2026$Books_HowOften <- factor(bop_sep_2026$T_Q_13_4, levels = 1:6, labels = freq_labels)
+```
+
+```{r}
+# How often: internet
+bop_nov_2017$Internet_HowOften <- factor(bop_nov_2017$B9_5, levels = 1:6, labels = freq_labels)
+bop_may_2018$Internet_HowOften <- factor(bop_may_2018$B9_05, levels = 1:6, labels = freq_labels)
+bop_nov_2018$Internet_HowOften <- factor(bop_nov_2018$B9_5, levels = 1:6, labels = freq_labels)
+bop_dec_2019$Internet_HowOften <- factor(bop_dec_2019$B9_5, levels = 1:6, labels = freq_labels)
+bop_jun_2020$Internet_HowOften <- factor(NA, levels = 1:6, labels = freq_labels)
+bop_oct_2020$Internet_HowOften <- factor(bop_oct_2020$B10_5, levels = 1:6, labels = freq_labels)
+bop_feb_2021$Internet_HowOften <- factor(bop_feb_2021$B9_5, levels = 1:6, labels = freq_labels)
+bop_nov_2022$Internet_HowOften <- factor(bop_nov_2022$С2_5, levels = 1:6, labels = freq_labels)
+bop_aug_2023$Internet_HowOften <- factor(bop_aug_2023$С2_5, levels = 1:6, labels = freq_labels)
+bop_oct_2024$Internet_HowOften <- factor(bop_oct_2024$C_12_5, levels = 1:6, labels = freq_labels)
+bop_sep_2025$Internet_HowOften <- factor(bop_sep_2025$B9_5, levels = 1:6, labels = freq_labels)
+bop_sep_2026$Internet_HowOften <- factor(bop_sep_2026$T_Q_13_5, levels = 1:6, labels = freq_labels)
+```
+
 # Worries
 ```{r}
 # First worry
-bop_sep_2026$First_Worry <- factor(bop_sep_2026$T_Q_8_1, 
+bop_sep_2026$Worries_First <- factor(bop_sep_2026$T_Q_8_1, 
                                    levels = c(1:20, 96, 98, 99), 
                                    labels = c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Ukrainian refugees", "Immigration", "Other", "Low salary/pension", "Social services", "Emigration", "Economic situation", "Russian propaganda", "Other", "DK", "NR"))
-bop_sep_2025$First_Worry <- factor(bop_sep_2025$B1_1, 
+bop_sep_2025$Worries_First <- factor(bop_sep_2025$B1_1, 
                                    levels = 1:20, 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Low salary/pension", "Housing", "Education", "Social services", "Other", "DK", "NR", "NR"))
-bop_oct_2024$First_Worry <- factor(bop_oct_2024$A_2_1, levels = c(1:14, 98, 99), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Children's future", "War in the region", "Dictatorship", "Illness", "Economic situation", "Climate change", "Energy crisis", "Emigration", "Other", "DK", "NR"))
-bop_aug_2023$First_Worry <- factor(bop_aug_2023$B1_1, levels = c(1:17), 
+bop_oct_2024$Worries_First <- factor(bop_oct_2024$A_2_1, levels = c(1:14, 98, 99), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Children's future", "War in the region", "Dictatorship", "Illness", "Economic situation", "Climate change", "Energy crisis", "Emigration", "Other", "DK", "NR"))
+bop_aug_2023$Worries_First <- factor(bop_aug_2023$B1_1, levels = c(1:17), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
-bop_nov_2022$First_Worry <- factor(bop_nov_2022$B1_1, levels = c(1:17), 
+bop_nov_2022$Worries_First <- factor(bop_nov_2022$B1_1, levels = c(1:17), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
-bop_feb_2021$First_Worry <- factor(bop_feb_2021$B1_1, levels = c(1:16), 
+bop_feb_2021$Worries_First <- factor(bop_feb_2021$B1_1, levels = c(1:16), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Other", "DK", "NR"))
-bop_oct_2020$First_Worry <- factor(bop_oct_2020$B1_1, levels = c(1:15, 99), 
+bop_oct_2020$Worries_First <- factor(bop_oct_2020$B1_1, levels = c(1:15, 99), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "DK/NR"))
-bop_jun_2020$First_Worry <- NA
-bop_dec_2019$First_Worry <- NA
-bop_nov_2018$First_Worry <- factor(bop_nov_2018$B1_1, levels = c(1:16, 100), 
+bop_jun_2020$Worries_First <- NA
+bop_dec_2019$Worries_First <- NA
+bop_nov_2018$Worries_First <- factor(bop_nov_2018$B1_1, levels = c(1:16, 100), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "Low salary/pension", "DK/NR"))
-bop_may_2018$First_Worry <- factor(bop_may_2018$B1_01, levels = c(1:16), 
+bop_may_2018$Worries_First <- factor(bop_may_2018$B1_01, levels = c(1:16), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "DK/NR"))
-bop_nov_2017$First_Worry <- factor(bop_nov_2017$B1_1, levels = c(1:15, 100), 
+bop_nov_2017$Worries_First <- factor(bop_nov_2017$B1_1, levels = c(1:15, 100), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "DK/NR"))
 ```
 
 ```{r}
 # Second worry
-bop_sep_2026$Second_Worry <- factor(bop_sep_2026$T_Q_8_2, 
+bop_sep_2026$Worries_Second <- factor(bop_sep_2026$T_Q_8_2, 
                                    levels = c(1:20, 96, 98, 99), 
                                    labels = c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Ukrainian refugees", "Immigration", "Other", "Low salary/pension", "Social services", "Emigration", "Economic situation", "Russian propaganda", "Other", "DK", "NR"))
-bop_sep_2025$Second_Worry <- factor(bop_sep_2025$B1_2, levels = 1:20, 
+bop_sep_2025$Worries_Second <- factor(bop_sep_2025$B1_2, levels = 1:20, 
                                     labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Low salary/pension", "Housing", "Education", "Social services", "Other", "DK", "NR", "NR"))
-bop_oct_2024$Second_Worry <- factor(bop_oct_2024$A_2_2, levels = c(1:14, 98, 99), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Children's future", "War in the region", "Dictatorship", "Illness", "Economic situation", "Climate change", "Energy crisis", "Emigration", "Other", "DK", "NR"))
-bop_aug_2023$Second_Worry <- factor(bop_aug_2023$B1_2, levels = c(1:17), 
+bop_oct_2024$Worries_Second <- factor(bop_oct_2024$A_2_2, levels = c(1:14, 98, 99), labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Children's future", "War in the region", "Dictatorship", "Illness", "Economic situation", "Climate change", "Energy crisis", "Emigration", "Other", "DK", "NR"))
+bop_aug_2023$Worries_Second <- factor(bop_aug_2023$B1_2, levels = c(1:17), 
                                     labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
-bop_nov_2022$Second_Worry <- factor(bop_nov_2022$B1_2, levels = c(1:17), 
+bop_nov_2022$Worries_Second <- factor(bop_nov_2022$B1_2, levels = c(1:17), 
                                     labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
-bop_feb_2021$Second_Worry <- factor(bop_feb_2021$B1_2, levels = c(1:16), 
+bop_feb_2021$Worries_Second <- factor(bop_feb_2021$B1_2, levels = c(1:16), 
                                     labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Other", "DK", "NR"))
-bop_oct_2020$Second_Worry <- factor(bop_oct_2020$B1_2, levels = c(1:15, 99), 
+bop_oct_2020$Worries_Second <- factor(bop_oct_2020$B1_2, levels = c(1:15, 99), 
                                     labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "DK/NR"))
-bop_jun_2020$Second_Worry <- NA
-bop_dec_2019$Second_Worry <- NA
-bop_nov_2018$Second_Worry <- factor(bop_nov_2018$B1_2, levels = c(1:16, 100), 
+bop_jun_2020$Worries_Second <- NA
+bop_dec_2019$Worries_Second <- NA
+bop_nov_2018$Worries_Second <- factor(bop_nov_2018$B1_2, levels = c(1:16, 100), 
                                     labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "Low salary/pension", "DK/NR"))
-bop_may_2018$Second_Worry <- factor(bop_may_2018$B1_02, levels = c(1:16), 
+bop_may_2018$Worries_Second <- factor(bop_may_2018$B1_02, levels = c(1:16), 
                                     labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "DK/NR"))
-bop_nov_2017$Second_Worry <- factor(bop_nov_2017$B1_2, levels = c(1:15, 100), 
+bop_nov_2017$Worries_Second <- factor(bop_nov_2017$B1_2, levels = c(1:15, 100), 
                                     labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "DK/NR"))
 ```
 
 ```{r}
 # Third worry
-bop_sep_2026$Third_Worry <- factor(bop_sep_2026$T_Q_8_3, 
+bop_sep_2026$Worries_Third <- factor(bop_sep_2026$T_Q_8_3, 
                                    levels = c(1:20, 96, 98, 99), 
                                    labels = c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Ukrainian refugees", "Immigration", "Other", "Low salary/pension", "Social services", "Emigration", "Economic situation", "Russian propaganda", "Other", "DK", "NR"))
-bop_sep_2025$Third_Worry <- factor(bop_sep_2025$B1_3, levels = 1:20, 
+bop_sep_2025$Worries_Third <- factor(bop_sep_2025$B1_3, levels = 1:20, 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Low salary/pension", "Housing", "Education", "Social services", "Other", "DK", "NR", "NR"))
-bop_oct_2024$Third_Worry <- factor(bop_oct_2024$A_2_3, levels = c(1:14, 98, 99), 
+bop_oct_2024$Worries_Third <- factor(bop_oct_2024$A_2_3, levels = c(1:14, 98, 99), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Children's future", "War in the region", "Dictatorship", "Illness", "Economic situation", "Climate change", "Energy crisis", "Emigration", "Other", "DK", "NR"))
-bop_aug_2023$Third_Worry <- factor(bop_aug_2023$B1_3, levels = c(1:17), 
+bop_aug_2023$Worries_Third <- factor(bop_aug_2023$B1_3, levels = c(1:17), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
-bop_nov_2022$Third_Worry <- factor(bop_nov_2022$B1_3, levels = c(1:17), 
+bop_nov_2022$Worries_Third <- factor(bop_nov_2022$B1_3, levels = c(1:17), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Energy crisis", "Other", "DK", "NR"))
-bop_feb_2021$Third_Worry <- factor(bop_feb_2021$B1_3, levels = c(1:16), 
+bop_feb_2021$Worries_Third <- factor(bop_feb_2021$B1_3, levels = c(1:16), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Other", "DK", "NR"))
-bop_oct_2020$Third_Worry <- factor(bop_oct_2020$B1_3, levels = c(1:15, 99), 
+bop_oct_2020$Worries_Third <- factor(bop_oct_2020$B1_3, levels = c(1:15, 99), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "DK/NR"))
-bop_jun_2020$Third_Worry <- NA
-bop_dec_2019$Third_Worry <- NA
-bop_nov_2018$Third_Worry <- factor(bop_nov_2018$B1_3, levels = c(1:16, 100), 
+bop_jun_2020$Worries_Third <- NA
+bop_dec_2019$Worries_Third <- NA
+bop_nov_2018$Worries_Third <- factor(bop_nov_2018$B1_3, levels = c(1:16, 100), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "Low salary/pension", "DK/NR"))
-bop_may_2018$Third_Worry <- factor(bop_may_2018$B1_03, levels = c(1:16), 
+bop_may_2018$Worries_Third <- factor(bop_may_2018$B1_03, levels = c(1:16), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "DK/NR"))
-bop_nov_2017$Third_Worry <- factor(bop_nov_2017$B1_3, levels = c(1:15, 100), 
+bop_nov_2017$Worries_Third <- factor(bop_nov_2017$B1_3, levels = c(1:15, 100), 
                                    labels =  c("Poverty", "Prices", "Unemployment", "Crime", "Corruption", "Hunger", "Children's future", "Interethnic relations", "Natural disasters", "War in the region", "Dictatorship", "Illness", "Lack of heating", "Economic situation", "Other", "DK/NR"))
 
 ```
 
+-----------
+
+# Economics
+```{r}
+# Economic Situation - Last Year
+bop_nov_2017$Economic_Situation_minus1 <- factor(bop_nov_2017$A4,
+                                                 levels = 1:5)
+bop_may_2018$Economic_Situation_minus1 <- factor(bop_may_2018$A4,
+                                                 levels = 1:5)
+bop_nov_2018$Economic_Situation_minus1 <- factor(bop_nov_2018$A4,
+                                                 levels = 1:5)
+bop_dec_2019$Economic_Situation_minus1 <- factor(bop_dec_2019$A4,
+                                                 levels = 1:5)
+bop_jun_2020$Economic_Situation_minus1 <- factor(bop_jun_2020$A3,
+                                                 levels = 1:5)
+bop_oct_2020$Economic_Situation_minus1 <- factor(bop_oct_2020$A4,
+                                                 levels = 1:5)
+bop_feb_2021$Economic_Situation_minus1 <- factor(bop_feb_2021$A4,
+                                                 levels = 1:5)
+bop_nov_2022$Economic_Situation_minus1 <- factor(bop_nov_2022$A4,
+                                                 levels = 1:5)
+bop_aug_2023$Economic_Situation_minus1 <- factor(bop_aug_2023$A4,
+                                                 levels = 1:5)
+bop_oct_2024$Economic_Situation_minus1 <- factor(bop_oct_2024$A_3,
+                                                 levels = 1:5)
+bop_sep_2025$Economic_Situation_minus1 <- factor(bop_sep_2025$A4,
+                                                 levels = 1:5)
+bop_sep_2026$Economic_Situation_minus1 <- factor(bop_sep_2026$Q_3,
+                                                 levels = 1:5)
+```
+
+```{r}
+# Economic Situation - Next Year
+bop_nov_2017$Economic_Situation_plus1 <- factor(bop_nov_2017$A5,
+                                                levels = 1:5)
+bop_may_2018$Economic_Situation_plus1 <- factor(bop_may_2018$A5,
+                                                levels = 1:5)
+bop_nov_2018$Economic_Situation_plus1 <- factor(bop_nov_2018$A5,
+                                                levels = 1:5)
+bop_dec_2019$Economic_Situation_plus1 <- factor(bop_dec_2019$A5,
+                                                levels = 1:5)
+bop_jun_2020$Economic_Situation_plus1 <- factor(NA, levels = 1:5)
+bop_oct_2020$Economic_Situation_plus1 <- factor(bop_oct_2020$A5,
+                                                levels = 1:5)
+bop_feb_2021$Economic_Situation_plus1 <- factor(bop_feb_2021$A5,
+                                                levels = 1:5)
+bop_nov_2022$Economic_Situation_plus1 <- factor(bop_nov_2022$A5,
+                                                levels = 1:5)
+bop_aug_2023$Economic_Situation_plus1 <- factor(bop_aug_2023$A5,
+                                                levels = 1:5)
+bop_oct_2024$Economic_Situation_plus1 <- factor(bop_oct_2024$A_4,
+                                                levels = 1:5)
+bop_sep_2025$Economic_Situation_plus1 <- factor(bop_sep_2025$A5,
+                                                levels = 1:5)
+bop_sep_2026$Economic_Situation_plus1 <- factor(bop_sep_2026$Q_4,
+                                                levels = 1:5)
+```
+
+
+```{r}
+# Economic Satisfaction
+bop_nov_2017$Economic_Satisfaction <- factor(bop_nov_2017$A6,
+                                             levels = 1:5)
+bop_may_2018$Economic_Satisfaction <- factor(bop_may_2018$A6,
+                                             levels = 1:5)
+bop_nov_2018$Economic_Satisfaction <- factor(bop_nov_2018$A6,
+                                             levels = 1:5)
+bop_dec_2019$Economic_Satisfaction <- factor(bop_dec_2019$A6,
+                                             levels = 1:5)
+bop_jun_2020$Economic_Satisfaction <- factor(bop_jun_2020$A4,
+                                             levels = 1:5)
+bop_oct_2020$Economic_Satisfaction <- factor(bop_oct_2020$A6,
+                                             levels = 1:5)
+bop_feb_2021$Economic_Satisfaction <- factor(bop_feb_2021$A6,
+                                             levels = 1:5)
+bop_nov_2022$Economic_Satisfaction <- factor(bop_nov_2022$A6,
+                                             levels = 1:5)
+bop_aug_2023$Economic_Satisfaction <- factor(bop_aug_2023$A6,
+                                             levels = 1:5)
+bop_oct_2024$Economic_Satisfaction <- factor(bop_oct_2024$A_5,
+                                             levels = 1:5)
+bop_sep_2025$Economic_Satisfaction <- factor(bop_sep_2025$A6,
+                                             levels = 1:5)
+bop_sep_2026$Economic_Satisfaction <- factor(bop_sep_2026$Q_5,
+                                             levels = 1:5)
+```
+
+```{r}
+# Economic Solution - First Priority
+bop_nov_2017$EconomicSolution_First <- factor(bop_nov_2017$A7_1, 
+                                        levels = c(1:14, 98, 99),
+                                        labels = c(
+                                          "Laws", 
+                                          "State's role",
+                                          "Incentives for private sector",
+                                          "Attracting FDI",
+                                          "Industrial development",
+                                          "Farmer support",
+                                          "Protecting citizens' property",
+                                          "Expanding local admin", 
+                                          "Fighting crime",
+                                          "Improving state authorities",
+                                          "Changing leadership", 
+                                          "Fighting corruption",
+                                          "Creating jobs", 
+                                          "Other",
+                                          "DK/NR",
+                                          "DK/NR"))
+bop_may_2018$EconomicSolution_First <- factor(bop_may_2018$A7_01,
+                                              levels = 1:15,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_nov_2018$EconomicSolution_First <- factor(bop_nov_2018$A7_1,
+                                              levels = c(1:15, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "Creating jobs",
+                                                "Raising wages and pensions",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_dec_2019$EconomicSolution_First <- factor(bop_dec_2019$A7_1,
+                                              levels = 1:15,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_jun_2020$EconomicSolution_First <- NA
+bop_oct_2020$EconomicSolution_First <- factor(bop_oct_2020$A7_1,
+                                              levels = c(1:13, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_feb_2021$EconomicSolution_First <- factor(bop_feb_2021$A7_1,
+                                              levels = 1:14,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_nov_2022$EconomicSolution_First <- factor(bop_nov_2022$A7_1,
+                                              levels = 1:14,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_aug_2023$EconomicSolution_First <- factor(bop_aug_2023$A7_1,
+                                              levels = 1:14,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_oct_2024$EconomicSolution_First <- factor(bop_oct_2024$A_6_1,
+                                              levels = c(1:17, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Reducing bureaucracy",
+                                                "Renewable energy and environmental policies",
+                                                "Creating jobs",
+                                                "Improving access to healthcare",
+                                                "Reducing taxes for SMEs",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_sep_2025$EconomicSolution_First <- NA
+bop_sep_2026$EconomicSolution_First <- factor(bop_sep_2026$T_Q_7_1,
+                                              levels = c(1:19, 96, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Economic growth",
+                                                "Other",
+                                                "Creating jobs",
+                                                "Raising wages and pensions",
+                                                "National security",
+                                                "Fighting corruption",
+                                                "Improving education",
+                                                "Improving healthcare",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+```
+
+```{r}
+bop_jun_2020$EconomicSolution_Second <- NA
+bop_sep_2025$EconomicSolution_Second <- NA
+bop_nov_2017$EconomicSolution_Second <- factor(bop_nov_2017$A7_2, 
+                                        levels = c(1:14, 98, 99),
+                                        labels = c(
+                                          "Laws", 
+                                          "State's role",
+                                          "Incentives for private sector",
+                                          "Attracting FDI",
+                                          "Industrial development",
+                                          "Farmer support",
+                                          "Protecting citizens' property",
+                                          "Expanding local admin", 
+                                          "Fighting crime",
+                                          "Improving state authorities",
+                                          "Changing leadership", 
+                                          "Fighting corruption",
+                                          "Creating jobs", 
+                                          "Other",
+                                          "DK/NR",
+                                          "DK/NR"))
+bop_may_2018$EconomicSolution_Second <- factor(bop_may_2018$A7_02,
+                                              levels = 1:15,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_nov_2018$EconomicSolution_Second <- factor(bop_nov_2018$A7_2,
+                                              levels = c(1:15, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "Creating jobs",
+                                                "Raising wages and pensions",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_dec_2019$EconomicSolution_Second <- factor(bop_dec_2019$A7_2,
+                                              levels = 1:15,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_oct_2020$EconomicSolution_Second <- factor(bop_oct_2020$A7_2,
+                                              levels = c(1:13, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_feb_2021$EconomicSolution_Second <- factor(bop_feb_2021$A7_2,
+                                              levels = 1:14,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_nov_2022$EconomicSolution_Second <- factor(bop_nov_2022$A7_2,
+                                              levels = 1:14,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_aug_2023$EconomicSolution_Second <- factor(bop_aug_2023$A7_2,
+                                              levels = 1:14,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_oct_2024$EconomicSolution_Second <- factor(bop_oct_2024$A_6_2,
+                                              levels = c(1:17, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Reducing bureaucracy",
+                                                "Renewable energy and environmental policies",
+                                                "Creating jobs",
+                                                "Improving access to healthcare",
+                                                "Reducing taxes for SMEs",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_sep_2026$EconomicSolution_Second <- factor(bop_sep_2026$T_Q_7_2,
+                                              levels = c(1:19, 96, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Economic growth",
+                                                "Other",
+                                                "Creating jobs",
+                                                "Raising wages and pensions",
+                                                "National security",
+                                                "Fighting corruption",
+                                                "Improving education",
+                                                "Improving healthcare",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+```
+
+```{r}
+bop_jun_2020$EconomicSolution_Third <- NA
+bop_sep_2025$EconomicSolution_Third <- NA
+bop_nov_2017$EconomicSolution_Third <- factor(bop_nov_2017$A7_3, 
+                                        levels = c(1:14, 98, 99),
+                                        labels = c(
+                                          "Laws", 
+                                          "State's role",
+                                          "Incentives for private sector",
+                                          "Attracting FDI",
+                                          "Industrial development",
+                                          "Farmer support",
+                                          "Protecting citizens' property",
+                                          "Expanding local admin", 
+                                          "Fighting crime",
+                                          "Improving state authorities",
+                                          "Changing leadership", 
+                                          "Fighting corruption",
+                                          "Creating jobs", 
+                                          "Other",
+                                          "DK/NR",
+                                          "DK/NR"))
+bop_may_2018$EconomicSolution_Third <- factor(bop_may_2018$A7_03,
+                                              levels = 1:15,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_nov_2018$EconomicSolution_Third <- factor(bop_nov_2018$A7_3,
+                                              levels = c(1:15, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "Creating jobs",
+                                                "Raising wages and pensions",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_dec_2019$EconomicSolution_Third <- factor(bop_dec_2019$A7_3,
+                                              levels = 1:15,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_oct_2020$EconomicSolution_Third <- factor(bop_oct_2020$A7_3,
+                                              levels = c(1:13, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_feb_2021$EconomicSolution_Third <- factor(bop_feb_2021$A7_3,
+                                              levels = 1:14,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_nov_2022$EconomicSolution_Third <- factor(bop_nov_2022$A7_3,
+                                              levels = 1:14,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_aug_2023$EconomicSolution_Third <- factor(bop_aug_2023$A7_3,
+                                              levels = 1:14,
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_oct_2024$EconomicSolution_Third <- factor(bop_oct_2024$A_6_3,
+                                              levels = c(1:17, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Fighting corruption",
+                                                "Reducing bureaucracy",
+                                                "Renewable energy and environmental policies",
+                                                "Creating jobs",
+                                                "Improving access to healthcare",
+                                                "Reducing taxes for SMEs",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+bop_sep_2026$EconomicSolution_Third <- factor(bop_sep_2026$T_Q_7_3,
+                                              levels = c(1:19, 96, 98, 99),
+                                              labels = c(
+                                                "Laws",
+                                                "State's role",
+                                                "Incentives for private sector",
+                                                "Attracting FDI",
+                                                "Industrial development",
+                                                "Farmer support",
+                                                "Protecting citizens' property",
+                                                "Expanding local admin",
+                                                "Fighting crime",
+                                                "Improving state authorities",
+                                                "Changing leadership",
+                                                "Economic growth",
+                                                "Other",
+                                                "Creating jobs",
+                                                "Raising wages and pensions",
+                                                "National security",
+                                                "Fighting corruption",
+                                                "Improving education",
+                                                "Improving healthcare",
+                                                "Other",
+                                                "DK/NR",
+                                                "DK/NR"))
+```
 
 -----------
 
@@ -1468,6 +2513,120 @@ bop_sep_2026$Represented <- factor(bop_sep_2026$Q_31, levels = 1:2, labels = c("
 
 # Political Values & Satisfaction
 
+```{r}
+# Access to Free Information
+bop_nov_2017$Info_Free <- factor(NA, levels = 1:4)
+bop_may_2018$Info_Free <- factor(NA, levels = 1:4)
+bop_nov_2018$Info_Free <- factor(NA, levels = 1:4)
+bop_dec_2019$Info_Free <- factor(NA, levels = 1:4)
+bop_jun_2020$Info_Free <- factor(NA, levels = 1:4)
+bop_oct_2020$Info_Free <- factor(NA, levels = 1:4)
+bop_feb_2021$Info_Free <- factor(bop_feb_2021$B15, levels = 1:4)
+bop_nov_2022$Info_Free <- factor(bop_nov_2022$C10, levels = 1:4)
+bop_aug_2023$Info_Free <- factor(bop_aug_2023$C10, levels = 1:4)
+bop_oct_2024$Info_Free <- factor(NA, levels = 1:4)
+bop_sep_2025$Info_Free <- factor(bop_sep_2025$B15, levels = 1:4)
+bop_sep_2026$Info_Free <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# Overall, how free do you think people in Moldova feel...? To say what they think about the country’s leadership
+bop_nov_2017$Leadership_Free <- factor(bop_nov_2017$B15_1, levels = 1:4)
+bop_may_2018$Leadership_Free <- factor(bop_may_2018$B15_01, levels = 1:4)
+bop_nov_2018$Leadership_Free <- factor(bop_nov_2018$B16_1, levels = 1:4)
+bop_dec_2019$Leadership_Free <- factor(bop_dec_2019$B16_1, levels = 1:4)
+bop_jun_2020$Leadership_Free <- factor(NA, levels = 1:4)
+bop_oct_2020$Leadership_Free <- factor(NA, levels = 1:4)
+bop_feb_2021$Leadership_Free <- factor(NA, levels = 1:4)
+bop_nov_2022$Leadership_Free <- factor(NA, levels = 1:4)
+bop_aug_2023$Leadership_Free <- factor(NA, levels = 1:4)
+bop_oct_2024$Leadership_Free <- factor(NA, levels = 1:4)
+bop_sep_2025$Leadership_Free <- factor(bop_sep_2025$B16_1, levels = 1:4)
+bop_sep_2026$Leadership_Free <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# Overall, how free do you think people in Moldova feel...? ...? To go out and protest against decisions made by the country’s leadership
+bop_nov_2017$Leadership_Protest_Free <- factor(bop_nov_2017$B15_2, levels = 1:4)
+bop_may_2018$Leadership_Protest_Free <- factor(bop_may_2018$B15_02, levels = 1:4)
+bop_nov_2018$Leadership_Protest_Free <- factor(bop_nov_2018$B16_2, levels = 1:4)
+bop_dec_2019$Leadership_Protest_Free <- factor(bop_dec_2019$B16_2, levels = 1:4)
+bop_jun_2020$Leadership_Protest_Free <- factor(NA, levels = 1:4)
+bop_oct_2020$Leadership_Protest_Free <- factor(NA, levels = 1:4)
+bop_feb_2021$Leadership_Protest_Free <- factor(NA, levels = 1:4)
+bop_nov_2022$Leadership_Protest_Free <- factor(NA, levels = 1:4)
+bop_aug_2023$Leadership_Protest_Free <- factor(NA, levels = 1:4)
+bop_oct_2024$Leadership_Protest_Free <- factor(NA, levels = 1:4)
+bop_sep_2025$Leadership_Protest_Free <- factor(bop_sep_2025$B16_2, levels = 1:4)
+bop_sep_2026$Leadership_Protest_Free <- factor(NA, levels = 1:4)
+```
+
+```{r}
+#To what extent do YOU personally feel free...? To say what you think about the country’s leadership
+bop_nov_2017$Personally_Leadership_Free <- factor(bop_nov_2017$B16_1, levels = 1:4)
+bop_may_2018$Personally_Leadership_Free <- factor(bop_may_2018$B16_01, levels = 1:4)
+bop_nov_2018$Personally_Leadership_Free <- factor(bop_nov_2018$B17_1, levels = 1:4)
+bop_dec_2019$Personally_Leadership_Free <- factor(bop_dec_2019$B17_1, levels = 1:4)
+bop_jun_2020$Personally_Leadership_Free <- factor(NA, levels = 1:4)
+bop_oct_2020$Personally_Leadership_Free <- factor(NA, levels = 1:4)
+bop_feb_2021$Personally_Leadership_Free <- factor(bop_feb_2021$B16_1, levels = 1:4)
+bop_nov_2022$Personally_Leadership_Free <- factor(bop_nov_2022$C11_1, levels = 1:4)
+bop_aug_2023$Personally_Leadership_Free <- factor(bop_aug_2023$C11_1, levels = 1:4)
+bop_oct_2024$Personally_Leadership_Free <- factor(NA, levels = 1:4)
+bop_sep_2025$Personally_Leadership_Free <- factor(NA, levels = 1:4)
+bop_sep_2026$Personally_Leadership_Free <- factor(NA, levels = 1:4)
+```
+
+```{r}
+#To what extent do YOU personally feel free...? To go out and protest against decisions made by the country’s leadership
+bop_nov_2017$Personally_Leadership_Protest_Free <- factor(bop_nov_2017$B16_2, levels = 1:4)
+bop_may_2018$Personally_Leadership_Protest_Free <- factor(bop_may_2018$B16_02, levels = 1:4)
+bop_nov_2018$Personally_Leadership_Protest_Free <- factor(bop_nov_2018$B17_2, levels = 1:4)
+bop_dec_2019$Personally_Leadership_Protest_Free <- factor(bop_dec_2019$B17_2, levels = 1:4)
+bop_jun_2020$Personally_Leadership_Protest_Free <- factor(NA, levels = 1:4)
+bop_oct_2020$Personally_Leadership_Protest_Free <- factor(NA, levels = 1:4)
+bop_feb_2021$Personally_Leadership_Protest_Free <- factor(bop_feb_2021$B16_2, levels = 1:4)
+bop_nov_2022$Personally_Leadership_Protest_Free <- factor(bop_nov_2022$C11_2, levels = 1:4)
+bop_aug_2023$Personally_Leadership_Protest_Free <- factor(bop_aug_2023$C11_2, levels = 1:4)
+bop_oct_2024$Personally_Leadership_Protest_Free <- factor(NA, levels = 1:4)
+bop_sep_2025$Personally_Leadership_Protest_Free <- factor(NA, levels = 1:4)
+bop_sep_2026$Personally_Leadership_Protest_Free <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# How interested are you in politics?
+bop_nov_2017$Politics_Interest <- factor(bop_nov_2017$C1, levels = 1:5)
+bop_may_2018$Politics_Interest <- factor(bop_may_2018$C1, levels = 1:5)
+bop_nov_2018$Politics_Interest <- factor(bop_nov_2018$C1, levels = 1:5)
+bop_dec_2019$Politics_Interest <- factor(bop_dec_2019$C4, levels = 1:5)
+bop_jun_2020$Politics_Interest <- factor(bop_jun_2020$C1, levels = 1:5)
+bop_oct_2020$Politics_Interest <- factor(bop_oct_2020$C1, levels = 1:5)
+bop_feb_2021$Politics_Interest <- factor(bop_feb_2021$D1, levels = 1:5)
+bop_nov_2022$Politics_Interest <- factor(bop_nov_2022$D3, levels = 1:5)
+bop_aug_2023$Politics_Interest <- factor(bop_aug_2023$D3, levels = 1:5)
+bop_oct_2024$Politics_Interest <- factor(bop_oct_2024$D_1, levels = 1:5)
+bop_sep_2025$Politics_Interest <- factor(bop_sep_2025$D1, levels = 1:5)
+bop_sep_2026$Politics_Interest <- factor(bop_sep_2026$Q_19, levels = 1:5)
+```
+
+```{r}
+# Public disclosure of President's salary
+bop_oct_2020$President_Salary <- factor(bop_oct_2020$C16, levels = 1:4)
+bop_oct_2024$President_Salary <- factor(bop_oct_2024$D_21, levels = 1:4)
+```
+
+```{r}
+# Se discută teme politice în cadrul familiei dvs., printre prieteni, colegi?
+bop_sep_2026$Politics_Discuss <- factor(bop_sep_2026$Q_20,
+                                        levels = 1:5,
+                                        labels = c(
+                                          "We discuss and I participate",
+                                          "We discuss but I don't participate",
+                                          "We don't discuss",
+                                          "Difficult to answer",
+                                          "DK/NR"))
+```
+
 ## Satisfaction
 ```{r}
 # Jobs_Leadership
@@ -1662,7 +2821,50 @@ bop_sep_2025$Transnistria_Leadership <- factor(bop_sep_2025$A3_12,levels = 1:4)
 bop_sep_2026$Transnistria_Leadership <- factor(bop_sep_2026$T_Q_6_12,levels = 1:4)
 ```
 
-## Trust
+## Elections
+```{r}
+# Intention to vote if there were elections on Sunday
+bop_nov_2017$Elections_Vote <- factor(bop_nov_2017$C6, levels = 1:5)
+bop_may_2018$Elections_Vote <- factor(bop_may_2018$C6, levels = 1:5)
+bop_nov_2018$Elections_Vote <- factor(bop_nov_2018$C6, levels = 1:5)
+bop_dec_2019$Elections_Vote <- factor(bop_dec_2019$C13, levels = 1:5)
+bop_jun_2020$Elections_Vote <- factor(bop_jun_2020$C6, levels = 1:5)
+bop_oct_2020$Elections_Vote <- factor(bop_oct_2020$C6, levels = 1:5)
+bop_feb_2021$Elections_Vote <- factor(bop_feb_2021$D10, levels = 1:5)
+bop_nov_2022$Elections_Vote <- factor(bop_nov_2022$D7, levels = 1:5)
+bop_aug_2023$Elections_Vote <- factor(bop_aug_2023$D6, levels = 1:5)
+bop_oct_2024$Elections_Vote <- factor(bop_oct_2024$D_3, levels = 1:5)
+bop_sep_2025$Elections_Vote <- factor(bop_sep_2025$D11, levels = 1:5)
+bop_sep_2026$Elections_Vote <- factor(bop_sep_2026$Q_35, levels = 1:5)
+```
+
+```{r}
+# Free & fair elections
+bop_nov_2017$Elections_Free <- factor(bop_nov_2017$C11, levels = 1:2, labels = c("Yes", "No"))
+bop_may_2018$Elections_Free <- factor(bop_may_2018$C10, levels = 1:2, labels = c("Yes", "No"))
+bop_nov_2018$Elections_Free <- factor(bop_nov_2018$C10, levels = 1:2, labels = c("Yes", "No"))
+bop_dec_2019$Elections_Free <- factor(bop_dec_2019$C33, levels = 1:2, labels = c("Yes", "No"))
+bop_jun_2020$Elections_Free <- factor(bop_jun_2020$C9, levels = 1:2, labels = c("Yes", "No"))
+bop_oct_2020$Elections_Free <- factor(bop_oct_2020$C14, levels = 1:2, labels = c("Yes", "No"))
+bop_feb_2021$Elections_Free <- factor(bop_feb_2021$D14, levels = 1:2, labels = c("Yes", "No"))
+bop_nov_2022$Elections_Free <- factor(bop_nov_2022$D2, levels = 1:2, labels = c("Yes", "No"))
+bop_aug_2023$Elections_Free <- factor(bop_aug_2023$D2, levels = 1:2, labels = c("Yes", "No"))
+bop_oct_2024$Elections_Free <- factor(bop_oct_2024$D_19, levels = 1:2, labels = c("Yes", "No"))
+bop_sep_2025$Elections_Free <- factor(bop_sep_2025$D5, levels = 1:2, labels = c("Yes", "No"))
+bop_sep_2026$Elections_Free <- factor(bop_sep_2026$T_Q_22_2, levels = 1:2, labels = c("Yes", "No"))
+```
+
+```{r}
+# To what extent do you agree with: “Recently in Moldova there is a growing tendency toward establishing a totalitarian regime where decision-making power rests with a single person”?
+bop_nov_2017$Totalitarian_Regime <- factor(bop_nov_2017$C12, levels = 1:4)
+```
+
+```{r}
+# Importance of elections
+bop_sep_2026$Election_Important <- factor(bop_sep_2026$Q_34, levels = 1:5)
+```
+
+# Institutional Trust
 ```{r}
 # Government_Trust
 bop_nov_2017$Government_Trust <- factor(bop_nov_2017$C2_1, levels = 1:4)
@@ -1824,6 +3026,8 @@ bop_sep_2025$CEC_Trust <- factor(NA, levels = 1:4)
 bop_sep_2026$CEC_Trust <- factor(NA, levels = 1:4)
 ```
 
+
+
 -----------
 
 # Regional
@@ -1950,6 +3154,11 @@ bop_feb_2021$Equal_Ethnicity <- factor(bop_feb_2021$C17_3, levels = 1:4)
 ```
 
 # Territory
+
+```{r}
+referendum_labels <- c("For", "Against", "Wouldn't participate", "DK", "NR")
+```
+
 ```{r}
 # Unification with Romania
 bop_sep_2026$Unification <- factor(bop_sep_2026$T_Q_43_2, labels = referendum_labels)
@@ -1999,30 +3208,32 @@ bop_sep_2026$Church_Trust <- factor(bop_sep_2026$T_Q_21_6, levels = 1:4)
 ```{r}
 # Religious_Affiliation 
 bop_nov_2017$Religious_Affiliation <- factor(bop_nov_2017$S5, 
-                                             labels = c("MOC", "BOC", "Baptist", 
-                                                        "JW", "Catholic", "Other",
-                                                        "Other", "DK/NR")
+                                             labels = c("MOC", "BOC", "Baptist",
+                                                        "JW", "Catholic",
+                                                        "Other", "Other"))
 bop_may_2018$Religious_Affiliation <- factor(bop_may_2018$S5, 
-                                             labels = c("MOC", "BOC", "Baptist", 
-                                                        "JW", "Catholic", "Other", 
-                                                        "DK/NR")
+                                             labels = c("MOC", "BOC", "Baptist",
+                                                        "JW", "Catholic",
+                                                        "Other", "DK/NR"))
 bop_nov_2018$Religious_Affiliation <- factor(bop_nov_2018$S5, 
-                                             labels = c("MOC", "BOC", "Baptist", 
-                                                        "JW", "Catholic", "Other",
-                                                        "Other", "DK/NR")
+                                             labels = c("MOC", "BOC", "Baptist",
+                                                        "JW", "Catholic",
+                                                        "Other", "Other"))
 bop_dec_2019$Religious_Affiliation <- factor(bop_dec_2019$S5,
-                                             labels = c("MOC", "BOC", "Baptist", 
-                                                        "JW", "Catholic", "Other",
-                                                        "Other", "DK/NR", "DK/NR")
+                                             labels = c("MOC", "BOC", "Baptist",
+                                                        "JW", "Catholic",
+                                                        "Other", "Other",
+                                                        "DK/NR", "DK/NR"))
 bop_jun_2020$Religious_Affiliation <- NA
 bop_oct_2020$Religious_Affiliation <- NA
 bop_feb_2021$Religious_Affiliation <- NA
 bop_nov_2022$Religious_Affiliation <- NA
 bop_aug_2023$Religious_Affiliation <- NA
 bop_oct_2024$Religious_Affiliation <- factor(bop_oct_2024$S_5,
-                                             labels = c("MOC", "BOC", "Catholic", 
-                                                        "Baptist", "Other", "JW", 
-                                                        "Other", "Other", "Other", 
+                                             labels = c("MOC", "BOC",
+                                                        "Catholic", "Baptist",
+                                                        "Other", "JW", "Other",
+                                                        "Other", "Other", 
                                                         "Other", "DK/NR"))
 bop_sep_2025$Religious_Affiliation <- NA
 bop_sep_2026$Religious_Affiliation <- NA
@@ -2039,143 +3250,245 @@ bop_nov_2018$MOC_Independence <- factor(bop_nov_2018$E1_1, levels = 1:4)
 ```{r}
 # Church_Frequency (Feb 2021 only, no labels/levels)
 bop_feb_2021$Church_Frequency <- factor(bop_feb_2021$S10, 
-                                        labels = c("Weekly",
-                                                   "Monthly",
-                                                   "Occasionally",
-                                                   "Rarely", 
-                                                   "DK/NR"))
+                                        labels = c(
+  "Daily",
+  "Weekly",
+  "Monthly",
+  "Occasionally",
+  "Rarely"))
 ```
 
 -----------
 
 # Domestic Politics
 
+## Politicians
+
 ```{r}
 # Sandu
-bop_sep_2026$Sandu <- NA
-bop_sep_2025$Sandu <- factor(bop_sep_2025$D9_3, levels = 1:4)
-bop_oct_2024$Sandu <- factor(bop_oct_2024$D_16_1, levels = 1:4)
-bop_aug_2023$Sandu <- factor(bop_aug_2023$D10_2, levels = 1:4)
-bop_nov_2022$Sandu <- factor(bop_nov_2022$D11_3, levels = 1:4)
-bop_feb_2021$Sandu <- factor(bop_feb_2021$D5_2, levels = 1:4)
-bop_oct_2020$Sandu <- factor(bop_oct_2020$C5_6, levels = 1:4)
-bop_jun_2020$Sandu <- factor(bop_jun_2020$C4_1, levels = 1:4)
-bop_dec_2019$Sandu <- factor(bop_dec_2019$C11_3, levels = 1:4)
-bop_nov_2018$Sandu <- factor(bop_nov_2018$C5_9, levels = 1:4)
-bop_may_2018$Sandu <- factor(bop_may_2018$C5_07, levels = 1:4)
-bop_nov_2017$Sandu <- factor(bop_nov_2017$C5_7, levels = 1:4)
+bop_sep_2026$Sandu_Trust <- NA
+bop_sep_2025$Sandu_Trust <- factor(bop_sep_2025$D9_3, levels = 1:4)
+bop_oct_2024$Sandu_Trust <- factor(bop_oct_2024$D_16_1, levels = 1:4)
+bop_aug_2023$Sandu_Trust <- factor(bop_aug_2023$D10_2, levels = 1:4)
+bop_nov_2022$Sandu_Trust <- factor(bop_nov_2022$D11_3, levels = 1:4)
+bop_feb_2021$Sandu_Trust <- factor(bop_feb_2021$D5_2, levels = 1:4)
+bop_oct_2020$Sandu_Trust <- factor(bop_oct_2020$C5_6, levels = 1:4)
+bop_jun_2020$Sandu_Trust <- factor(bop_jun_2020$C4_1, levels = 1:4)
+bop_dec_2019$Sandu_Trust <- factor(bop_dec_2019$C11_3, levels = 1:4)
+bop_nov_2018$Sandu_Trust <- factor(bop_nov_2018$C5_9, levels = 1:4)
+bop_may_2018$Sandu_Trust <- factor(bop_may_2018$C5_07, levels = 1:4)
+bop_nov_2017$Sandu_Trust <- factor(bop_nov_2017$C5_7, levels = 1:4)
 ```
 
 ```{r}
 # Dodon
-bop_sep_2026$Dodon <- NA
-bop_sep_2025$Dodon <- factor(bop_sep_2025$D9_2, levels = 1:4)
-bop_oct_2024$Dodon <- factor(bop_oct_2024$D_16_4, levels = 1:4)
-bop_aug_2023$Dodon <- factor(bop_aug_2023$D10_3, levels = 1:4)
-bop_nov_2022$Dodon <- factor(bop_nov_2022$D11_4, levels = 1:4)
-bop_feb_2021$Dodon <- factor(bop_feb_2021$D5_1, levels = 1:4)
-bop_oct_2020$Dodon <- factor(bop_oct_2020$C5_4, levels = 1:4)
-bop_jun_2020$Dodon <- factor(bop_jun_2020$C4_2, levels = 1:4)
-bop_dec_2019$Dodon <- factor(bop_dec_2019$C11_10, levels = 1:4)
-bop_nov_2018$Dodon <- factor(bop_nov_2018$C5_6, levels = 1:4)
-bop_may_2018$Dodon <- factor(bop_may_2018$C5_05, levels = 1:4)
-bop_nov_2017$Dodon <- factor(bop_nov_2017$C5_5, levels = 1:4)
+bop_sep_2026$Dodon_Trust <- NA
+bop_sep_2025$Dodon_Trust <- factor(bop_sep_2025$D9_2, levels = 1:4)
+bop_oct_2024$Dodon_Trust <- factor(bop_oct_2024$D_16_4, levels = 1:4)
+bop_aug_2023$Dodon_Trust <- factor(bop_aug_2023$D10_3, levels = 1:4)
+bop_nov_2022$Dodon_Trust <- factor(bop_nov_2022$D11_4, levels = 1:4)
+bop_feb_2021$Dodon_Trust <- factor(bop_feb_2021$D5_1, levels = 1:4)
+bop_oct_2020$Dodon_Trust <- factor(bop_oct_2020$C5_4, levels = 1:4)
+bop_jun_2020$Dodon_Trust <- factor(bop_jun_2020$C4_2, levels = 1:4)
+bop_dec_2019$Dodon_Trust <- factor(bop_dec_2019$C11_10, levels = 1:4)
+bop_nov_2018$Dodon_Trust <- factor(bop_nov_2018$C5_6, levels = 1:4)
+bop_may_2018$Dodon_Trust <- factor(bop_may_2018$C5_05, levels = 1:4)
+bop_nov_2017$Dodon_Trust <- factor(bop_nov_2017$C5_5, levels = 1:4)
 ```
 
 ```{r}
 # Voronin
-bop_sep_2026$Voronin <- NA
-bop_sep_2025$Voronin <- factor(bop_sep_2025$D9_10, levels = 1:4)
-bop_oct_2024$Voronin <- NA
-bop_aug_2023$Voronin <- factor(bop_aug_2023$D10_1, levels = 1:4)
-bop_nov_2022$Voronin <- factor(bop_nov_2022$D11_1, levels = 1:4)
-bop_feb_2021$Voronin <- factor(bop_feb_2021$D5_6, levels = 1:4)
-bop_oct_2020$Voronin <- factor(bop_oct_2020$C5_11, levels = 1:4)
-bop_jun_2020$Voronin <- factor(bop_jun_2020$C4_10, levels = 1:4)
-bop_dec_2019$Voronin <- factor(bop_dec_2019$C11_8, levels = 1:4)
-bop_nov_2018$Voronin <- factor(bop_nov_2018$C5_15, levels = 1:4)
-bop_may_2018$Voronin <- factor(bop_may_2018$C5_13, levels = 1:4)
-bop_nov_2017$Voronin <- factor(bop_nov_2017$C5_13, levels = 1:4)
+bop_sep_2026$Voronin_Trust <- NA
+bop_sep_2025$Voronin_Trust <- factor(bop_sep_2025$D9_10, levels = 1:4)
+bop_oct_2024$Voronin_Trust <- NA
+bop_aug_2023$Voronin_Trust <- factor(bop_aug_2023$D10_1, levels = 1:4)
+bop_nov_2022$Voronin_Trust <- factor(bop_nov_2022$D11_1, levels = 1:4)
+bop_feb_2021$Voronin_Trust <- factor(bop_feb_2021$D5_6, levels = 1:4)
+bop_oct_2020$Voronin_Trust <- factor(bop_oct_2020$C5_11, levels = 1:4)
+bop_jun_2020$Voronin_Trust <- factor(bop_jun_2020$C4_10, levels = 1:4)
+bop_dec_2019$Voronin_Trust <- factor(bop_dec_2019$C11_8, levels = 1:4)
+bop_nov_2018$Voronin_Trust <- factor(bop_nov_2018$C5_15, levels = 1:4)
+bop_may_2018$Voronin_Trust <- factor(bop_may_2018$C5_13, levels = 1:4)
+bop_nov_2017$Voronin_Trust <- factor(bop_nov_2017$C5_13, levels = 1:4)
 ```
 
 ```{r}
 # Sor
-bop_sep_2026$Sor <- NA
-bop_sep_2025$Sor <- factor(bop_sep_2025$D9_4, levels = 1:4)
-bop_oct_2024$Sor <- NA
-bop_aug_2023$Sor <- factor(bop_aug_2023$D10_5, levels = 1:4)
-bop_nov_2022$Sor <- factor(bop_nov_2022$D11_6, levels = 1:4)
-bop_feb_2021$Sor <- factor(bop_feb_2021$D5_7, levels = 1:4)
-bop_oct_2020$Sor <- factor(bop_oct_2020$C5_5, levels = 1:4)
-bop_jun_2020$Sor <- factor(bop_jun_2020$C4_9, levels = 1:4)
-bop_dec_2019$Sor <- factor(bop_dec_2019$C11_5, levels = 1:4)
-bop_nov_2018$Sor <- factor(bop_nov_2018$C5_7, levels = 1:4)
-bop_may_2018$Sor <- NA
-bop_nov_2017$Sor <- NA
+bop_sep_2026$Sor_Trust <- NA
+bop_sep_2025$Sor_Trust <- factor(bop_sep_2025$D9_4, levels = 1:4)
+bop_oct_2024$Sor_Trust <- NA
+bop_aug_2023$Sor_Trust <- factor(bop_aug_2023$D10_5, levels = 1:4)
+bop_nov_2022$Sor_Trust <- factor(bop_nov_2022$D11_6, levels = 1:4)
+bop_feb_2021$Sor_Trust <- factor(bop_feb_2021$D5_7, levels = 1:4)
+bop_oct_2020$Sor_Trust <- factor(bop_oct_2020$C5_5, levels = 1:4)
+bop_jun_2020$Sor_Trust <- factor(bop_jun_2020$C4_9, levels = 1:4)
+bop_dec_2019$Sor_Trust <- factor(bop_dec_2019$C11_5, levels = 1:4)
+bop_nov_2018$Sor_Trust <- factor(bop_nov_2018$C5_7, levels = 1:4)
+bop_may_2018$Sor_Trust <- NA
+bop_nov_2017$Sor_Trust <- NA
 ```
+
+## Political Parties
 
 ```{r}
 # PAS
-bop_sep_2026$PAS <- factor(bop_sep_2026$T_Q_30_1, levels = 1:4)
-bop_sep_2025$PAS <- factor(bop_sep_2025$D10_1, levels = 1:4)
-bop_oct_2024$PAS <- factor(bop_oct_2024$D_5_1, levels = 1:4)
-bop_aug_2023$PAS <- factor(bop_aug_2023$D5_2, levels = 1:4)
-bop_nov_2022$PAS <- factor(bop_nov_2022$D9_2, levels = 1:4)
-bop_feb_2021$PAS <- factor(bop_feb_2021$D6_1, levels = 1:4)
-bop_oct_2020$PAS <- factor(bop_oct_2020$C3_1, levels = 1:4)
-bop_jun_2020$PAS <- factor(bop_jun_2020$C5_1, levels = 1:4)
-bop_dec_2019$PAS <- factor(bop_dec_2019$C9_3, levels = 1:4)
-bop_nov_2018$PAS <- factor(bop_nov_2018$C3_1, levels = 1:4)
-bop_may_2018$PAS <- factor(bop_may_2018$C3_01, levels = 1:4)
-bop_nov_2017$PAS <- factor(bop_nov_2017$C3_1, levels = 1:4)
+bop_sep_2026$PAS_Trust <- factor(bop_sep_2026$T_Q_30_1, levels = 1:4)
+bop_sep_2025$PAS_Trust <- factor(bop_sep_2025$D10_1, levels = 1:4)
+bop_oct_2024$PAS_Trust <- factor(bop_oct_2024$D_5_1, levels = 1:4)
+bop_aug_2023$PAS_Trust <- factor(bop_aug_2023$D5_2, levels = 1:4)
+bop_nov_2022$PAS_Trust <- factor(bop_nov_2022$D5_2, levels = 1:4)
+bop_feb_2021$PAS_Trust <- factor(bop_feb_2021$D6_1, levels = 1:4)
+bop_oct_2020$PAS_Trust <- factor(bop_oct_2020$C3_1, levels = 1:4)
+bop_jun_2020$PAS_Trust <- factor(bop_jun_2020$C5_1, levels = 1:4)
+bop_dec_2019$PAS_Trust <- factor(bop_dec_2019$C9_3, levels = 1:4)
+bop_nov_2018$PAS_Trust <- factor(bop_nov_2018$C3_1, levels = 1:4)
+bop_may_2018$PAS_Trust <- factor(bop_may_2018$C3_01, levels = 1:4)
+bop_nov_2017$PAS_Trust <- factor(bop_nov_2017$C3_1, levels = 1:4)
 ```
 
 ```{r}
 # PSRM
-bop_sep_2026$PSRM <- factor(bop_sep_2026$T_Q_30_7, levels = 1:4)
-bop_sep_2025$PSRM <- NA
-bop_oct_2024$PSRM <- factor(bop_oct_2024$D_5_4, levels = 1:4)
-bop_aug_2023$PSRM <- factor(bop_aug_2023$D5_1, levels = 1:4)
-bop_nov_2022$PSRM <- factor(bop_nov_2022$D9_2, levels = 1:4)
-bop_feb_2021$PSRM <- factor(bop_feb_2021$D6_5, levels = 1:4)
-bop_oct_2020$PSRM <- factor(bop_oct_2020$C3_4, levels = 1:4)
-bop_jun_2020$PSRM <- factor(bop_jun_2020$C5_4, levels = 1:4)
-bop_dec_2019$PSRM <- factor(bop_dec_2019$C9_1, levels = 1:4)
-bop_nov_2018$PSRM <- factor(bop_nov_2018$C3_10, levels = 1:4)
-bop_may_2018$PSRM <- factor(bop_may_2018$C3_10, levels = 1:4)
-bop_nov_2017$PSRM <- factor(bop_nov_2017$C3_10, levels = 1:4)
+bop_sep_2026$PSRM_Trust <- factor(bop_sep_2026$T_Q_30_7, levels = 1:4)
+bop_sep_2025$PSRM_Trust <- NA
+bop_oct_2024$PSRM_Trust <- factor(bop_oct_2024$D_5_4, levels = 1:4)
+bop_aug_2023$PSRM_Trust <- factor(bop_aug_2023$D5_1, levels = 1:4)
+bop_nov_2022$PSRM_Trust <- factor(bop_nov_2022$D5_1, levels = 1:4)
+bop_feb_2021$PSRM_Trust <- factor(bop_feb_2021$D6_5, levels = 1:4)
+bop_oct_2020$PSRM_Trust <- factor(bop_oct_2020$C3_4, levels = 1:4)
+bop_jun_2020$PSRM_Trust <- factor(bop_jun_2020$C5_4, levels = 1:4)
+bop_dec_2019$PSRM_Trust <- factor(bop_dec_2019$C9_1, levels = 1:4)
+bop_nov_2018$PSRM_Trust <- factor(bop_nov_2018$C3_10, levels = 1:4)
+bop_may_2018$PSRM_Trust <- factor(bop_may_2018$C3_10, levels = 1:4)
+bop_nov_2017$PSRM_Trust <- factor(bop_nov_2017$C3_10, levels = 1:4)
+```
+
+```{r}
+# PCRM
+bop_nov_2017$PCRM_Trust <- factor(bop_nov_2017$C3_2, levels = 1:4)
+bop_may_2018$PCRM_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$PCRM_Trust <- factor(NA, levels = 1:4)
+bop_dec_2019$PCRM_Trust <- factor(NA, levels = 1:4)
+bop_jun_2020$PCRM_Trust <- factor(bop_jun_2020$C5_2, levels = 1:4)
+bop_oct_2020$PCRM_Trust <- factor(bop_oct_2020$C3_2, levels = 1:4)
+bop_feb_2021$PCRM_Trust <- factor(bop_feb_2021$D6_3, levels = 1:4)
+bop_nov_2022$PCRM_Trust <- factor(bop_nov_2022$D5_3, levels = 1:4)
+bop_aug_2023$PCRM_Trust <- factor(bop_aug_2023$D5_3, levels = 1:4)
+bop_oct_2024$PCRM_Trust <- factor(bop_oct_2024$D_5_2, levels = 1:4)
+bop_sep_2025$PCRM_Trust <- factor(NA, levels = 1:4)
+bop_sep_2026$PCRM_Trust <- factor(bop_sep_2026$T_Q_30_2, levels = 1:4)
+```
+
+```{r}
+# PDM
+bop_nov_2017$PDM_Trust <- factor(bop_nov_2017$C3_3, levels = 1:4)
+bop_may_2018$PDM_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$PDM_Trust <- factor(NA, levels = 1:4)
+bop_dec_2019$PDM_Trust <- factor(NA, levels = 1:4)
+bop_jun_2020$PDM_Trust <- factor(bop_jun_2020$C5_3, levels = 1:4)
+bop_oct_2020$PDM_Trust <- factor(bop_oct_2020$C3_3, levels = 1:4)
+bop_feb_2021$PDM_Trust <- factor(bop_feb_2021$D6_4, levels = 1:4)
+bop_nov_2022$PDM_Trust <- factor(bop_nov_2022$D5_5, levels = 1:4)
+bop_aug_2023$PDM_Trust <- factor(NA, levels = 1:4)
+bop_oct_2024$PDM_Trust <- factor(NA, levels = 1:4)
+bop_sep_2025$PDM_Trust <- factor(NA, levels = 1:4)
+bop_sep_2026$PDM_Trust <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# PL
+bop_nov_2017$PL_Trust <- factor(bop_nov_2017$C3_4, levels = 1:4)
+bop_may_2018$PL_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$PL_Trust <- factor(NA, levels = 1:4)
+bop_dec_2019$PL_Trust <- factor(NA, levels = 1:4)
+bop_jun_2020$PL_Trust <- factor(bop_jun_2020$C5_11, levels = 1:4)
+bop_oct_2020$PL_Trust <- factor(bop_oct_2020$C3_10, levels = 1:4)
+bop_feb_2021$PL_Trust <- factor(bop_feb_2021$D6_8, levels = 1:4)
+bop_nov_2022$PL_Trust <- factor(NA, levels = 1:4)
+bop_aug_2023$PL_Trust <- factor(NA, levels = 1:4)
+bop_oct_2024$PL_Trust <- factor(NA, levels = 1:4)
+bop_sep_2025$PL_Trust <- factor(bop_sep_2025$D10_18, levels = 1:4)
+bop_sep_2026$PL_Trust <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# PLDM
+bop_nov_2017$PLDM_Trust <- factor(bop_nov_2017$C3_5, levels = 1:4)
+bop_may_2018$PLDM_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$PLDM_Trust <- factor(NA, levels = 1:4)
+bop_dec_2019$PLDM_Trust <- factor(NA, levels = 1:4)
+bop_jun_2020$PLDM_Trust <- factor(bop_jun_2020$C5_10, levels = 1:4)
+bop_oct_2020$PLDM_Trust <- factor(bop_oct_2020$C3_11, levels = 1:4)
+bop_feb_2021$PLDM_Trust <- factor(bop_feb_2021$D6_10, levels = 1:4)
+bop_nov_2022$PLDM_Trust <- factor(NA, levels = 1:4)
+bop_aug_2023$PLDM_Trust <- factor(bop_aug_2023$D5_8, levels = 1:4)
+bop_oct_2024$PLDM_Trust <- factor(bop_oct_2024$D_5_7, levels = 1:4)
+bop_sep_2025$PLDM_Trust <- factor(NA, levels = 1:4)
+bop_sep_2026$PLDM_Trust <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# Partidul Nostru
+bop_nov_2017$PN_Trust <- factor(bop_nov_2017$C3_6, levels = 1:4)
+bop_may_2018$PN_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$PN_Trust <- factor(NA, levels = 1:4)
+bop_dec_2019$PN_Trust <- factor(NA, levels = 1:4)
+bop_jun_2020$PN_Trust <- factor(bop_jun_2020$C5_9, levels = 1:4)
+bop_oct_2020$PN_Trust <- factor(bop_oct_2020$C3_9, levels = 1:4)
+bop_feb_2021$PN_Trust <- factor(bop_feb_2021$D6_6, levels = 1:4)
+bop_nov_2022$PN_Trust <- factor(NA, levels = 1:4)
+bop_aug_2023$PN_Trust <- factor(NA, levels = 1:4)
+bop_oct_2024$PN_Trust <- factor(bop_oct_2024$D_5_11, levels = 1:4)
+bop_sep_2025$PN_Trust <- factor(bop_sep_2025$D10_23, levels = 1:4)
+bop_sep_2026$PN_Trust <- factor(bop_sep_2026$T_Q_30_6, levels = 1:4)
+```
+
+```{r}
+# PPDA
+bop_nov_2017$PPDA_Trust <- factor(bop_nov_2017$C3_7, levels = 1:4)
+bop_may_2018$PPDA_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$PPDA_Trust <- factor(NA, levels = 1:4)
+bop_dec_2019$PPDA_Trust <- factor(NA, levels = 1:4)
+bop_jun_2020$PPDA_Trust <- factor(bop_jun_2020$C5_5, levels = 1:4)
+bop_oct_2020$PPDA_Trust <- factor(bop_oct_2020$C3_5, levels = 1:4)
+bop_feb_2021$PPDA_Trust <- factor(bop_feb_2021$D6_2, levels = 1:4)
+bop_nov_2022$PPDA_Trust <- factor(bop_nov_2022$D5_4, levels = 1:4)
+bop_aug_2023$PPDA_Trust <- factor(bop_aug_2023$D5_4, levels = 1:4)
+bop_oct_2024$PPDA_Trust <- factor(NA, levels = 1:4)
+bop_sep_2025$PPDA_Trust <- factor(NA, levels = 1:4)
+bop_sep_2026$PPDA_Trust <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# Sor Party
+bop_nov_2017$SorParty_Trust <- factor(bop_nov_2017$C3_8, levels = 1:4)
+bop_may_2018$SorParty_Trust <- factor(NA, levels = 1:4)
+bop_nov_2018$SorParty_Trust <- factor(NA, levels = 1:4)
+bop_dec_2019$SorParty_Trust <- factor(NA, levels = 1:4)
+bop_jun_2020$SorParty_Trust <- factor(bop_jun_2020$C5_7, levels = 1:4)
+bop_oct_2020$SorParty_Trust <- factor(bop_oct_2020$C3_7, levels = 1:4)
+bop_feb_2021$SorParty_Trust <- factor(bop_feb_2021$D6_7, levels = 1:4)
+bop_nov_2022$SorParty_Trust <- factor(bop_nov_2022$D5_7, levels = 1:4)
+bop_aug_2023$SorParty_Trust <- factor(bop_aug_2023$D5_7, levels = 1:4)
+bop_oct_2024$SorParty_Trust <- factor(NA, levels = 1:4)
+bop_sep_2025$SorParty_Trust <- factor(NA, levels = 1:4)
+bop_sep_2026$SorParty_Trust <- factor(NA, levels = 1:4)
+```
+
+```{r}
+# Zilele trecute in fata Parlamentului si a Presedintiei au avut loc proteste, organizate de partidul Sor. Care din urmatoarele pozitii Va este mai apropiata fata de aceste proteste 1- Sunt niste proteste sincere, manifestari legale impotriva
+bop_nov_2022$Sor_Trust_Position <- factor(bop_nov_2022$D21, levels = 1:4)
 ```
 
 ```{r}
 # MAN
-bop_sep_2026$MAN <- factor(bop_sep_2026$T_Q_30_5, levels = 1:4)
-bop_sep_2025$MAN <- factor(bop_sep_2025$D10_11, levels = 1:4)
-bop_oct_2024$MAN <- factor(bop_oct_2024$D_5_10, levels = 1:4)
-```
-
-```{r}
-# elections
-bop_sep_2026$Elections <- factor(bop_sep_2026$T_Q_22_2, labels = c("Yes", "No", "DK", "NR"))
-bop_sep_2025$Elections <- factor(bop_sep_2025$D5, labels = c("Yes", "No", "DK", "NR"))
-bop_oct_2024$Elections <- factor(bop_oct_2024$D_19, labels = c("Yes", "No", "DK", "NR"))
-bop_aug_2023$Elections <- factor(bop_aug_2023$D2, labels = c("Yes", "No", "DK", "NR"))
-bop_nov_2022$Elections <- factor(bop_nov_2022$D2,  labels = c("Yes", "No", "DK", "NR"))
-bop_feb_2021$Elections <- factor(bop_feb_2021$D14,  labels = c("Yes", "No", "DK", "NR"))
-bop_oct_2020$Elections <- factor(bop_oct_2020$C14, labels = c("Yes", "No", "DK", "NR"))
-bop_jun_2020$Elections <- factor(bop_jun_2020$C9, labels = c("Yes", "No", "DK", "NR"))
-bop_dec_2019$Elections <- factor(bop_dec_2019$C33, labels = c("Yes", "No", "DK", "NR"))
-bop_nov_2018$Elections <- factor(bop_nov_2018$C10, labels = c("Yes", "No", "DK", "NR"))
-bop_may_2018$Elections <- factor(bop_may_2018$C10, labels = c("Yes", "No", "DK", "NR"))
-bop_nov_2017$Elections <- factor(bop_nov_2017$C11, labels = c("Yes", "No", "DK", "NR"))
+bop_sep_2026$MAN_Trust <- factor(bop_sep_2026$T_Q_30_5, levels = 1:4)
+bop_sep_2025$MAN_Trust <- factor(bop_sep_2025$D10_11, levels = 1:4)
+bop_oct_2024$MAN_Trust <- factor(bop_oct_2024$D_5_10, levels = 1:4)
 ```
 
 # International Politics
-
 ```{r}
-referendum_labels <- c("For", "Against", "Wouldn't participate", "DK", "NR")
-```
-
-```{r}
+# NATO referendum
 bop_sep_2026$NATO <- factor(bop_sep_2026$T_Q_43_3, labels = referendum_labels)
 bop_sep_2025$NATO <- factor(bop_sep_2025$H9, labels = referendum_labels)
 bop_oct_2024$NATO <- NA
@@ -2191,7 +3504,7 @@ bop_nov_2017$NATO <- factor(bop_nov_2017$D13, labels = referendum_labels)
 ```
 
 ```{r}
-# EU
+# EU referendum
 bop_sep_2026$EU <- factor(bop_sep_2026$T_Q_43_1, labels = referendum_labels)
 bop_sep_2025$EU <- factor(bop_sep_2025$H4, labels = referendum_labels)
 bop_oct_2024$EU <- factor(bop_oct_2024$E_3, labels = referendum_labels)
@@ -2207,7 +3520,7 @@ bop_nov_2017$EU <- factor(bop_nov_2017$D2, labels = referendum_labels)
 ```
 
 ```{r}
-# Eurasia
+# Eurasia referendum
 bop_sep_2026$Eurasia <- NA
 bop_sep_2025$Eurasia <- factor(bop_sep_2025$H5, labels = referendum_labels)
 bop_oct_2024$Eurasia <- factor(bop_oct_2024$E_5, labels = referendum_labels)
@@ -2223,13 +3536,12 @@ bop_nov_2017$Eurasia <- factor(bop_nov_2017$D4, labels = referendum_labels)
 ```
 
 
-
 ```{r}
-# EU vs Eurasia
+# Choice: EU vs Eurasia
 EU_Eurasia_labels <- c("EU", "Eurasia", "Wouldn't participate", "DK", "NR")
 
 bop_sep_2026$EU_vs_Eurasia <- NA
-bop_sep_2025$EU_vs_Eurasia <- factor(bop_sep_2025$H5, labels = EU_Eurasia_labels)
+bop_sep_2025$EU_vs_Eurasia <- factor(bop_sep_2025$H6, labels = EU_Eurasia_labels)
 bop_oct_2024$EU_vs_Eurasia <- NA
 bop_aug_2023$EU_vs_Eurasia <- factor(bop_aug_2023$E6, labels = EU_Eurasia_labels)
 bop_nov_2022$EU_vs_Eurasia <- factor(bop_nov_2022$E9, labels = EU_Eurasia_labels)
@@ -2242,51 +3554,71 @@ bop_may_2018$EU_vs_Eurasia <- factor(bop_may_2018$D6, labels = EU_Eurasia_labels
 bop_nov_2017$EU_vs_Eurasia <- factor(bop_nov_2017$D6, labels = EU_Eurasia_labels)
 ```
 
+## Politician
 ```{r}
 # Putin
-bop_sep_2026$Putin <- NA
-bop_sep_2025$Putin <- NA
-bop_oct_2024$Putin <- factor(bop_oct_2024$E_7_1, levels = 1:4)
-bop_aug_2023$Putin <- factor(bop_aug_2023$E9_2, levels = 1:4)
-bop_nov_2022$Putin <- factor(bop_nov_2022$E14_2, levels = 1:4)
-bop_feb_2021$Putin <- factor(bop_feb_2021$H12_2, levels = 1:4)
-bop_oct_2020$Putin <- factor(bop_oct_2020$D6_1, levels = 1:4)
-bop_jun_2020$Putin <- NA
-bop_dec_2019$Putin <- factor(bop_dec_2019$D7_1, levels = 1:4)
-bop_nov_2018$Putin <- factor(bop_nov_2018$D14_1, levels = 1:4)
-bop_may_2018$Putin <- factor(bop_may_2018$D16_01, levels = 1:4)
-bop_nov_2017$Putin <- factor(bop_nov_2017$D14_1, levels = 1:4)
+bop_sep_2026$Putin_Trust <- NA
+bop_sep_2025$Putin_Trust <- NA
+bop_oct_2024$Putin_Trust <- factor(bop_oct_2024$E_7_1, levels = 1:4)
+bop_aug_2023$Putin_Trust <- factor(bop_aug_2023$E9_2, levels = 1:4)
+bop_nov_2022$Putin_Trust <- factor(bop_nov_2022$E14_2, levels = 1:4)
+bop_feb_2021$Putin_Trust <- factor(bop_feb_2021$H12_2, levels = 1:4)
+bop_oct_2020$Putin_Trust <- factor(bop_oct_2020$D6_1, levels = 1:4)
+bop_jun_2020$Putin_Trust <- NA
+bop_dec_2019$Putin_Trust <- factor(bop_dec_2019$D7_1, levels = 1:4)
+bop_nov_2018$Putin_Trust <- factor(bop_nov_2018$D14_1, levels = 1:4)
+bop_may_2018$Putin_Trust <- factor(bop_may_2018$D16_01, levels = 1:4)
+bop_nov_2017$Putin_Trust <- factor(bop_nov_2017$D14_1, levels = 1:4)
 
 ```
 
 ```{r}
 # Zelenskyy
-bop_sep_2026$Zelenskyy <- NA
-bop_sep_2025$Zelenskyy <- NA
-bop_oct_2024$Zelenskyy <- factor(bop_oct_2024$E_7_6, levels = 1:4)
-bop_aug_2023$Zelenskyy <- factor(bop_aug_2023$E9_4, levels = 1:4)
-bop_nov_2022$Zelenskyy <- factor(bop_nov_2022$E14_4, levels = 1:4)
-bop_feb_2021$Zelenskyy <- factor(bop_feb_2021$H12_4, levels = 1:4)
-bop_oct_2020$Zelenskyy <- factor(bop_oct_2020$D6_6, levels = 1:4)
-bop_jun_2020$Zelenskyy <- NA
-bop_dec_2019$Zelenskyy <- factor(bop_dec_2019$D7_6, levels = 1:4)
-bop_nov_2018$Zelenskyy <- NA
-bop_may_2018$Zelenskyy <- NA
-bop_nov_2017$Zelenskyy <- NA
+bop_sep_2026$Zelenskyy_Trust <- NA
+bop_sep_2025$Zelenskyy_Trust <- NA
+bop_oct_2024$Zelenskyy_Trust <- factor(bop_oct_2024$E_7_6, levels = 1:4)
+bop_aug_2023$Zelenskyy_Trust <- factor(bop_aug_2023$E9_4, levels = 1:4)
+bop_nov_2022$Zelenskyy_Trust <- factor(bop_nov_2022$E14_4, levels = 1:4)
+bop_feb_2021$Zelenskyy_Trust <- factor(bop_feb_2021$H12_4, levels = 1:4)
+bop_oct_2020$Zelenskyy_Trust <- factor(bop_oct_2020$D6_6, levels = 1:4)
+bop_jun_2020$Zelenskyy_Trust <- NA
+bop_dec_2019$Zelenskyy_Trust <- factor(bop_dec_2019$D7_6, levels = 1:4)
+bop_nov_2018$Zelenskyy_Trust <- NA
+bop_may_2018$Zelenskyy_Trust <- NA
+bop_nov_2017$Zelenskyy_Trust <- NA
 ```
-
 
 ## Relations  
 ```{r}
 # Russia
 bop_sep_2026$Russia_rels <- factor(bop_sep_2026$T_Q_40_13, levels = 1:4)
 bop_sep_2025$Russia_rels <- factor(bop_sep_2025$H3_3, levels = 1:4)
+bop_oct_2024$Russia_rels <- factor(bop_oct_2024$E_2_3, levels = 1:4)
+bop_aug_2023$Russia_rels <- factor(bop_aug_2023$E1_3, levels = 1:4)
+bop_nov_2022$Russia_rels <- factor(bop_nov_2022$E1_3, levels = 1:4)
+bop_feb_2021$Russia_rels <- factor(bop_feb_2021$H1_3, levels = 1:4)
+bop_oct_2020$Russia_rels <- factor(bop_oct_2020$D1_3, levels = 1:4)
+bop_jun_2020$Russia_rels <- factor(bop_jun_2020$E1_3, levels = 1:4)
+bop_dec_2019$Russia_rels <- factor(bop_dec_2019$D1_3, levels = 1:4)
+bop_nov_2018$Russia_rels <- factor(bop_nov_2018$D1_3, levels = 1:4)
+bop_may_2018$Russia_rels <-  factor(bop_may_2018$D1_03, levels = 1:4) 
+bop_nov_2017$Russia_rels <- factor(bop_nov_2017$D1_3, levels = 1:4)
 ```
 
 ```{r}
 # Ukraine
 bop_sep_2026$Ukraine_rels <- factor(bop_sep_2026$T_Q_40_2, levels = 1:4)
 bop_sep_2025$Ukraine_rels <- factor(bop_sep_2025$H3_2, levels = 1:4)
+bop_oct_2024$Ukraine_rels <- factor(bop_oct_2024$E_2_2, levels = 1:4)
+bop_aug_2023$Ukraine_rels <- factor(bop_aug_2023$E1_2, levels = 1:4)
+bop_nov_2022$Ukraine_rels <- factor(bop_nov_2022$E1_2, levels = 1:4)
+bop_feb_2021$Ukraine_rels <- factor(bop_feb_2021$H1_2, levels = 1:4)
+bop_oct_2020$Ukraine_rels <- factor(bop_oct_2020$D1_2, levels = 1:4)
+bop_jun_2020$Ukraine_rels <- factor(bop_jun_2020$E1_2, levels = 1:4)
+bop_dec_2019$Ukraine_rels <- factor(bop_dec_2019$D1_2, levels = 1:4)
+bop_nov_2018$Ukraine_rels <- factor(bop_nov_2018$D1_2, levels = 1:4)
+bop_may_2018$Ukraine_rels <-  factor(bop_may_2018$D1_02, levels = 1:4) 
+bop_nov_2017$Ukraine_rels <- factor(bop_nov_2017$D1_2, levels = 1:4)
 ```
 
 
@@ -2294,12 +3626,65 @@ bop_sep_2025$Ukraine_rels <- factor(bop_sep_2025$H3_2, levels = 1:4)
 # Romania
 bop_sep_2026$Romania_rels <- factor(bop_sep_2026$T_Q_40_1, levels = 1:4)
 bop_sep_2025$Romania_rels <- factor(bop_sep_2025$H3_1, levels = 1:4)
+bop_oct_2024$Romania_rels <- factor(bop_oct_2024$E_2_1, levels = 1:4)
+bop_aug_2023$Romania_rels <- factor(bop_aug_2023$E1_1, levels = 1:4)
+bop_nov_2022$Romania_rels <- factor(bop_nov_2022$E1_1, levels = 1:4)
+bop_feb_2021$Romania_rels <- factor(bop_feb_2021$H1_1, levels = 1:4)
+bop_oct_2020$Romania_rels <- factor(bop_oct_2020$D1_1, levels = 1:4)
+bop_jun_2020$Romania_rels <- factor(bop_jun_2020$E1_1, levels = 1:4)
+bop_dec_2019$Romania_rels <- factor(bop_dec_2019$D1_1, levels = 1:4)
+bop_nov_2018$Romania_rels <- factor(bop_nov_2018$D1_1, levels = 1:4)
+bop_may_2018$Romania_rels <-  factor(bop_may_2018$D1_01, levels = 1:4) 
+bop_nov_2017$Romania_rels <- factor(bop_nov_2017$D1_1, levels = 1:4)
 ```
 
 ```{r}
 # EU
 bop_sep_2026$EU_rels <- factor(bop_sep_2026$T_Q_40_6, levels = 1:4)
 bop_sep_2025$EU_rels <- factor(bop_sep_2025$H3_8, levels = 1:4)
+bop_oct_2024$EU_rels <- factor(bop_oct_2024$E_2_5, levels = 1:4)
+bop_aug_2023$EU_rels <- factor(bop_aug_2023$E1_5, levels = 1:4)
+bop_nov_2022$EU_rels <- factor(bop_nov_2022$E1_5, levels = 1:4)
+bop_feb_2021$EU_rels <- factor(bop_feb_2021$H1_5, levels = 1:4)
+bop_oct_2020$EU_rels <- factor(bop_oct_2020$D1_5, levels = 1:4)
+bop_jun_2020$EU_rels <- factor(bop_jun_2020$E1_5, levels = 1:4)
+bop_dec_2019$EU_rels <- factor(bop_dec_2019$D1_5, levels = 1:4)
+bop_nov_2018$EU_rels <- factor(bop_nov_2018$D1_5, levels = 1:4)
+bop_may_2018$EU_rels <-  factor(bop_may_2018$D1_05, levels = 1:4) 
+bop_nov_2017$EU_rels <- factor(bop_nov_2017$D1_5, levels = 1:4)
+```
+
+```{r}
+# USA
+bop_sep_2026$USA_rels <- factor(bop_sep_2026$T_Q_40_7, levels = 1:4)
+bop_sep_2025$USA_rels <- factor(bop_sep_2025$H3_4, levels = 1:4)
+bop_oct_2024$USA_rels <- factor(bop_oct_2024$E_2_4, levels = 1:4)
+bop_aug_2023$USA_rels <- factor(bop_aug_2023$E1_4, levels = 1:4)
+bop_nov_2022$USA_rels <- factor(bop_nov_2022$E1_4, levels = 1:4)
+bop_feb_2021$USA_rels <- factor(bop_feb_2021$H1_4, levels = 1:4)
+bop_oct_2020$USA_rels <- factor(bop_oct_2020$D1_4, levels = 1:4)
+bop_jun_2020$USA_rels <- factor(bop_jun_2020$E1_4, levels = 1:4)
+bop_dec_2019$USA_rels <- factor(bop_dec_2019$D1_4, levels = 1:4)
+bop_nov_2018$USA_rels <- factor(bop_nov_2018$D1_4, levels = 1:4)
+bop_may_2018$USA_rels <- factor(bop_may_2018$D1_04, levels = 1:4) 
+bop_nov_2017$USA_rels <- factor(bop_nov_2017$D1_4, levels = 1:4)
+```
+
+
+```{r}
+# NATO
+bop_sep_2026$NATO_rels <- factor(bop_sep_2026$T_Q_40_14, levels = 1:4)
+bop_sep_2025$NATO_rels <- factor(bop_sep_2025$H3_6, levels = 1:4)
+bop_oct_2024$NATO_rels <- NA
+bop_aug_2023$NATO_rels <- factor(bop_aug_2023$E1_6, levels = 1:4)
+bop_nov_2022$NATO_rels <- factor(bop_nov_2022$E1_6, levels = 1:4)
+bop_feb_2021$NATO_rels <- factor(bop_feb_2021$H1_6, levels = 1:4)
+bop_oct_2020$NATO_rels <- NA
+bop_jun_2020$NATO_rels <- factor(bop_jun_2020$E1_6, levels = 1:4)
+bop_dec_2019$NATO_rels <- NA
+bop_nov_2018$NATO_rels <- NA
+bop_may_2018$NATO_rels <- NA
+bop_nov_2017$NATO_rels <- NA
 ```
 
 # Merging
@@ -2337,22 +3722,97 @@ bop_may_2018 <- bop_may_2018 %>%
 ```
 
 ```{r}
-vars_to_keep <- c("id", "wave", "date", "Age", 
-                  "Age.f", "Gender", "Ethnicity", 
-                  "Language_Questionnaire", "Ecology", 
-                  "Education", "Socioeconomic", "Region", 
-                  "Macro_Region", "direction", "direction_world",
-                  "First_Problem", "Second_Problem", "Third_Problem", 
-                  "First_Worry", "Second_Worry", "Third_Worry", 
-                  "Important_Media", "Second_Media", "Trust_Media", 
-                  "Sandu", "Dodon", "Voronin", "Sor", 
-                  "PAS", "PSRM", "MAN", "Elections",
-                  "Putin", "Zelenskyy", 
-                  "Unification", "NATO", "EU", 
-                  "Eurasia", "EU_vs_Eurasia", 
-                  "Russia_rels", "Ukraine_rels", "Romania_rels", "EU_rels",
-                  "Weights")
+vars_to_keep <- c(
+  # Identifiers and demographics
+  "id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity",
+  "Language_Questionnaire", "Ecology", "Education", "Socioeconomic",
+  "Region", "Macro_Region",
+  "HomeLanguage_Moldovan", "HomeLanguage_Romanian", "HomeLanguage_Russian",
+  "HomeLanguage_Ukrainian", "HomeLanguage_Gagauz", "HomeLanguage_Other",
 
+  # International exposure
+  "LeaveMD_Would", "LeaveMD_Have", "LeaveMD_PlanPermanently",
+
+  # Direction, problems, worries
+  "direction", "direction_world",
+  "Problems_First", "Problems_Second", "Problems_Third",
+  "Worries_First", "Worries_Second", "Worries_Third",
+
+  # Media
+  "Media_First", "Media_Second", "Trust_Media",
+  "RussianMedia_Trust", "RomanianMedia_Trust", "EUMedia_Trust", "MoldovanMedia_Trust",
+  "Newspapers_HowOften", "Radio_HowOften", "TV_HowOften",
+  "Books_HowOften", "Internet_HowOften",
+
+  # Economics
+  "Economic_Situation_minus1", "Economic_Situation_plus1", "Economic_Satisfaction",
+  "EconomicSolution_First", "EconomicSolution_Second", "EconomicSolution_Third",
+
+  # Socioeconomics
+  "Job_Satisfaction", "Money_Satisfaction", "Income_Perception",
+  "Savings_Perception", "Income_Actual",
+  "Land_Ownership", "Home_Ownership", "Water_Access", "Gas_Access",
+  "Car_Access", "WashingMachine_Access", "DoubleGlazing_Access",
+  "FridgeFreezer_Access", "Internet_Access",
+
+  # Mass-elite dynamics
+  "PoliticalLife_Satisfaction", "WillofPeople", "President_Represented",
+  "Country_Influence",
+
+  # Political values
+  "Info_Free", "Leadership_Free", "Leadership_Protest_Free",
+  "Personally_Leadership_Free", "Personally_Leadership_Protest_Free",
+  "Politics_Interest", "President_Salary",
+
+  # Leadership satisfaction
+  "Jobs_Leadership", "StandardofLiving_Leadership", "Wages_Leadership",
+  "Pensions_Leadership", "Corruption_Leadership", "Industry_Leadership",
+  "Agri_Leadership", "Edu_Leadership", "Culture_Leadership",
+  "Healthcare_Leadership", "ForeignPolicy_Leadership", "Transnistria_Leadership",
+
+  # Institutional trust
+  "Government_Trust", "Parliament_Trust", "President_Trust", "Judiciary_Trust",
+  "Mayors_Trust", "PoliticalParties_Trust", "GeneralProsecutor_Trust",
+  "IntelligenceService_Trust", "ConstitutionalCourt_Trust", "CEC_Trust",
+
+  # Elections
+  "Elections_Vote", "Elections_Free",
+
+  # Regional satisfaction
+  "Healthcare_Satisfaction", "Housing_Satisfaction", "PublicTransport_Satisfaction",
+  "CleanlinessLocality_Satisfaction", "Locality_Influence",
+  
+  # Education satisfaction
+  "Education_Satisfaction",
+
+  # Ethnolinguistic
+  "Equal_Ethnicity", 
+  
+  # Territory  
+  "Unification", "Unification_Russia",
+  
+  # Religion
+  "Church_Trust", "Religious_Affiliation",
+
+  # Politicians
+  "Sandu_Trust", "Dodon_Trust", "Voronin_Trust", "Sor_Trust",
+  "Putin_Trust", "Zelenskyy_Trust",
+
+  # Parties
+  "PAS_Trust", "PSRM_Trust", "MAN_Trust", "PCRM_Trust", "PDM_Trust",
+  "PL_Trust", "PLDM_Trust", "PN_Trust", "PPDA_Trust", "SorParty_Trust",
+
+  # International politics
+  "NATO", "EU", "Eurasia", "EU_vs_Eurasia",
+  "Russia_rels", "Ukraine_rels", "Romania_rels", "EU_rels", "USA_rels", "NATO_rels",
+
+  # Weights
+  "Weights"
+)
+```
+
+```{r}
+# merging  
 bop_panel <- bind_rows(
   bop_sep_2026 %>% select(any_of(vars_to_keep)),
   bop_sep_2025 %>% select(any_of(vars_to_keep)),
@@ -2385,6 +3845,117 @@ bop_panel %>%
   map(~ any(c("DK", "NR") %in% levels(.x))) %>%
   keep(~ .x == TRUE) %>%
   names()
+```
+
+```{r}
+# Identifiers and demographics
+vars_demographics <- c(
+  "id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity",
+  "Language_Questionnaire", "Ecology", "Education", "Socioeconomic",
+  "Region", "Macro_Region"
+)
+
+vars_language <- c(
+  "HomeLanguage_Moldovan", "HomeLanguage_Romanian", "HomeLanguage_Russian",
+  "HomeLanguage_Ukrainian", "HomeLanguage_Gagauz", "HomeLanguage_Other")
+
+# International exposure
+vars_intl_exposure <- c(
+  "LeaveMD_Would", "LeaveMD_Have", "LeaveMD_PlanPermanently")
+
+# Direction, problems, worries
+vars_direction_problems <- c(
+  "direction", "direction_world",
+  "Problems_First", "Problems_Second", "Problems_Third",
+  "Worries_First", "Worries_Second", "Worries_Third")
+
+# Media
+vars_media <- c(
+  "Media_First", "Media_Second", "Trust_Media",
+  "RussianMedia_Trust", "RomanianMedia_Trust", "EUMedia_Trust", "MoldovanMedia_Trust",
+  "Newspapers_HowOften", "Radio_HowOften", "TV_HowOften",
+  "Books_HowOften", "Internet_HowOften")
+
+# Economics
+vars_economics <- c(
+  "Economic_Situation_minus1", "Economic_Situation_plus1", "Economic_Satisfaction",
+  "EconomicSolution_First", "EconomicSolution_Second", "EconomicSolution_Third")
+
+# Socioeconomics
+vars_socioeconomics <- c(
+  "Job_Satisfaction", "Money_Satisfaction", "Income_Perception",
+  "Savings_Perception", "Income_Actual",
+  "Land_Ownership", "Home_Ownership", "Water_Access", "Gas_Access",
+  "Car_Access", "WashingMachine_Access", "DoubleGlazing_Access",
+  "FridgeFreezer_Access", "Internet_Access")
+
+# Mass-elite dynamics
+vars_mass_elite <- c(
+  "PoliticalLife_Satisfaction", "WillofPeople", "President_Represented",
+  "Country_Influence")
+
+# Political values
+vars_political_values <- c(
+  "Info_Free", "Leadership_Free", "Leadership_Protest_Free",
+  "Personally_Leadership_Free", "Personally_Leadership_Protest_Free",
+  "Politics_Interest", "President_Salary")
+
+# Leadership satisfaction
+vars_leadership_satisfaction <- c(
+  "Jobs_Leadership", "StandardofLiving_Leadership", "Wages_Leadership",
+  "Pensions_Leadership", "Corruption_Leadership", "Industry_Leadership",
+  "Agri_Leadership", "Edu_Leadership", "Culture_Leadership",
+  "Healthcare_Leadership", "ForeignPolicy_Leadership", "Transnistria_Leadership")
+
+# Institutional trust
+vars_institutional_trust <- c(
+  "Government_Trust", "Parliament_Trust", "President_Trust", "Judiciary_Trust",
+  "Mayors_Trust", "PoliticalParties_Trust", "GeneralProsecutor_Trust",
+  "IntelligenceService_Trust", "ConstitutionalCourt_Trust", "CEC_Trust")
+
+# Elections
+vars_elections <- c(
+  "Elections_Vote", "Elections_Free")
+
+# Regional satisfaction
+vars_regional <- c(
+  "Healthcare_Satisfaction", "Housing_Satisfaction", "PublicTransport_Satisfaction",
+  "CleanlinessLocality_Satisfaction", "Locality_Influence")
+
+# Education satisfaction
+vars_education <- c(
+  "Education_Satisfaction")
+
+# Ethnolinguistic
+vars_ethnolinguistic <- c(
+  "Equal_Ethnicity")
+
+# Territory
+vars_territory <- c(
+  "Unification", "Unification_Russia")
+
+# Religion
+vars_religion <- c(
+  "Church_Trust", "Religious_Affiliation")
+
+# Politicians
+vars_politicians <- c(
+  "Sandu_Trust", "Dodon_Trust", "Voronin_Trust", "Sor_Trust",
+  "Putin_Trust", "Zelenskyy_Trust")
+
+# Parties
+vars_parties <- c(
+  "PAS_Trust", "PSRM_Trust", "MAN_Trust", "PCRM_Trust", "PDM_Trust",
+  "PL_Trust", "PLDM_Trust", "PN_Trust", "PPDA_Trust", "Sor_TrustParty_Trust")
+
+# International politics
+vars_intl_politics <- c(
+  "NATO", "EU", "Eurasia", "EU_vs_Eurasia",
+  "Russia_rels", "Ukraine_rels", "Romania_rels", "EU_rels", "USA_rels", "NATO_rels")
+
+# Weights
+vars_weights <- c(
+  "Weights")
 ```
 
 ```{r}

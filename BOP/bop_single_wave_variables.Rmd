@@ -1,0 +1,40 @@
+# Nov 2017
+
+State_Language
+MillionDollarTheft
+Totalitarian_Regime
+Unification_Threat
+
+# Nov 2018
+
+USSR_Attitude
+Regret_Collapse
+USSR_Today
+Soviet_CollapseImpact
+USSR_Reformed
+USSR_Referendum
+UOC_Independence
+MOC_Independence
+
+# Oct 2020
+
+LivedAbroad_Personally
+LivedAbroad_Family
+
+# Feb 2021
+
+Church_Frequency
+
+# Nov 2022
+
+Sor_Trust_Position
+WorkedAbroad
+Worked_Ukraine, Worked_Germany, Worked_Russia, Worked_Spain, Worked_GB, Worked_Czechia, Worked_Turkey, Worked_Portugal, Worked_Poland, Worked_Israel, Worked_Romania, Worked_Bulgaria, Worked_Hungary, Worked_Italy, Worked_Kaz, Worked_Austria, Worked_Croatia, Worked_Slovenia, Worked_Serbia, Worked_Latvia, Worked_Greece, Worked_Uzb, Worked_USA, Worked_Cyprus, Worked_Lithuania, Worked_Armenia, Worked_Belgium, Worked_France, Worked_Other, Worked_DK_NR
+
+# Sep 2026
+
+HomeLanguage_One
+HomeLanguage_Two
+Represented
+Election_Important
+Politics_Discuss

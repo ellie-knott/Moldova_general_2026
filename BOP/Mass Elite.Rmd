@@ -1,0 +1,209 @@
+---
+title: "Mass Elite"
+author: "Ellie Knott"
+date: "2026-11-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message = FALSE, echo=TRUE)
+require(dplyr)
+require(tidyr)
+require(ggplot2)
+require(forcats)
+require(modelsummary)
+require(lubridate)
+require(survey)
+```
+
+```{r}
+bop_panel <- readRDS("~/R Projects/Moldova General/BOP/bop_panel.rds")
+```
+
+Variables of interest:
+- PoliticalLife_Satisfaction
+- WillofPeople
+- President_Represented
+- Country_Influence
+
+```{r}
+bop_panel$year <- year(bop_panel$date)
+bop_panel$year.f <- as.factor(bop_panel$year)
+bop_panel$wave <- as.factor(bop_panel$wave)
+bop_panel$date <- as.Date(bop_panel$date)
+
+# converting to numeric
+bop_panel$PoliticalLife_Satisfaction <- as.numeric(bop_panel$PoliticalLife_Satisfaction)
+bop_panel$President_Represented <- as.numeric(bop_panel$President_Represented)
+bop_panel$Country_Influence <- as.numeric(bop_panel$Country_Influence)
+```
+
+```{r}
+# Identifiers and demographics
+vars_demographics <- c(
+  "id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity",
+  "Language_Questionnaire", "Ecology", "Education", "Socioeconomic",
+  "Macro_Region", "Weights")
+```
+
+```{r}
+# removing NA values
+bop_panel.me <- bop_panel %>%
+  drop_na(all_of(vars_demographics))
+
+bop_panel.PolLife <- bop_panel.me %>%
+  drop_na(PoliticalLife_Satisfaction)
+
+bop_panel.PresRep <- bop_panel.me %>%
+  drop_na(President_Represented)
+
+bop_panel.CountryInfl <- bop_panel.me %>%
+  drop_na(Country_Influence)
+
+bop_panel.WillPeople <- bop_panel.me %>%
+  drop_na(WillofPeople)
+
+bop_panel.WillPeople$WillofPeople_Yes <- ifelse(bop_panel.WillPeople$WillofPeople == "Yes", 1, 0)
+
+```
+
+# Longitudinal Analysis
+```{r}
+# Will of People
+bop_panel.WillPeople %>%
+  group_by(wave, date, WillofPeople_Yes) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(wave, date) %>%
+  mutate(
+    total      = sum(n),
+    percentage = n / total
+  ) %>%
+  filter(WillofPeople_Yes == 1) %>%
+  mutate(
+    se    = sqrt(percentage * (1 - percentage) / total),
+    lower = percentage - 1.96 * se,
+    upper = percentage + 1.96 * se
+  ) %>%
+  ggplot(aes(x = date, y = percentage)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Percent")
+```
+```{r}
+bop_panel.PolLife %>%
+  group_by(date) %>%
+  summarise(
+    PoliticalLife_Satisfaction_mean = mean(PoliticalLife_Satisfaction, na.rm = TRUE),
+    PoliticalLife_Satisfaction_sd = sd(PoliticalLife_Satisfaction, na.rm = TRUE),
+    PoliticalLife_Satisfaction_n = sum(!is.na(PoliticalLife_Satisfaction)),
+    PoliticalLife_Satisfaction_se = PoliticalLife_Satisfaction_sd / sqrt(PoliticalLife_Satisfaction_n),
+    PoliticalLife_Satisfaction_lower = PoliticalLife_Satisfaction_mean - 1.96 * PoliticalLife_Satisfaction_se,
+    PoliticalLife_Satisfaction_upper = PoliticalLife_Satisfaction_mean + 1.96 * PoliticalLife_Satisfaction_se
+  ) %>%
+  pivot_longer(
+    cols = c(PoliticalLife_Satisfaction_mean, PoliticalLife_Satisfaction_lower,
+             PoliticalLife_Satisfaction_upper),
+    names_to = c("PoliticalLife_Satisfaction", ".value"),
+    names_pattern = "(PoliticalLife_Satisfaction)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Mean Score")
+```
+
+# Regression Analysis
+
+## Will of People
+```{r}
+# changing reference categories
+bop_panel.PolLife$Socioeconomic <- fct_relevel(bop_panel.PolLife$Socioeconomic, "medium")
+bop_panel.PolLife$Education <- fct_relevel(bop_panel.PolLife$Education, "medium")
+
+bop_svy.WillPeople <- svydesign(id=~1, weights=~Weights, data=bop_panel.WillPeople)
+```
+
+```{r}
+summary(svyglm(WillofPeople_Yes~Age, design = bop_svy.WillPeople, family = "quasibinomial"))
+summary(svyglm(WillofPeople_Yes~Age.f, design = bop_svy.WillPeople, family = "quasibinomial"))
+summary(svyglm(WillofPeople_Yes~Gender, design = bop_svy.WillPeople, family = "quasibinomial"))
+summary(svyglm(WillofPeople_Yes~Ethnicity, design = bop_svy.WillPeople, family = "quasibinomial"))
+summary(svyglm(WillofPeople_Yes~Language_Questionnaire, design = bop_svy.WillPeople, family = "quasibinomial"))
+summary(svyglm(WillofPeople_Yes~Ecology, design = bop_svy.WillPeople, family = "quasibinomial"))
+summary(svyglm(WillofPeople_Yes~Education, design = bop_svy.WillPeople, family = "quasibinomial"))
+summary(svyglm(WillofPeople_Yes~Socioeconomic, design = bop_svy.WillPeople, family = "quasibinomial"))
+summary(svyglm(WillofPeople_Yes~Macro_Region, design = bop_svy.WillPeople, family = "quasibinomial"))
+summary(svyglm(WillofPeople_Yes~year, design = bop_svy.WillPeople, family = "quasibinomial"))
+```
+
+```{r}
+model <- svyglm(WillofPeople_Yes ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Ecology + Macro_Region + factor(year), design = bop_svy.WillPeople, family = "quasibinomial")
+
+exp(cbind(OR = coef(model), confint(model)))
+```
+
+## Political Life Satisfaction
+```{r}
+# changing reference categories
+bop_panel.PolLife$Socioeconomic <- fct_relevel(bop_panel.PolLife$Socioeconomic, "medium")
+bop_panel.PolLife$Education <- fct_relevel(bop_panel.PolLife$Education, "medium")
+
+bop_svy.PolLife <- svydesign(id=~1, weights=~Weights, data=bop_panel.PolLife)
+```
+
+```{r}
+summary(svyglm(PoliticalLife_Satisfaction~Age, design = bop_svy.PolLife))
+summary(svyglm(PoliticalLife_Satisfaction~Age.f, design = bop_svy.PolLife))
+summary(svyglm(PoliticalLife_Satisfaction~Gender, design = bop_svy.PolLife))
+summary(svyglm(PoliticalLife_Satisfaction~Ethnicity, design = bop_svy.PolLife))
+summary(svyglm(PoliticalLife_Satisfaction~Language_Questionnaire, design = bop_svy.PolLife))
+summary(svyglm(PoliticalLife_Satisfaction~Ecology, design = bop_svy.PolLife))
+summary(svyglm(PoliticalLife_Satisfaction~Education, design = bop_svy.PolLife))
+summary(svyglm(PoliticalLife_Satisfaction~Socioeconomic, design = bop_svy.PolLife))
+summary(svyglm(PoliticalLife_Satisfaction~Macro_Region, design = bop_svy.PolLife))
+summary(svyglm(PoliticalLife_Satisfaction~factor(year), design = bop_svy.PolLife))
+```
+
+```{r}
+model2 <- svyglm(PoliticalLife_Satisfaction ~ Age.f + Ethnicity + Language_Questionnaire + Ecology + Education + Socioeconomic + Macro_Region + factor(year), design = bop_svy.PolLife)
+
+summary(model2)
+```
+
+# Plots
+```{r}
+modelplot(model, coef_map = coef_plot_demographics, exponentiate = TRUE) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
+    scale_x_log10() +
+  theme(legend.position = "bottom") +
+  xlab("Odds Ratios and 95% CIs")
+```
+- Age: older groups significant (+)
+- Ethnicity: Romanian (+)
+- Language of Questionnaire: Russian (-)
+
+```{r}
+modelplot(model2, coef_map = coef_plot_demographics) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4, linetype = "dashed") +
+  theme(legend.position = "bottom") +
+  xlab("Coefficients and 95% CIs")
+```
+- Age: middle groups significant (+)
+- Ethnicity: Romanian (-)
+- Language of Questionnaire: Russian (+)
+- Education: high (-)
+- Socioeconomic: high (-)

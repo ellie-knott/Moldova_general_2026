@@ -1,0 +1,174 @@
+---
+title: "Economics - BOP Analysis"
+author: "Ellie Knott"
+date: "2026-11-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message = FALSE, echo=TRUE)
+require(dplyr)
+require(tidyr)
+require(ggplot2)
+require(forcats)
+require(modelsummary)
+require(lubridate)
+require(survey)
+```
+
+```{r}
+bop_panel <- readRDS("~/R Projects/Moldova General/BOP/bop_panel.rds")
+```
+
+Variables of interest:
+- Economic_Situation_minus1
+- Economic_Situation_plus1
+- Economic_Satisfaction
+- EconomicSolution_First
+- EconomicSolution_Second 
+- EconomicSolution_Third
+
+```{r}
+bop_panel$year <- year(bop_panel$date)
+bop_panel$year.f <- as.factor(bop_panel$year)
+bop_panel$wave <- as.factor(bop_panel$wave)
+bop_panel$date <- as.Date(bop_panel$date)
+
+# converting to numeric
+bop_panel$Economic_Situation_minus1 <- as.numeric(bop_panel$Economic_Situation_minus1)
+bop_panel$Economic_Situation_plus1 <- as.numeric(bop_panel$Economic_Situation_plus1)
+bop_panel$Economic_Satisfaction <- as.numeric(bop_panel$Economic_Satisfaction)
+```
+
+```{r}
+# Identifiers and demographics
+vars_demographics <- c(
+  "id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity",
+  "Language_Questionnaire", "Ecology", "Education", "Socioeconomic",
+  "Macro_Region", "Weights")
+
+# Economics
+vars_economics <- c(
+  "Economic_Situation_minus1", "Economic_Situation_plus1", "Economic_Satisfaction",
+  "EconomicSolution_First", "EconomicSolution_Second", "EconomicSolution_Third")
+
+```
+
+```{r}
+# removing NA values
+bop_panel.econ <- bop_panel %>%
+  drop_na(all_of(vars_demographics))
+
+bop_panel.econ <- bop_panel.econ %>%
+  drop_na(all_of(vars_economics))
+```
+
+# Longitudinal Analysis
+```{r}
+bop_panel.econ %>%
+  group_by(wave, date) %>%
+  summarise(
+    Economic_Situation_minus1_mean = mean(Economic_Situation_minus1, na.rm = TRUE),
+    Economic_Situation_minus1_sd = sd(Economic_Situation_minus1, na.rm = TRUE),
+    Economic_Situation_minus1_n = sum(!is.na(Economic_Situation_minus1)),
+    Economic_Situation_minus1_se = Economic_Situation_minus1_sd / sqrt(Economic_Situation_minus1_n),
+    Economic_Situation_minus1_lower = Economic_Situation_minus1_mean - 1.96 * Economic_Situation_minus1_se,
+    Economic_Situation_minus1_upper = Economic_Situation_minus1_mean + 1.96 * Economic_Situation_minus1_se,
+    Economic_Situation_plus1_mean = mean(Economic_Situation_plus1, na.rm = TRUE),
+    Economic_Situation_plus1_sd = sd(Economic_Situation_plus1, na.rm = TRUE),
+    Economic_Situation_plus1_n = sum(!is.na(Economic_Situation_plus1)),
+    Economic_Situation_plus1_se = Economic_Situation_plus1_sd / sqrt(Economic_Situation_plus1_n),
+    Economic_Situation_plus1_lower = Economic_Situation_plus1_mean - 1.96 * Economic_Situation_plus1_se,
+    Economic_Situation_plus1_upper = Economic_Situation_plus1_mean + 1.96 * Economic_Situation_plus1_se
+  ) %>%
+  pivot_longer(
+    cols = c(Economic_Situation_minus1_mean, Economic_Situation_minus1_lower,
+             Economic_Situation_minus1_upper, Economic_Situation_plus1_mean,
+             Economic_Situation_plus1_lower, Economic_Situation_plus1_upper),
+    names_to = c("Economic_Situation", ".value"),
+    names_pattern = "(Economic_Situation_minus1|Economic_Situation_plus1)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean, color = Economic_Situation , 
+                              group = Economic_Situation)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = Economic_Situation), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Mean Score")
+
+```
+
+```{r}
+bop_panel.econ %>%
+  group_by(wave, date) %>%
+  summarise(
+    Economic_Satisfaction_mean = mean(Economic_Satisfaction, na.rm = TRUE),
+    Economic_Satisfaction_sd = sd(Economic_Satisfaction, na.rm = TRUE),
+    Economic_Satisfaction_n = sum(!is.na(Economic_Satisfaction)),
+    Economic_Satisfaction_se = Economic_Satisfaction_sd / sqrt(Economic_Satisfaction_n),
+    Economic_Satisfaction_lower = Economic_Satisfaction_mean - 1.96 * Economic_Satisfaction_se,
+    Economic_Satisfaction_upper = Economic_Satisfaction_mean + 1.96 * Economic_Satisfaction_se
+  ) %>%
+  pivot_longer(
+    cols = c(Economic_Satisfaction_mean, Economic_Satisfaction_lower,
+             Economic_Satisfaction_upper),
+    names_to = c("Economic_Satisfaction", ".value"),
+    names_pattern = "(Economic_Satisfaction)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Mean Score")
+```
+
+# Regression analysis
+```{r}
+# changing reference categories
+bop_panel.econ$Socioeconomic <- fct_relevel(bop_panel.econ$Socioeconomic, "medium")
+bop_panel.econ$Education <- fct_relevel(bop_panel.econ$Education, "medium")
+
+# making svy version of dataframe
+bop_svy.econ <- svydesign(id=~1, weights=~Weights, data=bop_panel.econ)
+```
+
+```{r}
+summary(svyglm(Economic_Satisfaction~Age, design = bop_svy.econ))
+summary(svyglm(Economic_Satisfaction~Age.f, design = bop_svy.econ))
+summary(svyglm(Economic_Satisfaction~Gender, design = bop_svy.econ))
+summary(svyglm(Economic_Satisfaction~Ethnicity, design = bop_svy.econ))
+summary(svyglm(Economic_Satisfaction~Language_Questionnaire, design = bop_svy.econ))
+summary(svyglm(Economic_Satisfaction~Ecology, design = bop_svy.econ))
+summary(svyglm(Economic_Satisfaction~Education, design = bop_svy.econ))
+summary(svyglm(Economic_Satisfaction~Socioeconomic, design = bop_svy.econ))
+summary(svyglm(Economic_Satisfaction~Macro_Region, design = bop_svy.econ))
+summary(svyglm(Economic_Satisfaction~factor(year), design = bop_svy.econ))
+```
+
+
+```{r}
+model <- svyglm(Economic_Satisfaction ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Ecology + Socioeconomic + Macro_Region + year, design = bop_svy.econ)
+
+summary(model)
+```
+
+```{r}
+summary(glm(Economic_Satisfaction ~ Age.f + Gender + Ethnicity + Language_Questionnaire + Ecology + Socioeconomic + Macro_Region + year, data = bop_panel.econ))
+```
+
+```{r}
+modelplot(model, coef_map = coef_plot_demographics) + 
+  aes(shape = model) +
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4, linetype = "dashed") +
+  theme(legend.position = "bottom") +
+  xlab("Coefficients and 95% CIs")
+```
