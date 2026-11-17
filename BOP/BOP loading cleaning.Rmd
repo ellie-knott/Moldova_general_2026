@@ -79,7 +79,7 @@ bop_sep_2025$Weights <- bop_sep_2025$W
 bop_oct_2024$Weights <- bop_oct_2024$W
 bop_aug_2023$Weights <- bop_aug_2023$W1
 bop_nov_2022$Weights <- bop_nov_2022$weight_agesex
-bop_feb_2021$Weights <- bop_feb_2021$Weights
+bop_feb_2021$Weights <- bop_feb_2021$WFINAL
 bop_oct_2020$Weights <- bop_oct_2020$WEGHT
 bop_jun_2020$Weights <- bop_jun_2020$weight_age_sex2
 bop_dec_2019$Weights <- bop_dec_2019$w
@@ -245,98 +245,98 @@ bop_nov_2017$Language_Questionnaire <- factor(bop_nov_2017$S18,
 ## Languages @ Home
 ```{r}
 # Moldovan
-bop_nov_2017$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_may_2018$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2018$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_dec_2019$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_jun_2020$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2020$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_feb_2021$HomeLanguage_Moldovan <- factor(bop_feb_2021$S7_1, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2022$HomeLanguage_Moldovan <- factor(bop_nov_2022$S8_1, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_aug_2023$HomeLanguage_Moldovan <- factor(bop_aug_2023$S6_1, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2024$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2025$HomeLanguage_Moldovan <- factor(bop_sep_2025$S6_1, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2026$HomeLanguage_Moldovan <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2017$HomeLanguage_Moldovan <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_may_2018$HomeLanguage_Moldovan <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2018$HomeLanguage_Moldovan <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_dec_2019$HomeLanguage_Moldovan <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_jun_2020$HomeLanguage_Moldovan <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2020$HomeLanguage_Moldovan <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_feb_2021$HomeLanguage_Moldovan <- factor(bop_feb_2021$S7_1, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2022$HomeLanguage_Moldovan <- factor(bop_nov_2022$S8_1, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_aug_2023$HomeLanguage_Moldovan <- factor(bop_aug_2023$S6_1, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2024$HomeLanguage_Moldovan <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2025$HomeLanguage_Moldovan <- factor(bop_sep_2025$S6_1, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2026$HomeLanguage_Moldovan <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
 ```
 
 ```{r}
 # Romanian
-bop_nov_2017$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_may_2018$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2018$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_dec_2019$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_jun_2020$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2020$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_feb_2021$HomeLanguage_Romanian <- factor(bop_feb_2021$S7_2, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2022$HomeLanguage_Romanian <- factor(bop_nov_2022$S8_2, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_aug_2023$HomeLanguage_Romanian <- factor(bop_aug_2023$S6_2, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2024$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2025$HomeLanguage_Romanian <- factor(bop_sep_2025$S6_2, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2026$HomeLanguage_Romanian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2017$HomeLanguage_Romanian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_may_2018$HomeLanguage_Romanian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2018$HomeLanguage_Romanian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_dec_2019$HomeLanguage_Romanian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_jun_2020$HomeLanguage_Romanian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2020$HomeLanguage_Romanian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_feb_2021$HomeLanguage_Romanian <- factor(bop_feb_2021$S7_2, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2022$HomeLanguage_Romanian <- factor(bop_nov_2022$S8_2, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_aug_2023$HomeLanguage_Romanian <- factor(bop_aug_2023$S6_2, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2024$HomeLanguage_Romanian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2025$HomeLanguage_Romanian <- factor(bop_sep_2025$S6_2, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2026$HomeLanguage_Romanian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
 ```
 
 ```{r}
 # Russian
-bop_nov_2017$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_may_2018$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2018$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_dec_2019$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_jun_2020$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2020$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_feb_2021$HomeLanguage_Russian <- factor(bop_feb_2021$S7_3, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2022$HomeLanguage_Russian <- factor(bop_nov_2022$S8_3, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_aug_2023$HomeLanguage_Russian <- factor(bop_aug_2023$S6_3, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2024$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2025$HomeLanguage_Russian <- factor(bop_sep_2025$S6_3, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2026$HomeLanguage_Russian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2017$HomeLanguage_Russian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_may_2018$HomeLanguage_Russian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2018$HomeLanguage_Russian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_dec_2019$HomeLanguage_Russian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_jun_2020$HomeLanguage_Russian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2020$HomeLanguage_Russian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_feb_2021$HomeLanguage_Russian <- factor(bop_feb_2021$S7_3, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2022$HomeLanguage_Russian <- factor(bop_nov_2022$S8_3, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_aug_2023$HomeLanguage_Russian <- factor(bop_aug_2023$S6_3, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2024$HomeLanguage_Russian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2025$HomeLanguage_Russian <- factor(bop_sep_2025$S6_3, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2026$HomeLanguage_Russian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
 ```
 
 ```{r}
 # Ukrainian
-bop_nov_2017$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_may_2018$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2018$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_dec_2019$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_jun_2020$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2020$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_feb_2021$HomeLanguage_Ukrainian <- factor(bop_feb_2021$S7_4, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2022$HomeLanguage_Ukrainian <- factor(bop_nov_2022$S8_4, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_aug_2023$HomeLanguage_Ukrainian <- factor(bop_aug_2023$S6_4, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2024$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2025$HomeLanguage_Ukrainian <- factor(bop_sep_2025$S6_4, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2026$HomeLanguage_Ukrainian <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2017$HomeLanguage_Ukrainian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_may_2018$HomeLanguage_Ukrainian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2018$HomeLanguage_Ukrainian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_dec_2019$HomeLanguage_Ukrainian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_jun_2020$HomeLanguage_Ukrainian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2020$HomeLanguage_Ukrainian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_feb_2021$HomeLanguage_Ukrainian <- factor(bop_feb_2021$S7_4, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2022$HomeLanguage_Ukrainian <- factor(bop_nov_2022$S8_4, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_aug_2023$HomeLanguage_Ukrainian <- factor(bop_aug_2023$S6_4, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2024$HomeLanguage_Ukrainian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2025$HomeLanguage_Ukrainian <- factor(bop_sep_2025$S6_4, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2026$HomeLanguage_Ukrainian <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
 ```
 
 ```{r}
 # Gagauz
-bop_nov_2017$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_may_2018$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2018$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_dec_2019$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_jun_2020$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2020$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_feb_2021$HomeLanguage_Gagauz <- factor(bop_feb_2021$S7_5, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2022$HomeLanguage_Gagauz <- factor(bop_nov_2022$S8_5, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_aug_2023$HomeLanguage_Gagauz <- factor(bop_aug_2023$S6_5, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2024$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2025$HomeLanguage_Gagauz <- factor(bop_sep_2025$S6_5, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2026$HomeLanguage_Gagauz <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2017$HomeLanguage_Gagauz <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_may_2018$HomeLanguage_Gagauz <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2018$HomeLanguage_Gagauz <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_dec_2019$HomeLanguage_Gagauz <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_jun_2020$HomeLanguage_Gagauz <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2020$HomeLanguage_Gagauz <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_feb_2021$HomeLanguage_Gagauz <- factor(bop_feb_2021$S7_5, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2022$HomeLanguage_Gagauz <- factor(bop_nov_2022$S8_5, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_aug_2023$HomeLanguage_Gagauz <- factor(bop_aug_2023$S6_5, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2024$HomeLanguage_Gagauz <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2025$HomeLanguage_Gagauz <- factor(bop_sep_2025$S6_5, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2026$HomeLanguage_Gagauz <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
 ```
 
 ```{r}
 # Other
-bop_nov_2017$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_may_2018$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2018$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_dec_2019$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_jun_2020$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2020$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_feb_2021$HomeLanguage_Other <- factor(bop_feb_2021$S7_6, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_nov_2022$HomeLanguage_Other <- factor(bop_nov_2022$S8_6, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_aug_2023$HomeLanguage_Other <- factor(bop_aug_2023$S6_6, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_oct_2024$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2025$HomeLanguage_Other <- factor(bop_sep_2025$S6_8, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
-bop_sep_2026$HomeLanguage_Other <- factor(NA, levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+bop_nov_2017$HomeLanguage_Other <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_may_2018$HomeLanguage_Other <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2018$HomeLanguage_Other <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_dec_2019$HomeLanguage_Other <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_jun_2020$HomeLanguage_Other <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2020$HomeLanguage_Other <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_feb_2021$HomeLanguage_Other <- factor(bop_feb_2021$S7_6, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_nov_2022$HomeLanguage_Other <- factor(bop_nov_2022$S8_6, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_aug_2023$HomeLanguage_Other <- factor(bop_aug_2023$S6_6, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_oct_2024$HomeLanguage_Other <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2025$HomeLanguage_Other <- factor(bop_sep_2025$S6_8, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
+bop_sep_2026$HomeLanguage_Other <- factor(NA, levels = 0:1, labels = c("Not Mentioned", "Mentioned"))
 ```
 
 ```{r}
@@ -349,43 +349,43 @@ bop_sep_2026$HomeLanguage_Two <- bop_sep_2026$limba_vorbita_O2
 bop_sep_2026$HomeLanguage_Moldovan <- factor(
   ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
          ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 1) |
-                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 1), 1, 2)),
-  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 1), 1, 0)),
+  levels = c(1,0), labels = c("Mentioned", "Not Mentioned"))
 
 # Romanian
 bop_sep_2026$HomeLanguage_Romanian <- factor(
   ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
          ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 2) |
-                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 2), 1, 2)),
-  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 2), 1, 0)),
+  levels = c(1,0), labels = c("Mentioned", "Not Mentioned"))
 
 # Russian
 bop_sep_2026$HomeLanguage_Russian <- factor(
   ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
          ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 3) |
-                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 3), 1, 2)),
-  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 3), 1, 0)),
+  levels = c(1,0), labels = c("Mentioned", "Not Mentioned"))
 
 # Ukrainian
 bop_sep_2026$HomeLanguage_Ukrainian <- factor(
   ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
          ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 4) |
-                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 4), 1, 2)),
-  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 4), 1, 0)),
+  levels = c(1,0), labels = c("Mentioned", "Not Mentioned"))
 
 # Gagauz
 bop_sep_2026$HomeLanguage_Gagauz <- factor(
   ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
          ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 5) |
-                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 5), 1, 2)),
-  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 5), 1, 0)),
+  levels = c(1,0), labels = c("Mentioned", "Not Mentioned"))
 
 # Other
 bop_sep_2026$HomeLanguage_Other <- factor(
   ifelse(is.na(bop_sep_2026$limba_vorbita_O1) & is.na(bop_sep_2026$limba_vorbita_O2), NA,
          ifelse((!is.na(bop_sep_2026$limba_vorbita_O1) & as.numeric(bop_sep_2026$limba_vorbita_O1) == 6) |
-                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 6), 1, 2)),
-  levels = 1:2, labels = c("Mentioned", "Not Mentioned"))
+                (!is.na(bop_sep_2026$limba_vorbita_O2) & as.numeric(bop_sep_2026$limba_vorbita_O2) == 6), 1, 0)),
+  levels = c(1,0), labels = c("Mentioned", "Not Mentioned"))
 ```
 
 ```{r}
@@ -3830,6 +3830,7 @@ bop_panel <- bind_rows(
 
 ```
 
+# Unifying DK/NR values
 ```{r}
 dk_nr_cols <- bop_panel %>%
   select(where(is.factor)) %>%
@@ -3847,6 +3848,7 @@ bop_panel %>%
   names()
 ```
 
+
 ```{r}
 # Identifiers and demographics
 vars_demographics <- c(
@@ -3856,8 +3858,8 @@ vars_demographics <- c(
 )
 
 vars_language <- c(
-  "HomeLanguage_Moldovan", "HomeLanguage_Romanian", "HomeLanguage_Russian",
-  "HomeLanguage_Ukrainian", "HomeLanguage_Gagauz", "HomeLanguage_Other")
+  "HomeLanguage_Moldovan.b", "HomeLanguage_Romanian.b", "HomeLanguage_Russian.b",
+  "HomeLanguage_Ukrainian.b", "HomeLanguage_Gagauz.b")
 
 # International exposure
 vars_intl_exposure <- c(

@@ -115,6 +115,10 @@ coef_plot <- c(
   "EthnicityRussian"              = "Russian",
   "EthnicityRomanian"             = "Romanian",
   "GenderWoman"                   = "Woman",
+  "Age.f75+"                   = "75+ years",
+  "Age.f60-74"                   = "60-74 years",
+  "Age.f45-59"                   = "45-59 years",
+  "Age.f30-44"                   = "30-44 years",
   "Age"                           = "Age (per year)"
 )
 

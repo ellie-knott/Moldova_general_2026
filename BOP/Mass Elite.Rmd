@@ -17,14 +17,13 @@ require(survey)
 ```
 
 ```{r}
-bop_panel <- readRDS("~/R Projects/Moldova General/BOP/bop_panel.rds")
+bop_panel <- readRDS("~/R Projects/MD General/BOP/bop_panel.rds")
 ```
 
 Variables of interest:
 - PoliticalLife_Satisfaction
 - WillofPeople
-- President_Represented
-- Country_Influence
+
 
 ```{r}
 bop_panel$year <- year(bop_panel$date)
@@ -39,11 +38,30 @@ bop_panel$Country_Influence <- as.numeric(bop_panel$Country_Influence)
 ```
 
 ```{r}
+bop_panel <- bop_panel %>%
+  mutate(across(c(HomeLanguage_Moldovan, HomeLanguage_Romanian, HomeLanguage_Russian,
+                  HomeLanguage_Ukrainian, HomeLanguage_Gagauz),
+           ~ case_when(.x == "Mentioned"     ~ 1L,
+                       .x == "Not Mentioned" ~ 0L),
+           .names = "{.col}.b"))
+``` 
+
+```{r}
 # Identifiers and demographics
 vars_demographics <- c(
   "id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity",
   "Language_Questionnaire", "Ecology", "Education", "Socioeconomic",
   "Macro_Region", "Weights")
+
+vars_language <- c(
+  "HomeLanguage_Moldovan.b", "HomeLanguage_Romanian.b", "HomeLanguage_Russian.b",
+  "HomeLanguage_Ukrainian.b", "HomeLanguage_Gagauz.b") # for 2021 and 2025 data
+
+vars_demographics_PresRep <- c(
+  "id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity",
+  "Language_Questionnaire", "Education", "Weights") 
+# 2024 is one of few years for this data but has no ecology, socioeconomic, or 
+# region/macro-region reporting for that year
 ```
 
 ```{r}
@@ -54,22 +72,25 @@ bop_panel.me <- bop_panel %>%
 bop_panel.PolLife <- bop_panel.me %>%
   drop_na(PoliticalLife_Satisfaction)
 
-bop_panel.PresRep <- bop_panel.me %>%
+bop_panel.PresRep <- bop_panel %>%
+  drop_na(all_of(vars_demographics_PresRep)) %>%
   drop_na(President_Represented)
 
 bop_panel.CountryInfl <- bop_panel.me %>%
-  drop_na(Country_Influence)
+  drop_na(Country_Influence) %>%
+  drop_na(all_of(vars_language)) # the two years with this data include data on 
+# language @ home
 
 bop_panel.WillPeople <- bop_panel.me %>%
   drop_na(WillofPeople)
 
 bop_panel.WillPeople$WillofPeople_Yes <- ifelse(bop_panel.WillPeople$WillofPeople == "Yes", 1, 0)
-
 ```
 
 # Longitudinal Analysis
+
+## Will of People
 ```{r}
-# Will of People
 bop_panel.WillPeople %>%
   group_by(wave, date, WillofPeople_Yes) %>%
   summarise(n = n(), .groups = "drop") %>%
@@ -95,6 +116,8 @@ bop_panel.WillPeople %>%
   labs(x = "Date",
        y = "Percent")
 ```
+
+## Political Life
 ```{r}
 bop_panel.PolLife %>%
   group_by(date) %>%
@@ -111,6 +134,67 @@ bop_panel.PolLife %>%
              PoliticalLife_Satisfaction_upper),
     names_to = c("PoliticalLife_Satisfaction", ".value"),
     names_pattern = "(PoliticalLife_Satisfaction)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Mean Score")
+```
+
+## Interests Represented by President
+To what extent do you think the current president represents your interests?
+```{r}
+bop_panel.PresRep %>%
+  group_by(date) %>%
+  summarise(
+    President_Represented_mean = mean(President_Represented, na.rm = TRUE),
+    President_Represented_sd = sd(President_Represented, na.rm = TRUE),
+    President_Represented_n = sum(!is.na(President_Represented)),
+    President_Represented_se = President_Represented_sd / sqrt(President_Represented_n),
+    President_Represented_lower = President_Represented_mean - 1.96 * President_Represented_se,
+    President_Represented_upper = President_Represented_mean + 1.96 * President_Represented_se
+  ) %>%
+  pivot_longer(
+    cols = c(President_Represented_mean, President_Represented_lower,
+             President_Represented_upper),
+    names_to = c("President_Represented", ".value"),
+    names_pattern = "(President_Represented)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Mean Score")
+```
+
+## Influence ~ Country
+```{r}
+bop_panel.CountryInfl %>%
+  group_by(date) %>%
+  summarise(
+    Country_Influence_mean = mean(Country_Influence, na.rm = TRUE),
+    Country_Influence_sd = sd(Country_Influence, na.rm = TRUE),
+    Country_Influence_n = sum(!is.na(Country_Influence)),
+    Country_Influence_se = Country_Influence_sd / sqrt(Country_Influence_n),
+    Country_Influence_lower = Country_Influence_mean - 1.96 * Country_Influence_se,
+    Country_Influence_upper = Country_Influence_mean + 1.96 * Country_Influence_se
+  ) %>%
+  pivot_longer(
+    cols = c(Country_Influence_mean, Country_Influence_lower,
+             Country_Influence_upper),
+    names_to = c("Country_Influence", ".value"),
+    names_pattern = "(Country_Influence)_(.*)"
   ) %>%
   ggplot(aes(x = date, y = mean)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), 
@@ -182,28 +266,151 @@ model2 <- svyglm(PoliticalLife_Satisfaction ~ Age.f + Ethnicity + Language_Quest
 summary(model2)
 ```
 
+## Interests Represented by President
+```{r}
+# changing reference categories
+bop_panel.PresRep$Socioeconomic <- fct_relevel(bop_panel.PresRep$Socioeconomic, "medium")
+bop_panel.PresRep$Education <- fct_relevel(bop_panel.PresRep$Education, "medium")
+
+bop_svy.PresRep <- svydesign(id=~1, weights=~Weights, data=bop_panel.PresRep)
+```
+
+```{r}
+summary(svyglm(President_Represented~Age, design = bop_svy.PresRep))
+summary(svyglm(President_Represented~Age.f, design = bop_svy.PresRep))
+summary(svyglm(President_Represented~Gender, design = bop_svy.PresRep))
+summary(svyglm(President_Represented~Ethnicity, design = bop_svy.PresRep))
+summary(svyglm(President_Represented~Language_Questionnaire, design = bop_svy.PresRep))
+summary(svyglm(President_Represented~Education, design = bop_svy.PresRep))
+summary(svyglm(President_Represented~factor(year), design = bop_svy.PresRep))
+```
+
+vars_demographics_PresRep <- c(
+  "id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity",
+  "Language_Questionnaire", "Education", "Weights") 
+  
+```{r}
+model3 <- svyglm(President_Represented ~ Age.f + Ethnicity + Language_Questionnaire + Education + factor(year), design = bop_svy.PresRep)
+
+summary(model3)
+```
+
+## Influence ~ Country
+```{r}
+# changing reference categories
+bop_panel.CountryInfl$Socioeconomic <- fct_relevel(bop_panel.CountryInfl$Socioeconomic, "medium")
+bop_panel.CountryInfl$Education <- fct_relevel(bop_panel.CountryInfl$Education, "medium")
+
+bop_svy.CountryInfl <- svydesign(id=~1, weights=~Weights, data=bop_panel.CountryInfl)
+```
+
+```{r}
+summary(svyglm(Country_Influence~Age, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~Age.f, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~Gender, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~Ethnicity, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~Language_Questionnaire, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~Ecology, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~Education, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~Socioeconomic, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~Macro_Region, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~Home_Language, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~Macro_Region, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~HomeLanguage_Moldovan.b, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~HomeLanguage_Romanian.b, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~HomeLanguage_Russian.b, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~HomeLanguage_Gagauz.b, design = bop_svy.CountryInfl))
+summary(svyglm(Country_Influence~factor(year), design = bop_svy.CountryInfl))
+```
+
+```{r}
+model4 <- svyglm(Country_Influence ~ Age.f + Ethnicity + Language_Questionnaire + Gender + Education + Socioeconomic + Macro_Region + HomeLanguage_Moldovan.b + HomeLanguage_Romanian.b + HomeLanguage_Russian.b + HomeLanguage_Gagauz.b, design = bop_svy.CountryInfl)
+
+summary(model4)
+```
+
 # Plots
 ```{r}
-modelplot(model, coef_map = coef_plot_demographics, exponentiate = TRUE) + 
-  aes(shape = model) +
+modelplot(model, coef_map = coef_plot, exponentiate = TRUE) + 
   geom_vline(xintercept = 1, color = 'black', alpha = 0.4, linetype = "dashed") +
-    scale_x_log10() +
+  scale_x_log10() +
   theme(legend.position = "bottom") +
   xlab("Odds Ratios and 95% CIs")
 ```
 - Age: older groups significant (+)
-- Ethnicity: Romanian (+)
+- Ethnicity: Romanian (+), Bulgarian (-)
 - Language of Questionnaire: Russian (-)
 
 ```{r}
-modelplot(model2, coef_map = coef_plot_demographics) + 
-  aes(shape = model) +
+modelplot(model2, coef_map = coef_plot) + 
   geom_vline(xintercept = 0, color = 'black', alpha = 0.4, linetype = "dashed") +
   theme(legend.position = "bottom") +
   xlab("Coefficients and 95% CIs")
 ```
 - Age: middle groups significant (+)
 - Ethnicity: Romanian (-)
+- Region: North (-), South (-)
 - Language of Questionnaire: Russian (+)
 - Education: high (-)
 - Socioeconomic: high (-)
+
+```{r}
+modelplot(model3, coef_map = coef_plot) + 
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4, linetype = "dashed") +
+  theme(legend.position = "bottom") +
+  xlab("Coefficients and 95% CIs")
+```
+- Ethnicity: Romanian (-), Russian (-), Ukrainian (-), Gagauz (-)
+- Language Questionnaire: Russian (+)
+
+```{r}
+
+coef_plot_lang <- c(
+"year"                          = "Year",
+  "HomeLanguage_Moldovan.b"  = "Moldovan at home",
+  "HomeLanguage_Romanian.b"  = "Romanian at home",
+  "HomeLanguage_Russian.b"   = "Russian at home",
+  "HomeLanguage_Ukrainian.b" = "Ukrainian at home",
+  "HomeLanguage_Gagauz.b"    = "Gagauz at home",
+  "Nato_For" = "NATO membership: in favour",
+  "Eurasia_For"                   = "Eurasia membership: in favour",
+  "EU_For"                        = "EU membership: in favour",
+  "Putin"                         = "Support: Putin",
+  "Unification_For"               = "Unification: in favour",
+  "war"                           = "Worry: War",
+  "interethnic"                   = "Worry: Interethnic relations",
+  "corruption"                    = "Worry: Corruption",
+  "poverty"                       = "Worry: Poverty",
+  "bad"                           = "Bad (Direction)",
+  "good"                          = "Good (Direction)",
+  "top_internet"                  = "Top media: Internet",
+  "top_TV"                        = "Top media: TV",
+  "Socioeconomichigh"             = "Socioeconomic: high",
+  "Socioeconomiclow"              = "Socioeconomic: low",
+  "Educationhigh"                 = "Education: high",
+  "Educationlow"                  = "Education: low",
+  "Ecologyrural"                  = "Rural",
+  "Macro_RegionGagauzia"          = "Gagauzia",
+  "Macro_RegionSouth"             = "South",
+  "Macro_RegionNorth"             = "North",
+  "Macro_RegionCentre"            = "Centre",
+  "Language_QuestionnaireRussian" = "Russian questionnaire",
+  "EthnicityBulgarian"            = "Bulgarian",
+  "EthnicityGagauz"               = "Gagauz",
+  "EthnicityUkrainian"            = "Ukrainian",
+  "EthnicityRussian"              = "Russian",
+  "EthnicityRomanian"             = "Romanian",
+  "GenderWoman"                   = "Woman",
+  "Age"                           = "Age (per year)"
+)
+```
+
+```{r}
+modelplot(model4, coef_map = coef_plot_lang) + 
+  geom_vline(xintercept = 0, color = 'black', alpha = 0.4, linetype = "dashed") +
+  theme(legend.position = "bottom") +
+  xlab("Coefficients and 95% CIs")
+```
+- Ethnicity: Bulgarian (+)
+- Region: Centre (+), Gagauzia (+)
+- Romanian at home (-)

@@ -166,7 +166,7 @@ summary(glm(Economic_Satisfaction ~ Age.f + Gender + Ethnicity + Language_Questi
 ```
 
 ```{r}
-modelplot(model, coef_map = coef_plot_demographics) + 
+modelplot(model, coef_map = coef_plot) + 
   aes(shape = model) +
   geom_vline(xintercept = 0, color = 'black', alpha = 0.4, linetype = "dashed") +
   theme(legend.position = "bottom") +

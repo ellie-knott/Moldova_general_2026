@@ -1,0 +1,285 @@
+---
+title: "Media"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message = FALSE, echo=TRUE)
+require(dplyr)
+require(tidyr)
+require(ggplot2)
+require(forcats)
+require(modelsummary)
+require(lubridate)
+require(survey)
+```
+
+```{r}
+bop_panel <- readRDS("~/R Projects/MD General/BOP/bop_panel.rds")
+```
+
+Variables of interest:
+- Media_First
+- Media_Second
+- Trust_Media
+- RussianMedia_Trust
+- RomanianMedia_Trust
+- EUMedia_Trust
+- MoldovanMedia_Trust
+- Newspapers_HowOften
+- Radio_HowOften
+- TV_HowOften
+- Books_HowOften
+- Internet_HowOften
+
+
+```{r}
+bop_panel$year <- year(bop_panel$date)
+bop_panel$year.f <- as.factor(bop_panel$year)
+bop_panel$wave <- as.factor(bop_panel$wave)
+bop_panel$date <- as.Date(bop_panel$date)
+
+# convert to numeric
+bop_panel$MoldovanMedia_Trust <- as.numeric(bop_panel$MoldovanMedia_Trust)
+bop_panel$RussianMedia_Trust <- as.numeric(bop_panel$RussianMedia_Trust)
+bop_panel$RomanianMedia_Trust <- as.numeric(bop_panel$RomanianMedia_Trust)
+bop_panel$EUMedia_Trust <- as.numeric(bop_panel$EUMedia_Trust)
+```
+
+```{r}
+# Identifiers and demographics
+vars_demographics <- c(
+  "id", "wave", "date", "Age", "Age.f", "Gender", "Ethnicity",
+  "Language_Questionnaire", "Ecology", "Education", "Socioeconomic",
+  "Macro_Region", "Weights")
+
+vars_media_freq <- c("Newspapers_HowOften", "Radio_HowOften", "TV_HowOften", 
+                     "Books_HowOften", "Internet_HowOften")
+```
+
+```{r}
+bop_panel.me <- bop_panel %>%
+  drop_na(all_of(vars_demographics))
+
+bop_panel.MD_MediaTrust <- bop_panel.me %>%
+  drop_na(MoldovanMedia_Trust)
+
+bop_panel.Rus_MediaTrust <- bop_panel.me %>%
+  drop_na(RussianMedia_Trust)
+
+bop_panel.Ro_MediaTrust <- bop_panel.me %>%
+  drop_na(RomanianMedia_Trust)
+
+bop_panel.EU_MediaTrust <- bop_panel.me %>%
+  drop_na(EUMedia_Trust)
+
+bop_panel.Media_Freq <- bop_panel.me %>%
+  drop_na(all_of(vars_media_freq))
+```
+
+# Longitudinal
+```{r}
+bop_panel.MD_MediaTrust %>%
+  group_by(date) %>%
+  summarise(
+    MoldovanMedia_Trust_mean = mean(MoldovanMedia_Trust, na.rm = TRUE),
+    MoldovanMedia_Trust_sd = sd(MoldovanMedia_Trust, na.rm = TRUE),
+    MoldovanMedia_Trust_n = sum(!is.na(MoldovanMedia_Trust)),
+    MoldovanMedia_Trust_se = MoldovanMedia_Trust_sd / sqrt(MoldovanMedia_Trust_n),
+    MoldovanMedia_Trust_lower = MoldovanMedia_Trust_mean - 1.96 * MoldovanMedia_Trust_se,
+    MoldovanMedia_Trust_upper = MoldovanMedia_Trust_mean + 1.96 * MoldovanMedia_Trust_se
+  ) %>%
+  pivot_longer(
+    cols = c(MoldovanMedia_Trust_mean, MoldovanMedia_Trust_lower,
+             MoldovanMedia_Trust_upper),
+    names_to = c("MoldovanMedia_Trust", ".value"),
+    names_pattern = "(MoldovanMedia_Trust)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Mean Score")
+```
+
+```{r}
+bop_panel.Rus_MediaTrust %>%
+  group_by(date) %>%
+  summarise(
+    RussianMedia_Trust_mean = mean(RussianMedia_Trust, na.rm = TRUE),
+    RussianMedia_Trust_sd = sd(RussianMedia_Trust, na.rm = TRUE),
+    RussianMedia_Trust_n = sum(!is.na(RussianMedia_Trust)),
+    RussianMedia_Trust_se = RussianMedia_Trust_sd / sqrt(RussianMedia_Trust_n),
+    RussianMedia_Trust_lower = RussianMedia_Trust_mean - 1.96 * RussianMedia_Trust_se,
+    RussianMedia_Trust_upper = RussianMedia_Trust_mean + 1.96 * RussianMedia_Trust_se
+  ) %>%
+  pivot_longer(
+    cols = c(RussianMedia_Trust_mean, RussianMedia_Trust_lower,
+             RussianMedia_Trust_upper),
+    names_to = c("RussianMedia_Trust", ".value"),
+    names_pattern = "(RussianMedia_Trust)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Mean Score")
+```
+
+```{r}
+bop_panel.Ro_MediaTrust %>%
+  group_by(date) %>%
+  summarise(
+    RomanianMedia_Trust_mean = mean(RomanianMedia_Trust, na.rm = TRUE),
+    RomanianMedia_Trust_sd = sd(RomanianMedia_Trust, na.rm = TRUE),
+    RomanianMedia_Trust_n = sum(!is.na(RomanianMedia_Trust)),
+    RomanianMedia_Trust_se = RomanianMedia_Trust_sd / sqrt(RomanianMedia_Trust_n),
+    RomanianMedia_Trust_lower = RomanianMedia_Trust_mean - 1.96 * RomanianMedia_Trust_se,
+    RomanianMedia_Trust_upper = RomanianMedia_Trust_mean + 1.96 * RomanianMedia_Trust_se
+  ) %>%
+  pivot_longer(
+    cols = c(RomanianMedia_Trust_mean, RomanianMedia_Trust_lower,
+             RomanianMedia_Trust_upper),
+    names_to = c("RomanianMedia_Trust", ".value"),
+    names_pattern = "(RomanianMedia_Trust)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Mean Score")
+```
+
+```{r}
+bop_panel.EU_MediaTrust %>%
+  group_by(date) %>%
+  summarise(
+    EUMedia_Trust_mean = mean(EUMedia_Trust, na.rm = TRUE),
+    EUMedia_Trust_sd = sd(EUMedia_Trust, na.rm = TRUE),
+    EUMedia_Trust_n = sum(!is.na(EUMedia_Trust)),
+    EUMedia_Trust_se = EUMedia_Trust_sd / sqrt(EUMedia_Trust_n),
+    EUMedia_Trust_lower = EUMedia_Trust_mean - 1.96 * EUMedia_Trust_se,
+    EUMedia_Trust_upper = EUMedia_Trust_mean + 1.96 * EUMedia_Trust_se
+  ) %>%
+  pivot_longer(
+    cols = c(EUMedia_Trust_mean, EUMedia_Trust_lower,
+             EUMedia_Trust_upper),
+    names_to = c("EUMedia_Trust", ".value"),
+    names_pattern = "(EUMedia_Trust)_(.*)"
+  ) %>%
+  ggplot(aes(x = date, y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), 
+              alpha = 0.15, color = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_reverse(limits = c(1,4)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Date",
+       y = "Mean Score")
+```
+
+# Regression Analysis
+
+## Moldovan media (Trust)
+```{r}
+# changing reference categories
+bop_panel.MD_MediaTrust$Socioeconomic <- fct_relevel(bop_panel.MD_MediaTrust$Socioeconomic, "medium")
+bop_panel.MD_MediaTrust$Education <- fct_relevel(bop_panel.MD_MediaTrust$Education, "medium")
+
+bop_svy.MD_MediaTrust <- svydesign(id=~1, weights=~Weights, data=bop_panel.MD_MediaTrust)
+```
+
+```{r}
+summary(svyglm(MoldovanMedia_Trust~Age, design = bop_svy.MD_MediaTrust))
+summary(svyglm(MoldovanMedia_Trust~Age.f, design = bop_svy.MD_MediaTrust))
+summary(svyglm(MoldovanMedia_Trust~Gender, design = bop_svy.MD_MediaTrust))
+summary(svyglm(MoldovanMedia_Trust~Ethnicity, design = bop_svy.MD_MediaTrust))
+summary(svyglm(MoldovanMedia_Trust~Language_Questionnaire, design = bop_svy.MD_MediaTrust))
+summary(svyglm(MoldovanMedia_Trust~Ecology, design = bop_svy.MD_MediaTrust))
+summary(svyglm(MoldovanMedia_Trust~Education, design = bop_svy.MD_MediaTrust))
+summary(svyglm(MoldovanMedia_Trust~Socioeconomic, design = bop_svy.MD_MediaTrust))
+summary(svyglm(MoldovanMedia_Trust~Macro_Region, design = bop_svy.MD_MediaTrust))
+summary(svyglm(MoldovanMedia_Trust~factor(year), design = bop_svy.MD_MediaTrust))
+```
+
+```{r}
+model <- svyglm(MoldovanMedia_Trust ~ Age.f + Ethnicity + Language_Questionnaire + Ecology + Macro_Region + factor(year), design = bop_svy.MD_MediaTrust)
+
+summary(model)
+```
+
+## Russian media (Trust)
+```{r}
+# changing reference categories
+bop_panel.Rus_MediaTrust$Socioeconomic <- fct_relevel(bop_panel.Rus_MediaTrust$Socioeconomic, "medium")
+bop_panel.Rus_MediaTrust$Education <- fct_relevel(bop_panel.Rus_MediaTrust$Education, "medium")
+
+bop_svy.Rus_MediaTrust <- svydesign(id=~1, weights=~Weights, data=bop_panel.Rus_MediaTrust)
+```
+
+```{r}
+summary(svyglm(RussianMedia_Trust~Age, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~Age.f, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~Gender, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~Ethnicity, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~Language_Questionnaire, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~Ecology, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~Education, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~Socioeconomic, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~Macro_Region, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~MoldovanMedia_Trust, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~EUMedia_Trust, design = bop_svy.Rus_MediaTrust))
+summary(svyglm(RussianMedia_Trust~factor(year), design = bop_svy.Rus_MediaTrust))
+```
+
+```{r}
+model2 <- svyglm(RussianMedia_Trust ~ Age.f + Ethnicity + Language_Questionnaire + Education + Socioeconomic + Ecology + Macro_Region + MoldovanMedia_Trust + EUMedia_Trust + factor(year), design = bop_svy.Rus_MediaTrust)
+
+summary(model2)
+```
+
+## EU media (Trust)
+```{r}
+# changing reference categories
+bop_panel.EU_MediaTrust$Socioeconomic <- fct_relevel(bop_panel.EU_MediaTrust$Socioeconomic, "medium")
+bop_panel.EU_MediaTrust$Education <- fct_relevel(bop_panel.EU_MediaTrust$Education, "medium")
+
+bop_svy.EU_MediaTrust <- svydesign(id=~1, weights=~Weights, data=bop_panel.EU_MediaTrust)
+```
+
+```{r}
+summary(svyglm(EUMedia_Trust~Age, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~Age.f, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~Gender, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~Ethnicity, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~Language_Questionnaire, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~Ecology, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~Education, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~Socioeconomic, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~Macro_Region, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~MoldovanMedia_Trust, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~RussianMedia_Trust, design = bop_svy.EU_MediaTrust))
+summary(svyglm(EUMedia_Trust~factor(year), design = bop_svy.EU_MediaTrust))
+```
+
+```{r}
+model3 <- svyglm(EUMedia_Trust ~ Age.f + Ethnicity + Language_Questionnaire + Education + Socioeconomic + Ecology + Macro_Region + MoldovanMedia_Trust + RussianMedia_Trust + factor(year), design = bop_svy.EU_MediaTrust)
+
+summary(model3)
+```
